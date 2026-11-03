@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>老師頁面｜探索島</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --paper:#F5F2E8; --card:#FFFDF8; --edge:#DFD6C4; --edge-soft:#EBE3D4;
+  --ink:#23282D; --ink-2:#5C554A; --ink-3:#847B6C; --indigo:#2E5A88; --indigo-soft:#E7EEF6;
+  --orange:#C1652F; --orange-soft:#FBEEE1; --green:#4A7C59; --green-soft:#E7F0E9; --crimson:#B23A3A;
+  --serif:"Noto Serif TC",'Songti TC',serif;
+  --sans:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#161A1E; --card:#1F252B; --edge:#333C45; --edge-soft:#2A323A;
+  --ink:#E7E2D6; --ink-2:#B3AC9E; --ink-3:#8B857A; --indigo:#82ADDC; --indigo-soft:#1E2C3B;
+  --orange:#E28B52; --orange-soft:#3A2718; --green:#82B893; --green-soft:#1D2C22; --crimson:#D66B6B;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;font-size:15px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 80px}
+header{padding:34px 0 14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px}
+h1{font-family:var(--serif);font-size:32px;margin:0}
+.who{margin-left:auto;font-size:14px;color:var(--ink-2);display:flex;gap:10px;align-items:center}
+button,select,textarea,input{font:inherit;color:var(--ink)}
+button{padding:6px 14px;border:1px solid var(--edge);border-radius:5px;background:var(--card);cursor:pointer;font-weight:600}
+button.p{background:var(--indigo);border-color:var(--indigo);color:var(--card)}
+button:disabled{opacity:.4;cursor:default}
+select{padding:6px 10px;border:1px solid var(--edge);border-radius:5px;background:var(--card)}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--edge);margin:6px 0 18px}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;padding:8px 14px;color:var(--ink-3)}
+.tabs button.on{color:var(--indigo);border-bottom-color:var(--indigo)}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:6px;padding:16px 18px;margin:0 0 16px}
+.muted{color:var(--ink-3);font-size:13.5px}
+textarea{width:100%;min-height:150px;padding:10px;border:1px solid var(--edge);border-radius:5px;background:var(--paper);font-family:ui-monospace,Menlo,monospace;font-size:13.5px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--edge-soft);text-align:left;vertical-align:top}
+th{font-size:12.5px;color:var(--ink-3);letter-spacing:.06em;position:sticky;top:0;background:var(--card)}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--edge);vertical-align:-2px}
+.dot.half{border-color:var(--indigo);background:linear-gradient(90deg,var(--indigo) 50%,transparent 50%)}
+.dot.ok{border-color:var(--green);background:var(--green)}
+.tag{font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--edge);color:var(--ink-3);white-space:nowrap}
+.tag.ok{border-color:var(--green);color:var(--green)}
+.tag.no{border-color:var(--orange);color:var(--orange)}
+.bars{display:grid;grid-template-columns:auto 1fr auto;gap:6px 10px;align-items:center;margin:6px 0 4px}
+.bars i{display:block;height:14px;border-radius:3px;background:var(--indigo)}
+.pred{color:var(--indigo)} .obs{color:var(--ink)}
+.empty{color:var(--ink-3)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 12px}
+.scroll{overflow-x:auto}
+.gate{padding:60px 0;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>老師頁面</h1><span class="muted">探索島</span><span class="who" id="who"></span></header>
+<div id="app"><p class="gate muted">載入中…</p></div>
+</div>
+<script>window.ISLAND_UNITS = /*CFGS*/[];</script>
+<script src="firebase-config.js"></script>
+<script type="module">
+import { auth, db, login, logout, emailOf, TEACHER } from "./island-cloud.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { collection, getDocs, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+const U = window.ISLAND_UNITS;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const app = $("app");
+let roster = [], uidOf = {}, tab = "rec", unitSlug = U[0] && U[0].slug, station = "", live = {}, unsubs = [];
+
+onAuthStateChanged(auth, async u => {
+  if (!u) {
+    $("who").innerHTML = "";
+    app.innerHTML = '<div class="gate"><p>用老師的學校帳號登入。</p><button class="p" id="li">用 Google 登入</button></div>';
+    $("li").onclick = () => login().catch(e => alertBox(e.code || e.message));
+    return;
+  }
+  $("who").innerHTML = esc(u.email) + ' <button id="lo">登出</button>';
+  $("lo").onclick = () => logout();
+  if (emailOf(u) !== TEACHER) { app.innerHTML = '<p class="gate">這個頁面只有老師帳號能用。</p>'; return; }
+  await loadAll();
+  draw();
+});
+function alertBox(m) { app.insertAdjacentHTML("afterbegin", '<div class="card" style="border-color:var(--orange)">' + esc(m) + "</div>"); }
+
+async function loadAll() {
+  const rs = await getDocs(collection(db, "roster"));
+  roster = []; rs.forEach(d => roster.push({ email: d.id, ...d.data() }));
+  roster.sort((a, b) => String(a.cls || "").localeCompare(String(b.cls || "")) || (+a.seat || 0) - (+b.seat || 0));
+  const rec = await getDocs(collection(db, "records"));
+  uidOf = {}; rec.forEach(d => { const e = (d.data().email || "").toLowerCase(); if (e) uidOf[e] = d.id; });
+}
+
+function draw() {
+  app.innerHTML = '<div class="tabs"><button data-t="rec">全班紀錄</button><button data-t="ros">學生名單</button></div><div id="pane"></div>';
+  app.querySelectorAll(".tabs button").forEach(b => { b.classList.toggle("on", b.dataset.t === tab); b.onclick = () => { tab = b.dataset.t; draw(); }; });
+  if (tab === "ros") drawRoster(); else drawRecords();
+}
+
+/* ---------- 名單 ---------- */
+function parseLines(txt) {
+  const out = [], bad = [];
+  txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean).forEach(l => {
+    const f = l.split(/[,\t，]+|\s{2,}|\s(?=\S+@)/).map(x => x.trim()).filter(Boolean);
+    const email = (f.find(x => x.includes("@")) || "").toLowerCase();
+    const rest = f.filter(x => !x.includes("@"));
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || rest.length < 1) { bad.push(l); return; }
+    let cls = "", seat = "", name = "";
+    if (rest.length >= 3) [cls, seat, name] = rest; else if (rest.length === 2) [seat, name] = rest; else name = rest[0];
+    out.push({ email, cls, seat: seat === "" ? "" : (isNaN(+seat) ? seat : +seat), name });
+  });
+  return { out, bad };
+}
+function drawRoster() {
+  const p = $("pane");
+  let h = '<div class="card"><b>加入或更新學生</b><p class="muted">一行一個學生：班級、座號、姓名、Google 帳號，用逗號或 Tab 隔開（可以直接從試算表複製貼上）。同一個帳號再貼一次就是更新。<br>例：801, 3, 王小明, s1100003@cnc.km.edu.tw</p>' +
+    '<textarea id="ta" placeholder="801, 3, 王小明, s1100003@cnc.km.edu.tw"></textarea><div class="row" style="margin-top:10px"><button class="p" id="add">加入名單</button><span class="muted" id="msg"></span></div></div>';
+  h += '<div class="card"><div class="row"><b>名單（' + roster.length + ' 人）</b><span class="muted">學生要用這裡登記的帳號登入，紀錄才會存到雲端。</span></div><div class="scroll"><table><thead><tr><th>班級</th><th>座號</th><th>姓名</th><th>帳號</th><th>登入過</th><th></th></tr></thead><tbody>';
+  roster.forEach((r, i) => {
+    h += "<tr><td>" + esc(r.cls) + "</td><td>" + esc(r.seat) + "</td><td>" + esc(r.name) + "</td><td>" + esc(r.email) + "</td><td>" +
+      (uidOf[r.email] ? '<span class="tag ok">是</span>' : '<span class="tag">還沒</span>') + '</td><td><button data-del="' + i + '">移出</button></td></tr>';
+  });
+  h += "</tbody></table></div></div>";
+  p.innerHTML = h;
+  const ta = $("ta"), msg = $("msg");
+  ta.oninput = () => { const { out, bad } = parseLines(ta.value); msg.textContent = out.length + " 人可加入" + (bad.length ? "，" + bad.length + " 行看不懂：" + bad.slice(0, 2).join("／") : ""); };
+  $("add").onclick = async () => {
+    const { out, bad } = parseLines(ta.value);
+    if (!out.length) { msg.textContent = "沒有可加入的資料"; return; }
+    $("add").disabled = true; msg.textContent = "寫入中…";
+    let ok = 0, fail = 0;
+    for (const r of out) {
+      try { await setDoc(doc(db, "roster", r.email), { cls: String(r.cls), seat: r.seat, name: r.name }); ok++; } catch (e) { fail++; }
+    }
+    await loadAll(); drawRoster();
+    $("msg").textContent = "加入／更新 " + ok + " 人" + (fail ? "，失敗 " + fail : "") + (bad.length ? "，略過 " + bad.length + " 行" : "");
+  };
+  p.querySelectorAll("[data-del]").forEach(b => {
+    let armed = false;
+    b.onclick = async () => {
+      if (!armed) { armed = true; b.textContent = "確定？"; setTimeout(() => { armed = false; b.textContent = "移出"; }, 3000); return; }
+      const r = roster[+b.dataset.del];
+      await deleteDoc(doc(db, "roster", r.email));
+      await loadAll(); drawRoster();
+    };
+  });
+}
+
+/* ---------- 全班紀錄 ---------- */
+function subscribe() {
+  unsubs.forEach(f => f()); unsubs = []; live = {};
+  roster.forEach(r => {
+    const uid = uidOf[r.email];
+    if (!uid) return;
+    unsubs.push(onSnapshot(doc(db, "records", uid, "units", unitSlug), d => {
+      try { live[r.email] = d.exists() ? JSON.parse(d.data().data) : null; } catch (e) { live[r.email] = null; }
+      if (tab === "rec") drawRecordsBody();
+    }, () => {}));
+  });
+}
+function drawRecords() {
+  const p = $("pane");
+  p.innerHTML = '<div class="row"><select id="us">' + U.map(u => '<option value="' + u.slug + '"' + (u.slug === unitSlug ? " selected" : "") + ">" + esc(u.chap + "　" + u.title) + "</option>").join("") +
+    '</select><select id="ss"><option value="">全部站（總覽）</option>' + Object.keys(cfg().stations).map((id, i) => '<option value="' + id + '"' + (id === station ? " selected" : "") + ">第 " + (i + 1) + " 站</option>").join("") +
+    '<option value="quiz"' + (station === "quiz" ? " selected" : "") + '>判斷題</option></select><button id="rf">重新整理名單</button><span class="muted">學生一存檔，這裡就會更新。</span></div><div id="body"></div>';
+  $("us").onchange = e => { unitSlug = e.target.value; station = ""; drawRecords(); };
+  $("ss").onchange = e => { station = e.target.value; drawRecordsBody(); };
+  $("rf").onclick = async () => { await loadAll(); drawRecords(); };
+  subscribe();
+  drawRecordsBody();
+}
+const cfg = () => U.find(u => u.slug === unitSlug);
+function predText(c, s) {
+  const parts = [];
+  if (c.opts && s.opts && s.opts.length) parts.push(s.opts.map(i => c.opts[i]).join("、"));
+  else if (c.opts && c.multi && s.locked) parts.push("一個都沒選");
+  if ((s.pred || "").trim()) parts.push(s.pred.trim());
+  return parts.join("；");
+}
+function drawRecordsBody() {
+  const b = $("body"); if (!b) return;
+  const C = cfg(), ids = Object.keys(C.stations);
+  const people = roster.map(r => ({ r, S: live[r.email], in: !!uidOf[r.email] }));
+  if (!station) {
+    let h = '<div class="card scroll"><table><thead><tr><th>班級</th><th>座號</th><th>姓名</th>' + ids.map((_, i) => "<th>" + (i + 1) + "</th>").join("") + "<th>判斷題</th><th>章</th></tr></thead><tbody>";
+    people.forEach(({ r, S, in: inn }) => {
+      h += "<tr><td>" + esc(r.cls) + "</td><td>" + esc(r.seat) + "</td><td>" + esc(r.name) + "</td>";
+      if (!inn) { h += '<td colspan="' + (ids.length + 2) + '" class="empty">還沒登入過</td></tr>'; return; }
+      ids.forEach(id => { const s = S && S.st && S.st[id]; h += '<td><span class="dot' + (s && s.done ? " ok" : s && s.locked ? " half" : "") + '"></span></td>'; });
+      const qd = C.quiz.filter((_, i) => S && S.quiz && S.quiz[i] && S.quiz[i].ok).length;
+      const first = C.quiz.filter((q, i) => S && S.quiz && S.quiz[i] && S.quiz[i].tried[0] === q.ans).length;
+      h += "<td>" + qd + " ／ " + C.quiz.length + (qd ? '<span class="muted">（一次就對 ' + first + "）</span>" : "") + "</td><td>" + (S && S.stampAt ? '<span class="tag ok">已蓋章</span>' : "") + "</td></tr>";
+    });
+    h += '</tbody></table><p class="muted">○ 還沒開始　◐ 寫了預測　● 記錄完成</p></div>';
+    b.innerHTML = h; return;
+  }
+  if (station === "quiz") {
+    let h = "";
+    C.quiz.forEach((q, i) => {
+      const cnt = q.opts.map(() => 0); let n = 0;
+      people.forEach(({ S }) => { const t = S && S.quiz && S.quiz[i] && S.quiz[i].tried; if (t && t.length) { cnt[t[0]]++; n++; } });
+      h += '<div class="card"><b>第 ' + (i + 1) + " 題　</b>" + esc(q.q) + '<p class="muted">第一次選了什麼（' + n + " 人作答）</p>" + bars(q.opts.map((o, j) => [o + (j === q.ans ? "　✓" : ""), cnt[j]]), n) + "</div>";
+    });
+    b.innerHTML = h; return;
+  }
+  const c = C.stations[station];
+  let h = '<div class="card"><b>' + esc(c.mode === "predict" ? c.q : "（這站直接操作，沒有預測）") + "</b>";
+  if (c.opts) {
+    const cnt = c.opts.map(() => 0); let n = 0;
+    people.forEach(({ S }) => { const s = S && S.st && S.st[station]; if (s && s.locked) { n++; (s.opts || []).forEach(j => cnt[j]++); } });
+    h += '<p class="muted">預測選項（' + n + " 人送出" + (c.multi ? "，可複選" : "") + "）</p>" + bars(c.opts.map((o, j) => [o, cnt[j]]), n);
+  }
+  h += '<p class="muted" style="margin-top:12px">觀察題：' + esc(c.obs) + "</p></div>";
+  h += '<div class="card scroll"><table><thead><tr><th>班級</th><th>座號</th><th>姓名</th><th>預測</th><th>看到的</th></tr></thead><tbody>';
+  people.forEach(({ r, S, in: inn }) => {
+    const s = S && S.st && S.st[station];
+    const pr = c.mode !== "predict" ? '<span class="empty">—</span>' : s && s.locked ? '<span class="pred">' + esc(predText(c, s)) + "</span>" : '<span class="empty">' + (inn ? "還沒寫" : "還沒登入過") + "</span>";
+    const ob = s && s.done ? '<span class="obs">' + esc(s.obs) + "</span>" : '<span class="empty">還沒寫</span>';
+    h += "<tr><td>" + esc(r.cls) + "</td><td>" + esc(r.seat) + "</td><td>" + esc(r.name) + "</td><td>" + pr + "</td><td>" + ob + "</td></tr>";
+  });
+  b.innerHTML = h + "</tbody></table></div>";
+}
+function bars(rows, n) {
+  const m = Math.max(1, ...rows.map(r => r[1]));
+  return '<div class="bars">' + rows.map(([t, v]) => "<span>" + esc(t) + '</span><span><i style="width:' + (v / m * 100) + '%"></i></span><span>' + v + "</span>").join("") + "</div>";
+}
+</script>
+</body>
+</html>

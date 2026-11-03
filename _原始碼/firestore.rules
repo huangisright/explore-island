@@ -1,0 +1,41 @@
+rules_version = '2';
+// 探索島：名單制
+//   roster/{email}            學生名單（文件 id = 小寫 email），只有老師能寫
+//   records/{uid}             學生本人的基本資料（email、姓名）
+//   records/{uid}/units/{slug} 每一章的探索紀錄
+// 學生：只有在名單上、而且是本人，才能寫；只能讀自己的。
+// 老師：讀全部、管名單；不改學生的紀錄。
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function myEmail() { return request.auth.token.email.lower(); }
+    function verified() { return signedIn() && request.auth.token.email_verified == true; }
+    function isTeacher() { return verified() && myEmail() == 'kb5936@cnc.km.edu.tw'; }
+    function rostered() { return verified() && exists(/databases/$(db)/documents/roster/$(myEmail())); }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+
+    match /roster/{email} {
+      allow read: if isTeacher() || (verified() && email == myEmail());
+      allow create, update: if isTeacher()
+        && request.resource.data.keys().hasOnly(['name', 'seat', 'cls', 'note']);
+      allow delete: if isTeacher();
+    }
+
+    match /records/{uid} {
+      allow read: if isTeacher() || isOwner(uid);
+      allow create, update: if isOwner(uid) && rostered()
+        && request.resource.data.keys().hasOnly(['email', 'name', 'updated'])
+        && request.resource.data.email == myEmail();
+      allow delete: if false;
+
+      match /units/{slug} {
+        allow read: if isTeacher() || isOwner(uid);
+        allow create, update: if isOwner(uid) && rostered()
+          && request.resource.data.keys().hasOnly(['data', 'updated', 'nd', 'n', 'qd', 'q', 'stampAt'])
+          && request.resource.data.data is string
+          && request.resource.data.data.size() < 60000;
+        allow delete: if isOwner(uid);
+      }
+    }
+  }
+}
