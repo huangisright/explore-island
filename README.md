@@ -2,7 +2,8 @@
 
 數理資優班互動探索站的「預測 → 操作 → 紀錄」版本，名單上的學生用 Google 帳號登入後，紀錄存到雲端。
 
-- `passport.html`：探索紀錄本（入口）
+- `index.html`：入口地圖
+- `passport.html`：探索紀錄本
 - `g8b-ch2-functions.html`：八下2《它不會改口》
 - `teacher.html`：老師頁面（學生名單、全班紀錄）
 

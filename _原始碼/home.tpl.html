@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>探索島</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#fdfcf8; --ink:#1d1d1d; --ink-2:#555; --ink-3:#8a8a8a;
+  --sand:#f1e4c3; --sand-2:#e6d3a3; --grass:#cfe3bf; --sea:#9fbbd1; --red:#c8321e; --blue:#24489a;
+  --card:#fffefa; --edge:#b9b5aa;
+  --hand:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--hand);line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 70px}
+header{padding:34px 0 6px;text-align:center}
+h1{font-size:clamp(40px,7vw,64px);margin:0;letter-spacing:.12em;font-weight:700}
+.say{font-size:clamp(16px,2.4vw,20px);color:var(--ink-2);margin:6px 0 0}
+.say small{display:block;font-size:14px;color:var(--ink-3);margin-top:2px}
+#main{margin-top:14px}
+.mapbox{position:relative;overflow-x:auto;border:2.5px solid var(--ink);border-radius:255px 14px 225px 14px/14px 225px 14px 255px;background:var(--card);padding:6px;margin-top:10px}
+svg.map{display:block;width:100%;height:auto;min-width:880px}
+.swipe{display:none;text-align:center;font-size:13px;color:var(--ink-3);margin:4px 0 0}
+@media (max-width:900px){.swipe{display:block}}
+svg.map text{font-family:var(--hand);fill:var(--ink)}
+svg.map a{cursor:pointer}
+svg.map a:hover .isle{fill:#e3f0d6}
+svg.map a:focus-visible{outline:none}
+svg.map a:focus-visible .isle{stroke:var(--blue);stroke-width:3.5}
+.lab{font-size:15px}
+.tiny{font-size:12.5px;fill:var(--ink-2)}
+.big{font-size:22px;font-weight:700}
+.note{font-size:14px;fill:var(--ink-2)}
+.grey text{fill:var(--ink-3)}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:26px 0 0}
+.how div{border:2px solid var(--ink);border-radius:14px 225px 14px 255px/255px 14px 225px 14px;padding:14px 18px;background:var(--card)}
+.how b{font-size:19px;display:block;margin-bottom:2px}
+.how p{margin:0;color:var(--ink-2);font-size:15.5px}
+.how a{color:var(--blue)}
+.list{margin-top:30px}
+.list h2{font-size:22px;margin:0 0 8px}
+.list ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px 18px}
+.list li{font-size:15.5px;color:var(--ink-3)}
+.list li a{color:var(--blue);text-decoration:none;font-weight:700}
+.list li .s{color:var(--red);font-weight:700}
+footer{margin-top:36px;text-align:center;color:var(--ink-3);font-size:14px}
+.isl-auth{font-family:var(--hand)!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>探索島</h1>
+  <p class="say">一群小島。每座島上有幾台機器，你要先猜它會怎樣，再動手試試看。<small>（猜錯沒關係。猜錯的地方，正是你等一下會看懂的地方。）</small></p>
+</header>
+<div id="main"></div>
+<p class="swipe">← 地圖可以左右滑 →</p><div class="mapbox"><svg class="map" id="map" viewBox="0 0 1200 900" role="img" aria-label="探索島地圖"></svg></div>
+
+<div class="how">
+  <div><b>1. 先猜</b><p>每一站先寫下你覺得會發生什麼，寫好了機器才會打開。</p></div>
+  <div><b>2. 動手</b><p>拉、點、拖，看機器真的怎麼做，再寫下你看到的。</p></div>
+  <div><b>3. 對照</b><p>寫完才看得到那一站的重點，拿來跟你猜的比一比。</p></div>
+  <div><b>4. 蓋章</b><p>每站都寫完、最後幾題都答對，那座島就會蓋上章。<a href="passport.html">看看你的本子 →</a></p></div>
+</div>
+
+<div class="list" id="list"></div>
+<footer>數理資優班　互動探索站</footer>
+</div>
+
+<script>
+const UNITS = /*UNITS*/[];
+const GRADES = /*GRADES*/[];
+const PLAIN = /*PLAIN*/{};
+const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+/* 手繪感：固定種子的亂數，讓每次畫出來都一樣 */
+let seed = 7;
+const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+const j = a => (rnd() - .5) * 2 * a;
+function blob(cx, cy, r, n = 11, k = .22) {
+  const pts = [];
+  for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2, rr = r * (1 + j(k)); pts.push([cx + Math.cos(t) * rr * 1.25, cy + Math.sin(t) * rr * .82]); }
+  let d = "M" + pts[0].map(v => v.toFixed(1)).join(",");
+  for (let i = 0; i < n; i++) {
+    const p = pts[i], q = pts[(i + 1) % n], m = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
+    d += " Q" + p[0].toFixed(1) + "," + p[1].toFixed(1) + " " + m[0].toFixed(1) + "," + m[1].toFixed(1);
+  }
+  return d + "Z";
+}
+function line(x1, y1, x2, y2, w = 1.4) {
+  const mx = (x1 + x2) / 2 + j(4), my = (y1 + y2) / 2 + j(4);
+  return '<path d="M' + x1 + "," + y1 + " Q" + mx.toFixed(1) + "," + my.toFixed(1) + " " + x2 + "," + y2 + '" fill="none" stroke="#1d1d1d" stroke-width="' + w + '" stroke-linecap="round"/>';
+}
+function waves(n) {
+  let s = "";
+  for (let i = 0; i < n; i++) {
+    const x = 30 + rnd() * 1140, y = 30 + rnd() * 800;
+    s += '<path d="M' + x.toFixed(0) + "," + y.toFixed(0) + " q6,-5 12,0 t12,0" + '" fill="none" stroke="#9fbbd1" stroke-width="1.6" stroke-linecap="round"/>';
+  }
+  return s;
+}
+/* 換行：每 n 個字一行 */
+function wrapText(x, y, str, n, cls, anchor = "middle", lh = 17) {
+  const lines = []; for (let i = 0; i < str.length; i += n) lines.push(str.slice(i, i + n));
+  return '<text class="' + cls + '" text-anchor="' + anchor + '" x="' + x + '" y="' + y + '">' +
+    lines.map((l, i) => '<tspan x="' + x + '" dy="' + (i ? lh : 0) + '">' + esc(l) + "</tspan>").join("") + "</text>";
+}
+function stampSvg(x, y) {
+  return '<g transform="translate(' + x + "," + y + ') rotate(-14)" opacity=".9"><circle r="17" fill="none" stroke="#c8321e" stroke-width="2.5"/>' +
+    '<text text-anchor="middle" y="5" style="font-size:13px;font-weight:700;fill:#c8321e">完成</text></g>';
+}
+
+/* 六群島的位置 */
+const SPOT = {
+  "七年級上": [190, 205], "八年級上": [600, 175], "九年級上": [1030, 215],
+  "七年級下": [205, 560], "八年級下": [600, 590], "九年級下": [1050, 575],
+};
+const SHORT = { "七年級上": "七上", "七年級下": "七下", "八年級上": "八上", "八年級下": "八下", "九年級上": "九上", "九年級下": "九下" };
+
+function draw(cloud) {
+  seed = 7;
+  let s = waves(70);
+  const POS = {};
+  // 指北針
+  s += '<g transform="translate(1110,95)">' + line(0, -38, 0, 38, 2) + line(-26, 0, 26, 0, 1.4) +
+    '<path d="M0,-38 L-7,-20 L7,-20 Z" fill="#1d1d1d"/><text class="lab" text-anchor="middle" y="-46">上面</text></g>';
+  // 群島
+  GRADES.forEach(g => {
+    const us = UNITS.filter(u => u.grade === g);
+    if (!us.length) return;
+    const [gx, gy] = SPOT[g];
+    const cols = us.length > 4 ? 3 : 2;
+    const rows = Math.ceil(us.length / cols);
+    const dx = 118, dy = 112;
+    s += '<text class="big" text-anchor="middle" x="' + gx + '" y="' + (gy - rows * dy / 2 - 22) + '">' + SHORT[g] + "群島</text>";
+    us.forEach((u, i) => {
+      const c = i % cols, r = Math.floor(i / cols);
+      const x = gx + (c - (Math.min(cols, us.length - r * cols) - 1) / 2) * dx + j(8);
+      const y = gy - (rows - 1) * dy / 2 + r * dy + j(6);
+      const S = cloud ? cloud[u.slug] : (() => { try { return JSON.parse(get("isl:" + u.slug)); } catch (e) { return null; } })();
+      const rad = u.open ? 30 : 24;
+      POS[u.slug] = [x, y, rad];
+      let g2 = '<path class="isle" d="' + blob(x, y, rad) + '" fill="' + (u.open ? "#cfe3bf" : "#efe8d6") + '" stroke="#1d1d1d" stroke-width="' + (u.open ? 2.4 : 1.6) + '"' + (u.open ? "" : ' stroke-dasharray="5 4"') + "/>";
+      if (u.open) {
+        // 小樹與旗子
+        g2 += line(x - 8, y + 4, x - 8, y - 14, 1.6) + '<path d="M' + (x - 8) + "," + (y - 14) + " l14,5 l-14,5 Z" + '" fill="#c8321e" stroke="#1d1d1d" stroke-width="1.2"/>';
+        g2 += '<circle cx="' + (x + 12) + '" cy="' + (y - 4) + '" r="7" fill="#9cc58a" stroke="#1d1d1d" stroke-width="1.3"/>' + line(x + 12, y + 3, x + 12, y + 9, 1.4);
+      }
+      if (S && S.stampAt) g2 += stampSvg(x + 26, y - 22);
+      g2 += '<text class="lab" text-anchor="middle" x="' + x + '" y="' + (y + rad * .82 + 20) + '">' + esc(u.ch.replace(" ", "")) + "</text>";
+      g2 += wrapText(x, y + rad * .82 + 37, u.title, 7, "tiny", "middle", 15);
+      if (u.open) {
+        const prog = S && S.n ? (S.stampAt ? "" : "走到 " + S.nd + "／" + S.n + " 站") : "還沒來過";
+        if (prog) g2 += '<text class="tiny" text-anchor="middle" x="' + x + '" y="' + (y - rad * .82 - 8) + '" style="fill:#24489a">' + prog + "</text>";
+        s += '<a href="' + u.slug + '.html" aria-label="' + esc(u.ch + " " + u.title) + '">' + g2 + "</a>";
+      } else s += '<g class="grey">' + g2 + "</g>";
+    });
+  });
+  // 標註（Thing Explainer 式）
+  const callout = (x1, y1, x2, y2, txt, n, anchor = "start") => line(x1, y1, x2, y2, 1.2) + wrapText(x2 + (anchor === "start" ? 6 : anchor === "end" ? -6 : 0), y2 + 5, txt, n, "note", anchor, 18);
+  // 開放中的島的說明
+  const openU = UNITS.filter(u => u.open);
+  openU.forEach(u => {
+    const plain = PLAIN[u.slug]; if (!plain) return;
+    const [x, y, rad] = POS[u.slug];
+    s += callout(x + 10, y + rad * .82 + 44, x + 40, y + 118, plain, 13);
+  });
+  // 灰色的島
+  s += callout(205 + 90, 560 + 120, 330, 760, "線是虛的、顏色是灰的島：橋還沒蓋好，之後才能上去。", 14);
+  // 紀錄本（箱子）
+  const bx = 70, by = 830;
+  s += '<a href="passport.html" aria-label="探索紀錄本"><path d="' + blob(bx + 20, by - 8, 16, 8, .08) + '" fill="#e6d3a3" stroke="#1d1d1d" stroke-width="2"/>' +
+    line(bx + 2, by - 10, bx + 38, by - 10, 1.4) + "</a>";
+  s += callout(bx + 40, by - 18, bx + 80, by - 60, "記你走過哪些島的本子。點這個箱子打開。", 11);
+  // 燈塔（老師）
+  const lx = 1110, ly = 850;
+  s += '<a href="teacher.html" aria-label="老師頁面"><path d="M' + (lx - 12) + "," + ly + " L" + (lx - 7) + "," + (ly - 58) + " L" + (lx + 7) + "," + (ly - 58) + " L" + (lx + 12) + "," + ly + ' Z" fill="#fffefa" stroke="#1d1d1d" stroke-width="2"/>' +
+    '<path d="M' + (lx - 9) + "," + (ly - 58) + " h18 v-12 h-18 Z" + '" fill="#f6d36b" stroke="#1d1d1d" stroke-width="2"/>' + line(lx - 10, ly - 22, lx + 10, ly - 22, 1.2) + line(lx - 11, ly - 40, lx + 11, ly - 40, 1.2) + "</a>";
+  s += callout(lx - 16, ly - 40, lx - 70, ly - 18, "燈塔：老師在這裡看大家猜了什麼、看到了什麼。", 11, "end");
+  // 船（你）
+  const sx = 600, sy = 395;
+  s += '<path d="M' + (sx - 30) + "," + sy + " Q" + sx + "," + (sy + 22) + " " + (sx + 30) + "," + sy + ' Z" fill="#fffefa" stroke="#1d1d1d" stroke-width="2"/>' + line(sx, sy, sx, sy - 40, 1.8) +
+    '<path d="M' + sx + "," + (sy - 38) + " L" + (sx + 24) + "," + (sy - 8) + " L" + sx + "," + (sy - 8) + ' Z" fill="#fffefa" stroke="#1d1d1d" stroke-width="1.6"/>';
+  s += callout(sx - 32, sy + 4, sx - 120, sy + 30, (window.__who ? "這是你（" + window.__who + "）的船。" : "這是你的船。") + "島和島之間，沒有一定要照順序走。", 12, "end");
+  s += callout(sx + 30, sy - 6, sx + 110, sy - 30, "用學校的帳號登入，你走過的地方換一台電腦也還在。", 13);
+  document.getElementById("map").innerHTML = s;
+
+  // 文字清單（手機與讀屏用）
+  let h = "<h2>所有的島</h2><ul>";
+  UNITS.forEach(u => {
+    const S = cloud ? cloud[u.slug] : null;
+    h += "<li>" + (u.open ? '<a href="' + u.slug + '.html">' + esc(u.ch + "　" + u.title) + "</a>" + (S && S.stampAt ? ' <span class="s">完成</span>' : "") : esc(u.ch + "　" + u.title) + "（橋還沒蓋好）") + "</li>";
+  });
+  document.getElementById("list").innerHTML = h + "</ul>";
+}
+window.ISLAND_PASSPORT = { show: (cloud, name) => { window.__who = name || ""; draw(cloud); } };
+draw(null);
+</script>
+<script src="firebase-config.js"></script>
+<script type="module" src="island-cloud.js"></script>
+</body>
+</html>

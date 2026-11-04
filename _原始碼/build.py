@@ -64,6 +64,20 @@ def build_passport(src_site, out):
     return len(rows), len(built)
 
 
+def build_home(src_site, out):
+    rows = units_from_index(src_site)
+    built = {c["slug"] for c in BUILT}
+    for r in rows:
+        r["open"] = r["slug"] in built
+    plain = {c["slug"]: c.get("plain", "") for c in BUILT}
+    page = read(os.path.join(HERE, "home.tpl.html"))
+    page = page.replace("/*UNITS*/[]", json.dumps(rows, ensure_ascii=False)) \
+               .replace("/*GRADES*/[]", json.dumps(GRADES, ensure_ascii=False)) \
+               .replace("/*PLAIN*/{}", json.dumps(plain, ensure_ascii=False))
+    with open(os.path.join(out, "index.html"), "w", encoding="utf8") as f:
+        f.write(page)
+
+
 def build_teacher(out):
     tpl = read(os.path.join(HERE, "teacher.tpl.html"))
     page = tpl.replace("/*CFGS*/[]", json.dumps(BUILT, ensure_ascii=False))
@@ -79,9 +93,7 @@ if __name__ == "__main__":
     for f in ["island-cloud.js", "firebase-config.js"]:
         shutil.copy(os.path.join(HERE, f), os.path.join(out, f))
     build_teacher(out)
-    with open(os.path.join(out, "index.html"), "w", encoding="utf8") as f:
-        f.write('<!DOCTYPE html><meta charset="utf-8"><title>探索島</title>'
-                '<meta http-equiv="refresh" content="0; url=passport.html"><a href="passport.html">探索紀錄本</a>')
+    build_home(src, out)
     open(os.path.join(out, ".nojekyll"), "w").close()
     n, b = build_passport(src, out)
     print("units listed:", n, "built:", b)
