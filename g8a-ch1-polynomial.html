@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>把十換成 x｜數學探索島</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Crimson+Text:ital,wght@0,600;1,400;1,600&display=swap">
+<style>
+
+:root{
+  --paper:#F5F2E8;
+  --grid:rgba(46,90,136,.075);
+  --card:#FFFDF8;
+  --edge:#DFD6C4;
+  --edge-soft:#EBE3D4;
+  --ink:#23282D;
+  --ink-2:#5C554A;
+  --ink-3:#847B6C;
+  --indigo:#2E5A88;
+  --indigo-soft:#E7EEF6;
+  --orange:#C1652F;
+  --orange-soft:#FBEEE1;
+  --green:#4A7C59;
+  --green-soft:#E7F0E9;
+  --crimson:#B23A3A;
+  --black-card:#2B2F35;
+  --shadow:0 1px 2px rgba(72,60,40,.06), 0 6px 18px rgba(72,60,40,.07);
+  --shadow-lift:0 2px 4px rgba(72,60,40,.08), 0 14px 34px rgba(72,60,40,.12);
+  --serif:"Noto Serif TC",'Songti TC','Times New Roman',serif;
+  --sans:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --math:"Crimson Text","Times New Roman",Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#161A1E;
+    --grid:rgba(127,169,214,.07);
+    --card:#1F252B;
+    --edge:#333C45;
+    --edge-soft:#2A323A;
+    --ink:#E7E2D6;
+    --ink-2:#B3AC9E;
+    --ink-3:#8B857A;
+    --indigo:#82ADDC;
+    --indigo-soft:#1E2C3B;
+    --orange:#E28B52;
+    --orange-soft:#3A2718;
+    --green:#82B893;
+    --green-soft:#1D2C22;
+    --crimson:#D66B6B;
+    --black-card:#0E1114;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+    --shadow-lift:0 2px 4px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#161A1E;
+  --grid:rgba(127,169,214,.07);
+  --card:#1F252B;
+  --edge:#333C45;
+  --edge-soft:#2A323A;
+  --ink:#E7E2D6;
+  --ink-2:#B3AC9E;
+  --ink-3:#8B857A;
+  --indigo:#82ADDC;
+  --indigo-soft:#1E2C3B;
+  --orange:#E28B52;
+  --orange-soft:#3A2718;
+  --green:#82B893;
+  --green-soft:#1D2C22;
+  --crimson:#D66B6B;
+  --black-card:#0E1114;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+  --shadow-lift:0 2px 4px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, var(--grid) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 26px);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px 100px}
+em,.v{font-family:var(--math);font-style:italic;font-size:1.08em;letter-spacing:.01em}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---- header ---- */
+header{padding:58px 0 34px}
+.eyebrow{
+  font-size:12.5px;letter-spacing:.22em;color:var(--orange);
+  font-weight:700;margin-bottom:16px;
+}
+h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(38px,7vw,62px);line-height:1.12;margin:0 0 14px;
+  letter-spacing:.02em;text-wrap:balance;
+}
+.sub{font-size:clamp(16px,2.4vw,19px);color:var(--ink-2);margin:0 0 26px}
+.thesis{
+  border-left:3px solid var(--orange);
+  padding:4px 0 4px 20px;margin:0;
+  font-family:var(--serif);font-size:clamp(16px,2.4vw,19px);
+  line-height:1.85;color:var(--ink);max-width:64ch;
+}
+
+/* ---- nav ---- */
+nav{
+  position:sticky;top:0;z-index:30;
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:11px 0;margin-bottom:8px;
+  background:color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--edge-soft);
+}
+nav a{
+  font-size:13.5px;text-decoration:none;color:var(--ink-2);
+  padding:5px 12px;border-radius:999px;border:1px solid transparent;
+  transition:.16s;
+}
+nav a:hover,nav a:focus-visible{color:var(--indigo);border-color:var(--edge);background:var(--card)}
+
+/* ---- sections ---- */
+section{padding:44px 0 8px;scroll-margin-top:64px}
+.pillar-tag{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:12.5px;letter-spacing:.16em;font-weight:700;
+  margin-bottom:12px;
+}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+h2{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(25px,4.2vw,34px);line-height:1.3;margin:0 0 12px;
+  text-wrap:balance;
+}
+h3{font-family:var(--serif);font-size:19px;margin:30px 0 8px;font-weight:500}
+p{margin:0 0 15px;max-width:66ch}
+.lede{font-size:17.5px;color:var(--ink-2);max-width:64ch}
+
+/* ---- lab ---- */
+.lab{
+  background:var(--card);border:1px solid var(--edge);
+  border-radius:5px;box-shadow:var(--shadow);
+  margin:26px 0 30px;overflow:hidden;
+}
+.lab-head{
+  display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  padding:17px 22px 13px;border-bottom:1px solid var(--edge-soft);
+}
+.lab-no{
+  font-family:var(--math);font-size:13px;font-weight:600;font-style:normal;
+  color:var(--card);background:var(--indigo);
+  width:23px;height:23px;border-radius:50%;
+  display:grid;place-items:center;flex:none;align-self:center;
+}
+.lab-title{font-family:var(--serif);font-weight:700;font-size:18px;margin:0}
+.lab-why{font-size:13.5px;color:var(--ink-3);margin:0}
+.lab-body{padding:22px}
+.lab-foot{
+  padding:14px 22px;background:var(--green-soft);
+  border-top:1px solid var(--edge-soft);
+  font-size:14.5px;color:var(--ink);
+}
+.lab-foot b{color:var(--green)}
+
+/* ---- controls ---- */
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{
+  font-family:var(--sans);font-size:14px;
+  padding:7px 14px;border-radius:4px;
+  border:1px solid var(--edge);background:var(--paper);color:var(--ink);
+  cursor:pointer;transition:.14s;line-height:1.5;
+}
+button:hover:not(:disabled){border-color:var(--indigo);color:var(--indigo)}
+button:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.primary{background:var(--indigo);border-color:var(--indigo);color:#fff}
+button.primary:hover{filter:brightness(1.12);color:#fff}
+button.warn{border-color:var(--orange);color:var(--orange)}
+button.ghost{background:transparent}
+input[type=number],input[type=text]{
+  font-family:var(--math);font-size:16px;
+  width:66px;padding:6px 9px;border-radius:4px;
+  border:1px solid var(--edge);background:var(--paper);color:var(--ink);
+}
+input[type=text].wide{width:190px;letter-spacing:.09em;font-family:var(--sans);font-size:15px}
+input:focus-visible{outline:2px solid var(--indigo);outline-offset:1px}
+label{font-size:13.5px;color:var(--ink-2)}
+input[type=range]{accent-color:var(--indigo);width:160px}
+
+/* ---- balance ---- */
+.scale{padding:8px 0 4px}
+.beam-wrap{position:relative;height:150px;margin:0 auto;max-width:560px}
+.beam{
+  position:absolute;left:0;right:0;top:52px;height:5px;
+  background:var(--ink);border-radius:3px;
+  transform-origin:50% 50%;transition:transform .5s cubic-bezier(.34,1.3,.5,1);
+}
+.post{position:absolute;left:50%;top:52px;width:6px;height:78px;margin-left:-3px;background:var(--ink-3)}
+.base{position:absolute;left:50%;bottom:8px;width:90px;height:12px;margin-left:-45px;background:var(--ink-3);border-radius:2px}
+.string{position:absolute;top:57px;width:2px;height:22px;background:var(--ink-3)}
+.pan{
+  position:absolute;top:79px;width:170px;margin-left:-85px;
+  padding:11px 8px;border-radius:5px;text-align:center;
+  font-family:var(--math);font-size:24px;font-style:italic;
+  border:1px solid var(--edge);
+}
+.pan.l{background:var(--indigo-soft);color:var(--indigo);border-color:var(--indigo)}
+.pan.r{background:var(--orange-soft);color:var(--orange);border-color:var(--orange)}
+.crushed .beam,.crushed .pan{opacity:.4}
+.eq-now{
+  text-align:center;font-family:var(--math);font-size:27px;font-style:italic;
+  padding:12px 0 4px;letter-spacing:.02em;
+}
+.log{
+  margin-top:14px;border-top:1px dashed var(--edge);padding-top:12px;
+  font-family:var(--math);font-size:15.5px;max-height:190px;overflow-y:auto;
+}
+.log div{padding:3px 0;display:flex;gap:12px;align-items:baseline}
+.log span.op{font-family:var(--sans);font-style:normal;font-size:12.5px;color:var(--ink-3);min-width:112px;flex:none}
+.msg{
+  margin-top:12px;padding:10px 14px;border-radius:4px;font-size:14.5px;
+  border:1px solid var(--edge);background:var(--paper);
+}
+.msg.bad{border-color:var(--orange);background:var(--orange-soft);color:var(--orange)}
+.msg.good{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+
+/* ---- machine ---- */
+.steps{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--edge);background:var(--paper);
+  border-radius:999px;padding:4px 6px 4px 13px;font-size:14px;
+}
+.chip button{border:none;background:none;padding:0 6px;font-size:15px;color:var(--ink-3);line-height:1}
+.chip button:hover{color:var(--orange)}
+.tape{
+  border:1px solid var(--edge-soft);border-radius:4px;overflow:hidden;
+  margin-top:6px;
+}
+.tape div{
+  display:flex;gap:14px;align-items:baseline;
+  padding:7px 14px;border-bottom:1px solid var(--edge-soft);
+}
+.tape div:last-child{border-bottom:none}
+.tape div.zero{background:var(--green-soft)}
+.tape .lbl{font-size:12.5px;color:var(--ink-3);min-width:96px;flex:none}
+.tape .exp{font-family:var(--math);font-style:italic;font-size:19px}
+.verdict{
+  margin-top:16px;padding:15px 18px;border-radius:4px;border:1px solid;
+  font-size:15px;line-height:1.8;
+}
+.verdict.leak{border-color:var(--indigo);background:var(--indigo-soft)}
+.verdict.hide{border-color:var(--green);background:var(--green-soft)}
+.verdict b{font-family:var(--serif);font-size:17px;display:block;margin-bottom:4px}
+.verdict.leak b{color:var(--indigo)}
+.verdict.hide b{color:var(--green)}
+
+/* ---- id table ---- */
+.idgrid{display:flex;gap:3px;flex-wrap:wrap;margin:16px 0 10px}
+.idcell{
+  min-width:40px;flex:1;text-align:center;border:1px solid var(--edge-soft);
+  border-radius:3px;padding:6px 2px;background:var(--paper);
+}
+.idcell .ch{font-family:var(--math);font-size:19px;font-weight:600;font-style:normal}
+.idcell .wt{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.idcell .pr{font-size:12.5px;color:var(--indigo);font-variant-numeric:tabular-nums}
+.idcell.unk{border-color:var(--orange);border-style:dashed;background:var(--orange-soft)}
+.idcell.unk .ch,.idcell.unk .pr{color:var(--orange)}
+
+/* ---- fates ---- */
+.numline{position:relative;height:62px;margin:16px 0 6px}
+.axis{position:absolute;left:0;right:0;top:30px;height:2px;background:var(--ink-3)}
+.axis.all{height:8px;top:27px;background:var(--green);border-radius:4px;opacity:.55}
+.tick{position:absolute;top:24px;width:1px;height:14px;background:var(--edge)}
+.tlab{position:absolute;top:40px;font-size:11px;color:var(--ink-3);transform:translateX(-50%);font-variant-numeric:tabular-nums}
+.sol{
+  position:absolute;top:22px;width:18px;height:18px;margin-left:-9px;
+  border-radius:50%;background:var(--indigo);border:3px solid var(--card);
+  box-shadow:0 0 0 2px var(--indigo);transition:left .3s;
+}
+.fate{
+  margin-top:8px;padding:13px 17px;border-radius:4px;border:1px solid;font-size:15px;
+}
+.fate.one{border-color:var(--indigo);background:var(--indigo-soft)}
+.fate.none{border-color:var(--orange);background:var(--orange-soft)}
+.fate.inf{border-color:var(--green);background:var(--green-soft)}
+.fate b{font-family:var(--serif);font-size:18px;margin-right:10px}
+.fate.one b{color:var(--indigo)} .fate.none b{color:var(--orange)} .fate.inf b{color:var(--green)}
+
+/* ---- cards (紅黑牌) ---- */
+.deckrow{display:flex;align-items:center;gap:12px;margin:9px 0;flex-wrap:wrap}
+.rowlab{font-size:13px;color:var(--ink-2);min-width:88px;flex:none}
+.cards{display:flex;gap:4px;flex-wrap:wrap}
+.pc{
+  width:26px;height:36px;border-radius:3px;cursor:pointer;
+  border:1px solid rgba(0,0,0,.18);transition:.14s;
+}
+.pc.red{background:var(--crimson)}
+.pc.blk{background:var(--black-card)}
+.pc:hover{transform:translateY(-3px)}
+.pc.sel{outline:2px solid var(--orange);outline-offset:2px;transform:translateY(-4px)}
+.tally{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;
+}
+.stat{
+  flex:1;min-width:132px;border:1px solid var(--edge-soft);border-radius:4px;
+  padding:10px 14px;background:var(--paper);
+}
+.stat .k{font-size:12.5px;color:var(--ink-3)}
+.stat .n{font-family:var(--math);font-size:27px;font-variant-numeric:tabular-nums;line-height:1.3}
+.stat.locked{border-color:var(--green);background:var(--green-soft)}
+.stat.locked .n{color:var(--green)}
+.stat.locked .k{color:var(--green)}
+
+
+/* ---- 按鈕與切換 ---- */
+.btn{
+  font-family:var(--sans);font-size:13.5px;padding:5px 11px;border-radius:5px;
+  border:1px solid var(--edge);background:var(--card);color:var(--ink-2);cursor:pointer;
+}
+.btn:hover{border-color:var(--orange);color:var(--orange)}
+.segwrap{display:inline-flex;flex-wrap:wrap;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--edge)}
+.seg{
+  font-family:var(--sans);font-size:13px;padding:6px 12px;border:none;
+  background:var(--card);color:var(--ink-3);cursor:pointer;border-right:1px solid var(--edge-soft);
+}
+.seg:last-child{border-right:none}
+.seg.on{background:var(--indigo);color:#fff}
+
+/* 滑桿在窄螢幕不要撐破版面 */
+.row label{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--ink-2)}
+.row input[type=range]{width:min(230px,58vw);max-width:100%}
+
+/* ---- 圖 ---- */
+.figsvg{width:100%;max-width:620px;display:block;margin:8px auto;height:auto}
+.figsvg.wide{max-width:100%}
+.statrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0 2px}
+.statbox{
+  border:1px solid var(--edge-soft);background:var(--card);border-radius:6px;
+  padding:6px 14px;text-align:center;min-width:104px;
+}
+.statbox .k{font-size:11.5px;color:var(--ink-3)}
+.statbox .v{font-family:var(--math);font-size:19px;font-variant-numeric:tabular-nums}
+.statbox.hot{border-color:var(--orange)}
+.statbox.hot .v{color:var(--orange)}
+.statbox.cool{border-color:var(--green)}
+.statbox.cool .v{color:var(--green)}
+
+/* ---- 兩欄 ---- */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+@media(max-width:700px){.twocol{grid-template-columns:1fr}}
+.pane{border:1px solid var(--edge);border-radius:8px;background:var(--card);padding:12px 14px}
+.pane h4{margin:0 0 8px;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.04em}
+.pane.bad{border-color:var(--orange)}
+.pane.bad h4{color:var(--orange)}
+.pane.ok{border-color:var(--green)}
+.pane.ok h4{color:var(--green)}
+
+/* ---- 表 ---- */
+.tablewrap{overflow-x:auto;margin:10px 0}
+table.dt{border-collapse:collapse;width:100%;min-width:430px;font-size:14px}
+table.dt th{
+  text-align:center;font-family:var(--sans);font-weight:600;font-size:12.5px;color:var(--indigo);
+  background:var(--indigo-soft);padding:7px 8px;border:1px solid var(--edge-soft);white-space:nowrap;
+}
+table.dt td{
+  padding:6px 8px;border:1px solid var(--edge-soft);background:var(--card);text-align:center;
+  font-family:var(--math);font-size:16px;font-variant-numeric:tabular-nums;
+}
+table.dt td.rk{font-family:var(--sans);font-size:12.5px;color:var(--ink-3);text-align:right;white-space:nowrap}
+table.dt tr.hi td{background:var(--orange-soft);color:var(--orange);font-weight:700}
+
+/* ---- 原始資料格 ---- */
+.rawgrid{
+  display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:10px 0;
+}
+@media(max-width:560px){.rawgrid{grid-template-columns:repeat(5,1fr)}}
+.rawgrid span{
+  font-family:var(--math);font-size:15px;text-align:center;padding:5px 0;border-radius:4px;
+  background:var(--card);border:1px solid var(--edge-soft);font-variant-numeric:tabular-nums;
+}
+.rawgrid span.mid{background:var(--orange-soft);border-color:var(--orange);color:var(--orange);font-weight:700}
+
+/* ---- 資訊階梯 ---- */
+.ladder{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.rung{
+  font-family:var(--sans);font-size:13px;padding:6px 11px;border-radius:20px;cursor:pointer;
+  border:1px solid var(--edge);background:var(--card);color:var(--ink-3);
+}
+.rung.on{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.rung.done{color:var(--indigo)}
+.qlist{list-style:none;margin:0;padding:0}
+.qlist li{
+  display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start;
+  padding:7px 2px;border-bottom:1px solid var(--edge-soft);font-size:14px;
+}
+.qlist li:last-child{border-bottom:none}
+.qlist .mk{font-family:var(--math);font-size:18px;font-weight:700;text-align:center;line-height:1.3}
+.qlist li.yes .mk{color:var(--green)}
+.qlist li.no .mk{color:var(--orange)}
+.qlist li.no{color:var(--ink-3)}
+.qlist li .fast{font-size:12px;color:var(--ink-3);display:block}
+
+/* ---- verdict：只有開頭那一句要獨立成行 ---- */
+.verdict b{display:inline;font-family:inherit;font-size:inherit;margin:0}
+.verdict > b:first-child{display:block;font-family:var(--serif);font-size:17px;margin-bottom:4px}
+.verdict.warn{border-color:var(--orange);background:var(--orange-soft)}
+.verdict.warn > b:first-child{color:var(--orange)}
+
+/* ---- 大式子 ---- */
+.eqbig{
+  font-family:var(--math);font-size:clamp(17px,2.6vw,23px);
+  text-align:center;padding:14px 8px 10px;color:var(--ink);line-height:1.7;
+}
+.eqbig i{font-style:italic}
+.eqbig .hl{color:var(--orange);font-weight:600}
+.eqbig .hl2{color:var(--indigo);font-weight:600}
+
+/* ---- 圓上的點：用 canvas 才填得了色 ---- */
+.figcanvas{
+  width:100%;max-width:620px;display:block;margin:8px auto;height:auto;
+  border-radius:8px;border:1px solid var(--edge-soft);background:var(--card);
+}
+.switch{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-2)}
+.switch label{cursor:pointer}
+
+/* ---- Sn / an 表 ---- */
+table.dt td.bad{background:var(--orange-soft);color:var(--orange);font-weight:700}
+table.dt td.good{background:var(--green-soft);color:var(--green);font-weight:700}
+
+/* ---- 這一份新增 ---- */
+/* 位值格：一格一個係數 */
+.digits{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.digits .dg{
+  min-width:52px;border:1px solid var(--edge);border-radius:6px;background:var(--card);
+  padding:6px 8px;text-align:center;
+}
+.digits .dg .c{font-family:var(--math);font-size:21px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.digits .dg .p{font-size:11px;color:var(--ink-3);margin-top:2px}
+.digits .dg.over{border-color:var(--orange);background:var(--orange-soft)}
+.digits .dg.over .c{color:var(--orange);font-weight:700}
+.digits .dg.zero .c{color:var(--ink-3)}
+
+/* 配對網格：m 列 n 行，每格一個乘積 */
+.pairwrap{overflow-x:auto;margin:10px 0}
+table.pair{border-collapse:collapse;margin:0 auto;font-size:14px}
+table.pair th{
+  font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--indigo);
+  background:var(--indigo-soft);border:1px solid var(--edge-soft);padding:6px 10px;white-space:nowrap;
+}
+table.pair td{
+  border:1px solid var(--edge-soft);background:var(--card);padding:7px 11px;text-align:center;
+  font-family:var(--math);font-size:15px;font-variant-numeric:tabular-nums;color:var(--ink-2);
+}
+table.pair td.hit{background:var(--orange-soft);border-color:var(--orange);color:var(--orange);font-weight:700}
+
+/* 長除法階梯 */
+.ldiv{font-family:var(--math);font-size:15px;line-height:1.75;overflow-x:auto;
+  background:var(--card);border:1px solid var(--edge-soft);border-radius:8px;padding:12px 14px;margin:10px 0}
+.ldiv .ln{white-space:pre;font-variant-numeric:tabular-nums}
+.ldiv .ln.rule{border-top:1px solid var(--ink-3);display:inline-block;padding-top:1px}
+.ldiv .q{color:var(--indigo);font-weight:700}
+.ldiv .r{color:var(--orange);font-weight:700}
+
+/* 綜合除法一排 */
+.synth{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:center;margin:8px 0}
+.synth .cell{
+  min-width:46px;padding:6px 8px;text-align:center;border-radius:5px;border:1px solid var(--edge-soft);
+  background:var(--card);font-family:var(--math);font-size:16px;font-variant-numeric:tabular-nums;
+}
+.synth .cell.root{background:var(--indigo-soft);border-color:var(--indigo);color:var(--indigo);font-weight:700}
+.synth .cell.out{background:var(--green-soft);border-color:var(--green);color:var(--green);font-weight:700}
+.synth .cell.rem{background:var(--orange-soft);border-color:var(--orange);color:var(--orange);font-weight:700}
+.synth .bar{color:var(--ink-3);font-size:18px}
+
+/* 案例列 */
+.caselist{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+
+/* 兩欄對照的小標 */
+.sideby{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+@media(max-width:640px){.sideby{grid-template-columns:1fr}}
+
+</style>
+<!--hand-theme--><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet"><link href="https://huangisright.github.io/fonts/isright-hand.css" rel="stylesheet"><style id="hand-theme">
+:root{
+  --paper:#fdfcf8; --grid:transparent; --card:#fffefa;
+  --edge:#b9b5aa; --edge-soft:#dedad0; --ink:#1b1b1b; --ink-2:#4a4844; --ink-3:#77756f;
+  --indigo:#24489a; --indigo-soft:#e8edf8; --orange:#d4472b; --orange-soft:#fde9e3;
+  --green:#2f7a3a; --green-soft:#e6f2e4; --crimson:#c8321e; --black-card:#1b1b1b;
+  --shadow:none; --shadow-lift:none;
+  --mute:#77756f; --line:#d9d6cc; --blue:#24489a; --sand:#efe9d8;
+  --cardline:#1b1b1b; --tint:#fde9e3; --tint2:#e8edf8;
+  --hl:#fff2a8;
+  --serif:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif; --sans:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif; --wob:255px 14px 225px 14px/14px 225px 14px 255px; --wob2:14px 255px 14px 225px/225px 14px 255px 14px;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1c1d1f; --grid:transparent; --card:#222326;
+  --edge:#5e5f62; --edge-soft:#3a3b3e; --ink:#ecebe6; --ink-2:#c4c2bb; --ink-3:#9c9a93;
+  --indigo:#8fb0f0; --indigo-soft:#1f2a40; --orange:#ff7a5c; --orange-soft:#3d221b;
+  --green:#7cc98a; --green-soft:#1d3122; --crimson:#ff6b55; --black-card:#0d0d0e;
+  --shadow:none; --shadow-lift:none;
+  --mute:#9c9a93; --line:#3a3b3e; --blue:#8fb0f0; --sand:#33302a;
+  --cardline:#ecebe6; --tint:#3d221b; --tint2:#1f2a40;
+  --hl:#4a4320;
+}}
+:root[data-theme="dark"]{
+  --paper:#1c1d1f; --grid:transparent; --card:#222326;
+  --edge:#5e5f62; --edge-soft:#3a3b3e; --ink:#ecebe6; --ink-2:#c4c2bb; --ink-3:#9c9a93;
+  --indigo:#8fb0f0; --indigo-soft:#1f2a40; --orange:#ff7a5c; --orange-soft:#3d221b;
+  --green:#7cc98a; --green-soft:#1d3122; --crimson:#ff6b55; --black-card:#0d0d0e;
+  --shadow:none; --shadow-lift:none;
+  --mute:#9c9a93; --line:#3a3b3e; --blue:#8fb0f0; --sand:#33302a;
+  --cardline:#ecebe6; --tint:#3d221b; --tint2:#1f2a40;
+  --hl:#4a4320;
+}
+body{background:var(--paper)!important;background-image:none!important;font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;font-size:17px}
+button,input,select,textarea,label{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif}
+input[type=number],.row input[type=number]{font-family:var(--math,serif)}
+h1,h2,h3,.lab-title{font-family:"IsRight Hand","LXGW WenKai TC","Kaiti TC","KaiTi",serif;font-weight:700;letter-spacing:.02em}
+.lab-title{font-size:22px!important}
+h1{text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:3px;text-underline-offset:10px}
+.eyebrow{color:var(--orange)}
+.thesis{border-left:none!important;padding-left:0!important;background:linear-gradient(transparent 62%,var(--hl) 62%);display:inline}
+nav{background:var(--paper)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:1.5px dashed var(--edge-soft)!important}
+nav a{border-radius:var(--wob)!important}
+nav a:hover,nav a:focus-visible{border:1.5px solid var(--ink)!important;background:transparent!important;color:var(--ink)!important}
+
+.lab{border:2.5px solid var(--ink)!important;border-radius:var(--wob)!important;box-shadow:none!important;overflow:visible!important}
+.lab:nth-of-type(even){border-radius:var(--wob2)!important}
+.lab-head{border-bottom:1.5px dashed var(--edge-soft)!important}
+.lab-no{background:transparent!important;color:var(--ink)!important;border:2px solid var(--ink);border-radius:52% 48% 50% 46%/48% 54% 46% 52%!important;font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;width:28px!important;height:28px!important}
+.lab-foot{background:var(--hl)!important;border:none!important;margin:6px 10px 10px;border-radius:var(--wob2)}
+.lab-foot b{color:var(--ink)!important}
+
+button,.btn{border:2px solid var(--ink)!important;border-radius:var(--wob)!important;background:transparent!important;color:var(--ink)!important;box-shadow:none!important}
+button:nth-of-type(even),.btn:nth-of-type(even){border-radius:var(--wob2)!important}
+button:hover:not(:disabled),.btn:hover{background:var(--hl)!important;color:var(--ink)!important}
+button.primary,.seg.on,.seg.on:hover{background:var(--ink)!important;color:var(--paper)!important}
+button.warn{border-color:var(--orange)!important;color:var(--orange)!important}
+.chip button{border:none!important;background:none!important}
+.segwrap{border:2px solid var(--ink)!important;border-radius:var(--wob)!important}
+.seg{border:none!important;border-right:1.5px dashed var(--edge-soft)!important;border-radius:0!important}
+input[type=number],input[type=text],select,textarea{border:2px solid var(--ink)!important;border-radius:var(--wob2)!important;background:transparent!important}
+input:focus-visible,select:focus-visible{outline:none!important;background:var(--hl)!important}
+input[type=range]{accent-color:var(--ink)}
+
+.msg,.verdict,.fate,.stat,.statbox,.chip,.tape,.pan,.thumb,.idcell{border-width:1.5px!important;border-radius:var(--wob)!important;box-shadow:none!important}
+.card,.box,.panel,.callout,.note,.tip{box-shadow:none!important}
+.dot{border-radius:48% 52% 46% 54%!important}
+::selection{background:var(--hl)}
+
+.bk-top{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;font-size:15px!important}
+.bk-top a{color:var(--ink,#1b1b1b)!important;text-decoration:underline dotted!important}
+.bk-fab{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;background:var(--paper,#fdfcf8)!important;color:var(--ink,#1b1b1b)!important;
+  border:2px solid var(--ink,#1b1b1b)!important;border-radius:255px 14px 225px 14px/14px 225px 14px 255px!important;box-shadow:none!important}
+.bk-fab:hover{background:var(--hl,#fff2a8)!important}
+@media print{.lab{border-width:1.5px!important}}
+</style><!--/hand-theme--></head>
+<body>
+
+<style id="backnav">
+.bk-top{
+  max-width:1080px; margin:0 auto; padding:14px 20px 0;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif; font-size:14px;
+}
+.bk-top a{color:#2E5A88; text-decoration:none; font-weight:600}
+.bk-top a:hover{text-decoration:underline}
+.bk-top .bk-sep{color:#B8AE9C; margin:0 10px}
+.bk-fab{
+  position:fixed; right:16px; bottom:16px; z-index:9999;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 15px; border-radius:24px;
+  background:#FFFDF8; border:1px solid #DFD6C4; color:#2E5A88;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  font-size:14px; font-weight:600; text-decoration:none;
+  box-shadow:0 2px 4px rgba(72,60,40,.10), 0 10px 26px rgba(72,60,40,.16);
+}
+.bk-fab:hover{border-color:#2E5A88}
+.bk-fab:focus-visible{outline:2px solid #2E5A88; outline-offset:2px}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .bk-top a{color:#82ADDC}
+  :root:not([data-theme="light"]) .bk-fab{
+    background:#1F252B; border-color:#333C45; color:#82ADDC;
+    box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+  }
+  :root:not([data-theme="light"]) .bk-fab:hover{border-color:#82ADDC}
+}
+:root[data-theme="dark"] .bk-top a{color:#82ADDC}
+:root[data-theme="dark"] .bk-fab{
+  background:#1F252B; border-color:#333C45; color:#82ADDC;
+  box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+}
+@media print{ .bk-top, .bk-fab{display:none !important} }
+@media (max-width:520px){ .bk-fab{right:12px; bottom:12px; padding:8px 13px; font-size:13px} }
+</style>
+<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">八年級　代數　學習單　·　互動探索站</div>
+  <h1>把十換成 x</h1>
+  <p class="sub">乘法公式與多項式　·　從位值制到長除法與餘式定理</p>
+  <p class="thesis">整數會進位，多項式不會。</p>
+</header>
+
+<nav>
+  <a href="#p1">① 把十換成 x</a>
+  <a href="#p2">② 同一格才能加</a>
+  <a href="#p3">③ 每個位置配一次</a>
+  <a href="#lab1">換底機</a>
+  <a href="#lab2">甲乙對撞</a>
+  <a href="#lab3">配對網格</a>
+  <a href="#lab4">面積圖</a>
+  <a href="#lab5">長除法</a>
+  <a href="#lab6">11 的次方</a>
+  <a href="#lab7">把數字讀成多項式</a>
+</nav>
+
+<!-- ================= 支點一 ================= -->
+<section id="p1">
+  <div class="pillar-tag" style="color:var(--indigo)"><span class="dot" style="background:var(--indigo)"></span>支點一　把十換成 x</div>
+  <h2>多項式是位值制鬆開兩條限制之後的樣子</h2>
+  <p class="lede">3742 ＝ 3 × 10³ ＋ 7 × 10² ＋ 4 × 10 ＋ 2。把 10 換成 <span class="mono">x</span>，右邊就是 <b><span class="mono">3x³ ＋ 7x² ＋ 4x ＋ 2</span></b>。鬆開的兩條是：<b>係數不再只能 0～9</b>、<b>不再進位</b>；沒鬆開的一條是：<b>次方必須是非負整數</b>。</p>
+  <p>下面兩站做的是同一件事的兩面：第一站讓你換掉 <span class="mono">x</span>，第二站讓你看見「兩個不同的多項式為什麼會在 <span class="mono">x ＝ 10</span> 撞在一起」。</p>
+</section>
+
+<!-- LAB 1 -->
+<div class="lab" id="lab1">
+  <div class="lab-head">
+    <span class="lab-no">1</span>
+    <div>
+      <p class="lab-title">換底機：同一組係數，換一個 x</p>
+      <p class="lab-why">把一個數拆成係數之後，<b>x 其實可以是任何數</b>。拉滑桿換掉它，看同一串數字變成什麼……<span class="mono">x ＝ 10</span> 才會回到你認得的那個數。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label>輸入一個數 <input type="number" id="k1n" value="3742" min="0" max="999999" step="1"></label>
+      <button class="btn" data-k1="3742">3742</button>
+      <button class="btn" data-k1="2603">2603</button>
+      <button class="btn" data-k1="1001">1001</button>
+      <button class="btn" data-k1="10101">10101</button>
+    </div>
+    <div class="row">
+      <label>x ＝ <input type="range" id="k1x" min="2" max="16" step="1" value="10"><b class="mono" id="k1xv">10</b></label>
+    </div>
+    <div class="digits" id="k1dg"></div>
+    <div class="eqbig" id="k1eq"></div>
+    <div class="statrow" id="k1stat"></div>
+    <div class="msg" id="k1msg"></div>
+  </div>
+  <div class="lab-foot">係數一個都沒變，變的只有 <span class="mono">x</span>。<b>一組係數不是一個數，是一條「給我 x，我還你一個數」的規則</b>——這就是它比數字多帶的東西。</div>
+</div>
+
+<!-- LAB 2 -->
+<div class="lab" id="lab2">
+  <div class="lab-head">
+    <span class="lab-no">2</span>
+    <div>
+      <p class="lab-title">甲乙對撞：兩個不同的多項式，為什麼在 x ＝ 10 相等</p>
+      <p class="lab-why">紙上只能代兩三個數。這裡<b>把整條曲線畫出來</b>，你會看到甲和乙只在一個點交會；按「進位一次」，還能看見進位<b>當場把甲變成乙</b>。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="sideby">
+      <div class="pane">
+        <h4>甲</h4>
+        <div class="row"><label>x² <input type="range" id="k2a2" min="0" max="9" step="1" value="4"><b class="mono" id="k2a2v">4</b></label></div>
+        <div class="row"><label>x&nbsp; <input type="range" id="k2a1" min="0" max="19" step="1" value="13"><b class="mono" id="k2a1v">13</b></label></div>
+        <div class="row"><label>常數 <input type="range" id="k2a0" min="0" max="9" step="1" value="7"><b class="mono" id="k2a0v">7</b></label></div>
+      </div>
+      <div class="pane">
+        <h4>乙</h4>
+        <div class="row"><label>x² <input type="range" id="k2b2" min="0" max="9" step="1" value="5"><b class="mono" id="k2b2v">5</b></label></div>
+        <div class="row"><label>x&nbsp; <input type="range" id="k2b1" min="0" max="19" step="1" value="3"><b class="mono" id="k2b1v">3</b></label></div>
+        <div class="row"><label>常數 <input type="range" id="k2b0" min="0" max="9" step="1" value="7"><b class="mono" id="k2b0v">7</b></label></div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn" id="k2carry">把甲進位一次</button>
+      <button class="btn" id="k2reset">回到 4,13,7 / 5,3,7</button>
+    </div>
+    <svg id="k2svg" viewBox="0 0 620 320" class="figsvg" aria-label="甲與乙兩個多項式的值隨 x 變化"></svg>
+    <div class="statrow" id="k2stat"></div>
+    <div class="msg" id="k2msg"></div>
+  </div>
+  <div class="lab-foot">兩條曲線只在一個點碰到，其他地方都分開。<b>兩個多項式相等，是每一個係數都相等，不是某一點的值相等</b>——這條標準比數字嚴格得多，而正因為嚴格，你才問得出「第 5 項的係數是多少」。</div>
+</div>
+
+<!-- ================= 支點二 ================= -->
+<section id="p2">
+  <div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>支點二　同一格才能加</div>
+  <h2>「加減要同單位」原封不動再用一次</h2>
+  <p class="lede">分數加法要通分，因為<b>分母是單位</b>。多項式只能合併同類項，理由一字不差：<span class="mono">x²</span> 和 <span class="mono">x</span> 是兩種不同的單位。3742 ＋ 2165 在十位那一格要進位，多項式那邊就停在 <b><span class="mono">10x</span></b>——不動。</p>
+  <p>乘法就有意思了：<b>每一個位置都要和對方的每一個位置碰一次面</b>。下面這一站把那些配對整個攤開來。</p>
+</section>
+
+<!-- LAB 3 -->
+<div class="lab" id="lab3">
+  <div class="lab-head">
+    <span class="lab-no">3</span>
+    <div>
+      <p class="lab-title">配對網格：乘開之前，先看每一格在配誰</p>
+      <p class="lab-why">紙上乘開會馬上合併，配對的痕跡就不見了。這裡<b>先不合併</b>——點任何一個次方，它會把所有配成那一格的乘積<b>一起亮起來</b>。這就是「係數是數出來的」。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <button class="btn" data-k3="1,2,3|4,5">(x²＋2x＋3)(4x＋5)</button>
+      <button class="btn" data-k3="1,1,1,1,0|1,1,0,1,0">p(x)·q(x)（學習單支線三）</button>
+      <button class="btn" data-k3="1,2|1,5">(x＋2)(x＋5)</button>
+      <button class="btn" data-k3="1,1,1,1,1,1,0|1,1,1,1,1,1,0">兩顆骰子</button>
+    </div>
+    <div class="eqbig" id="k3eq"></div>
+    <div class="pairwrap" id="k3grid"></div>
+    <div class="row" id="k3pick"></div>
+    <div class="statrow" id="k3stat"></div>
+    <div class="msg" id="k3msg"></div>
+  </div>
+  <div class="lab-foot">m 項乘 n 項，不合併是 <b>m × n</b> 項；合併同類項就是<b>在數「配成這個次方的方法有幾種」</b>。最後那顆骰子的例子告訴你這招能走多遠……<b>這件事之後會用一整份補充卷來走</b>。</div>
+</div>
+
+<!-- LAB 4 -->
+<div class="lab" id="lab4">
+  <div class="lab-head">
+    <span class="lab-no">4</span>
+    <div>
+      <p class="lab-title">面積圖：三條公式，其實是同一張圖的三種切法</p>
+      <p class="lab-why">課本三條公式分三頁講，看起來像三件事。這裡<b>換一個下拉就換一種切法</b>，你會看到那些方塊自己重排，而且每一塊都掛著真實的數字。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <div class="segwrap" id="k4seg">
+        <button class="seg on" data-k4="sum">(a＋b)²</button>
+        <button class="seg" data-k4="dif">(a−b)²</button>
+        <button class="seg" data-k4="prod">(a＋b)(a−b)</button>
+      </div>
+    </div>
+    <div class="row">
+      <label>a ＝ <input type="range" id="k4a" min="2" max="12" step="1" value="7"><b class="mono" id="k4av">7</b></label>
+      <label>b ＝ <input type="range" id="k4b" min="1" max="6" step="1" value="3"><b class="mono" id="k4bv">3</b></label>
+    </div>
+    <svg id="k4svg" viewBox="0 0 620 340" class="figsvg" aria-label="乘法公式的面積圖"></svg>
+    <div class="eqbig" id="k4eq"></div>
+    <div class="statrow" id="k4stat"></div>
+    <div class="msg" id="k4msg"></div>
+  </div>
+  <div class="lab-foot">第一條自己乘一次就有，第二條把 <span class="mono">b</span> 換成 <span class="mono">−b</span>，第三條是剪一刀轉 90°。<b>要練的不是公式，是「認出來」</b>——看到 98 × 102，要能看見 (100−2)(100＋2)。</div>
+</div>
+
+<!-- ================= 支點三 ================= -->
+<section id="p3">
+  <div class="pillar-tag" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>支點三　除法是一次還一個位置
+  </div>
+  <h2>餘式的規矩，和餘數的規矩是同一條</h2>
+  <p class="lede">整數要求 <b>0 ≤ 餘數 ＜ 除數</b>，多項式要求 <b>餘式次數 ＜ 除式次數</b>。理由一字不差：<b>還除得下去的東西就不叫餘數</b>。</p>
+  <p>但兩邊會給出不一樣的答案，因為整數要進位。下面那一站把 <span class="mono">x</span> 代回 10，讓這件事當場發生。</p>
+</section>
+
+<!-- LAB 5 -->
+<div class="lab" id="lab5">
+  <div class="lab-head">
+    <span class="lab-no">5</span>
+    <div>
+      <p class="lab-title">長除法／綜合除法：同一件事的兩種寫法</p>
+      <p class="lab-why">改一個係數就要重抄一次長除法，紙上做不了幾次。這裡<b>左邊長除法、右邊綜合除法同時更新</b>，還會把 <span class="mono">f(a)</span> 和餘式擺在一起……<b>餘式定理當場驗證</b>。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label>3次 <input type="range" id="k5c3" min="-5" max="5" step="1" value="3"><b class="mono" id="k5c3v">3</b></label>
+      <label>2次 <input type="range" id="k5c2" min="-9" max="9" step="1" value="-3"><b class="mono" id="k5c2v">−3</b></label>
+      <label>1次 <input type="range" id="k5c1" min="-9" max="9" step="1" value="8"><b class="mono" id="k5c1v">8</b></label>
+      <label>常數 <input type="range" id="k5c0" min="-9" max="9" step="1" value="-3"><b class="mono" id="k5c0v">−3</b></label>
+    </div>
+    <div class="row">
+      <label>除以 (x − a)，a ＝ <input type="range" id="k5a" min="-4" max="4" step="1" value="2"><b class="mono" id="k5av">2</b></label>
+      <button class="btn" data-k5="1,0,-7,6|1">x³−7x＋6 ÷ (x−1)</button>
+    </div>
+    <div class="eqbig" id="k5eq"></div>
+    <div class="ldiv" id="k5ldiv"></div>
+    <div class="synth" id="k5syn"></div>
+    <div class="statrow" id="k5stat"></div>
+    <div class="msg" id="k5msg"></div>
+  </div>
+  <div class="lab-foot">綜合除法搬的是<b>那個根</b>，不是式子裡的 −2，所以是「乘 2 再相加」。而 <span class="mono">f(a)</span> 永遠等於餘式，因為把 <span class="mono">x ＝ a</span> 代進 <span class="mono">f(x) ＝ (x−a)Q(x) ＋ r</span>，<b>(x−a) 那一塊被歸零了</b>。</div>
+</div>
+
+<!-- LAB 6 -->
+<div class="lab" id="lab6">
+  <div class="lab-head">
+    <span class="lab-no">6</span>
+    <div>
+      <p class="lab-title">11 的次方：看著進位把巴斯卡三角吃掉</p>
+      <p class="lab-why">11⁴ ＝ 14641 看得出來，11⁵ 就看不出來了。這裡<b>把係數和實際數字排在一起</b>，哪一格進位、從第幾列開始壞掉，一目了然，而且你可以<b>換一個底數把它救回來</b>。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label>n ＝ <input type="range" id="k6n" min="1" max="9" step="1" value="4"><b class="mono" id="k6nv">4</b></label>
+    </div>
+    <div class="row">
+      <div class="segwrap" id="k6seg">
+        <button class="seg on" data-k6="10">底數 10（11ⁿ）</button>
+        <button class="seg" data-k6="100">底數 100（101ⁿ）</button>
+        <button class="seg" data-k6="1000">底數 1000（1001ⁿ）</button>
+      </div>
+    </div>
+    <div class="eqbig" id="k6eq"></div>
+    <div class="digits" id="k6dg"></div>
+    <div class="statrow" id="k6stat"></div>
+    <div class="msg" id="k6msg"></div>
+  </div>
+  <div class="lab-foot">底數越大，每一格裝得下的數就越大，<b>看得見的列數就越多</b>。多項式相當於把底數放到無限大，那就是<b>永遠不進位</b>，係數永遠留在原位。</div>
+</div>
+
+<!-- LAB 7 -->
+<div class="lab" id="lab7">
+  <div class="lab-head">
+    <span class="lab-no">7</span>
+    <div>
+      <p class="lab-title">把數字讀成多項式：因式分解一個數</p>
+      <p class="lab-why">難算的數字先讀成多項式，分解完再代回去。這裡<b>每一步都幫你驗算</b>，最後一格還能讓你隨便報一個三位數，當場驗 7、11、13 那件事。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="caselist" id="k7cases"></div>
+    <div class="eqbig" id="k7eq"></div>
+    <div class="twocol" id="k7panes"></div>
+    <div class="row">
+      <label>隨便一個三位數 <input type="number" id="k7abc" value="375" min="100" max="999" step="1"></label>
+      <button class="btn" id="k7go">驗一次</button>
+    </div>
+    <div class="statrow" id="k7stat"></div>
+    <div class="msg" id="k7msg"></div>
+  </div>
+  <div class="lab-foot">1001 ＝ 10³ ＋ 1，而 <span class="mono">x³ ＋ 1 ＝ (x＋1)(x²−x＋1)</span>，代 x ＝ 10 得 11 × 91 ＝ 7 × 11 × 13。<b>一個看起來是數論的結論，用第一章的多項式因式分解就證完了。</b></div>
+</div>
+
+<section id="end">
+  <div class="pillar-tag" style="color:var(--indigo)"><span class="dot" style="background:var(--indigo)"></span>回到第一句話</div>
+  <h2>不進位，係數就留在原位，資訊才看得見</h2>
+  <p class="lede">11⁴ ＝ 14641 還看得出巴斯卡三角，11⁵ 就看不出來了，因為那兩個 10 放不進一位數。多項式從來不會發生這件事：<b><span class="mono">(x＋1)⁵</span> 裡 <span class="mono">x³</span> 的係數就是 10</b>，它會一直待在那裡等你去讀。</p>
+  <p>下一章要做的事，是把乘開整個倒著走。而倒著走之所以有意義，就是因為係數還在原位，如果它們早就被進位攪在一起，就沒有什麼好倒的了。</p>
+</section>
+
+</div>
+
+<script>
+(function () {
+"use strict";
+const $ = function (id) { return document.getElementById(id); };
+const SUP = { 0: "⁰", 1: "¹", 2: "²", 3: "³", 4: "⁴", 5: "⁵", 6: "⁶", 7: "⁷", 8: "⁸", 9: "⁹" };
+function sup(n) { return String(n).split("").map(function (d) { return SUP[d]; }).join(""); }
+function neg(v) { return String(v).replace(/-/g, "−"); }
+
+/* 把帶正負號的項串成式子： [ [係數, 次方], ... ] （次方由大到小） */
+function polyStr(pairs, v) {
+  v = v || "x";
+  const keep = pairs.filter(function (p) { return p[0] !== 0; });
+  if (!keep.length) return "0";
+  let out = "";
+  keep.forEach(function (p, i) {
+    const c = p[0], e = p[1];
+    const mag = Math.abs(c);
+    let t = "";
+    if (e === 0) t = String(mag);
+    else {
+      t = (mag === 1 ? "" : String(mag)) + v + (e === 1 ? "" : sup(e));
+    }
+    if (i === 0) out += (c < 0 ? "−" : "") + t;
+    else out += (c < 0 ? " − " : " ＋ ") + t;
+  });
+  return out;
+}
+function coefsToPairs(desc) {   // desc[0] 是最高次
+  const d = desc.length - 1;
+  return desc.map(function (c, i) { return [c, d - i]; });
+}
+function evalDesc(desc, x) {
+  return desc.reduce(function (acc, c) { return acc * x + c; }, 0);
+}
+function stat(k, v, cls) {
+  return '<div class="statbox ' + (cls || "") + '"><div class="k">' + k + '</div><div class="v">' + v + "</div></div>";
+}
+function bindRange(id, vid, fn, fmt) {
+  const el = $(id), out = $(vid);
+  const upd = function () { if (out) out.textContent = (fmt || neg)(el.value); fn(); };
+  el.addEventListener("input", upd);
+  el.addEventListener("change", upd);
+  return el;
+}
+
+/* ============================================================
+   LAB 1　換底機
+============================================================ */
+(function () {
+  const inp = $("k1n");
+  function draw() {
+    let n = parseInt(inp.value, 10);
+    if (!isFinite(n) || n < 0) n = 0;
+    if (n > 999999) n = 999999;
+    const ds = String(n).split("").map(Number);
+    const x = parseInt($("k1x").value, 10);
+    const top = ds.length - 1;
+
+    $("k1dg").innerHTML = ds.map(function (c, i) {
+      const e = top - i;
+      return '<div class="dg' + (c === 0 ? " zero" : "") + '"><div class="c">' + c +
+        '</div><div class="p">x' + (e === 0 ? "⁰" : e === 1 ? "" : sup(e)) + "</div></div>";
+    }).join("");
+
+    $("k1eq").innerHTML = polyStr(coefsToPairs(ds)) + "　　<span class='hl2'>x ＝ " + x + "</span>";
+
+    const val = evalDesc(ds, x);
+    $("k1stat").innerHTML =
+      stat("係數", ds.join(" "), "") +
+      stat("x ＝ " + x + " 時的值", val, x === 10 ? "cool" : "hot") +
+      stat("原本那個數", n, "");
+
+    $("k1msg").innerHTML = x === 10
+      ? '<div class="verdict"><b>x ＝ 10：回到你認得的那個數。</b>係數沒動過：十進位只是「x 剛好是 10」的那一個特例。</div>'
+      : '<div class="verdict warn"><b>同一組係數，現在代表 ' + val + "。</b>係數一個都沒變，變的只有 x。所以一組係數不是一個數，是一條「給我 x，我還你一個數」的規則。</div>";
+  }
+  inp.addEventListener("input", draw);
+  bindRange("k1x", "k1xv", draw);
+  document.querySelectorAll("[data-k1]").forEach(function (b) {
+    b.addEventListener("click", function () { inp.value = b.dataset.k1; draw(); });
+  });
+  draw();
+})();
+
+/* ============================================================
+   LAB 2　甲乙對撞
+============================================================ */
+(function () {
+  const ids = ["k2a2", "k2a1", "k2a0", "k2b2", "k2b1", "k2b0"];
+  function get() { return ids.map(function (i) { return parseInt($(i).value, 10); }); }
+
+  function draw() {
+    const v = get();
+    const A = [v[0], v[1], v[2]], B = [v[3], v[4], v[5]];
+    const XMAX = 14;
+    const pts = [];
+    let hi = 1;
+    for (let i = 0; i <= XMAX * 4; i++) {
+      const x = i / 4;
+      const fa = evalDesc(A, x), fb = evalDesc(B, x);
+      pts.push([x, fa, fb]);
+      hi = Math.max(hi, fa, fb);
+    }
+    const Wd = 620, Ht = 320, L = 52, R = 14, T = 16, Bm = 34;
+    const px = function (x) { return L + (x / XMAX) * (Wd - L - R); };
+    const py = function (y) { return Ht - Bm - (y / hi) * (Ht - T - Bm); };
+
+    let g = "";
+    // 網格與刻度
+    for (let x = 0; x <= XMAX; x += 2) {
+      g += '<line x1="' + px(x) + '" y1="' + T + '" x2="' + px(x) + '" y2="' + (Ht - Bm) +
+        '" stroke="var(--edge-soft)" stroke-width="1"/>';
+      g += '<text x="' + px(x) + '" y="' + (Ht - Bm + 17) + '" text-anchor="middle" font-size="11" fill="var(--ink-3)">' + x + "</text>";
+    }
+    const step = Math.pow(10, Math.max(0, String(Math.round(hi)).length - 2)) * 2;
+    for (let y = 0; y <= hi; y += step) {
+      g += '<line x1="' + L + '" y1="' + py(y) + '" x2="' + (Wd - R) + '" y2="' + py(y) +
+        '" stroke="var(--edge-soft)" stroke-width="1"/>';
+      g += '<text x="' + (L - 6) + '" y="' + (py(y) + 4) + '" text-anchor="end" font-size="11" fill="var(--ink-3)">' + y + "</text>";
+    }
+    const path = function (k, color) {
+      return '<polyline fill="none" stroke="' + color + '" stroke-width="2.4" points="' +
+        pts.map(function (p) { return px(p[0]) + "," + py(p[k]); }).join(" ") + '"/>';
+    };
+    g += path(1, "var(--indigo)") + path(2, "var(--orange)");
+
+    // 交點：解 (A−B) 的二次式
+    const d2 = A[0] - B[0], d1 = A[1] - B[1], d0 = A[2] - B[2];
+    const roots = [];
+    if (d2 === 0 && d1 === 0) { /* 完全相等或平行 */ }
+    else if (d2 === 0) { roots.push(-d0 / d1); }
+    else {
+      const disc = d1 * d1 - 4 * d2 * d0;
+      if (disc >= 0) {
+        roots.push((-d1 + Math.sqrt(disc)) / (2 * d2));
+        roots.push((-d1 - Math.sqrt(disc)) / (2 * d2));
+      }
+    }
+    const shown = roots.filter(function (r) { return r >= 0 && r <= XMAX; });
+    shown.forEach(function (r) {
+      const yv = evalDesc(A, r);
+      g += '<line x1="' + px(r) + '" y1="' + py(yv) + '" x2="' + px(r) + '" y2="' + (Ht - Bm) +
+        '" stroke="var(--green)" stroke-width="1.4" stroke-dasharray="4 3"/>';
+      g += '<circle cx="' + px(r) + '" cy="' + py(yv) + '" r="5" fill="var(--green)" stroke="var(--card)" stroke-width="1.5"/>';
+      g += '<text x="' + px(r) + '" y="' + (py(yv) - 11) + '" text-anchor="middle" font-size="12" fill="var(--green)">x＝' +
+        (Math.abs(r - Math.round(r)) < 1e-9 ? Math.round(r) : r.toFixed(2)) + "</text>";
+    });
+    g += '<line x1="' + L + '" y1="' + (Ht - Bm) + '" x2="' + (Wd - R) + '" y2="' + (Ht - Bm) + '" stroke="var(--ink-3)" stroke-width="1.3"/>';
+    g += '<text x="' + (Wd - R) + '" y="' + (Ht - 6) + '" text-anchor="end" font-size="12" fill="var(--ink-3)">x</text>';
+    g += '<text x="' + (L + 6) + '" y="' + (T + 12) + '" font-size="12" fill="var(--indigo)">甲　' + polyStr(coefsToPairs(A)) + "</text>";
+    g += '<text x="' + (L + 6) + '" y="' + (T + 28) + '" font-size="12" fill="var(--orange)">乙　' + polyStr(coefsToPairs(B)) + "</text>";
+    $("k2svg").innerHTML = g;
+
+    const same = A[0] === B[0] && A[1] === B[1] && A[2] === B[2];
+    $("k2stat").innerHTML =
+      stat("甲(10)", evalDesc(A, 10), "") +
+      stat("乙(10)", evalDesc(B, 10), "") +
+      stat("交點個數", same ? "整條重合" : shown.length, shown.length ? "hot" : "");
+
+    if (same) {
+      $("k2msg").innerHTML = '<div class="verdict"><b>現在每一個係數都相等。</b>只有這種時候，兩個多項式才真的是同一個，不是「在某一點的值一樣」。</div>';
+    } else if (evalDesc(A, 10) === evalDesc(B, 10)) {
+      $("k2msg").innerHTML = '<div class="verdict warn"><b>在 x ＝ 10 撞在一起，但係數不同。</b>是進位把它們撞在一起的：' +
+        A[1] + " 個十裡的每滿十個，就換成一個百。換一個 x，它們立刻分開，甲(2) ＝ " +
+        evalDesc(A, 2) + "，乙(2) ＝ " + evalDesc(B, 2) + "。" +
+        (A[2] === B[2] ? "（圖上 x ＝ 0 那個交點不算數：常數項一樣，本來就會在那裡相等。）" : "") + "</div>";
+    } else {
+      $("k2msg").innerHTML = '<div class="verdict"><b>現在它們在 x ＝ 10 也不相等。</b>試試按「把甲進位一次」，看進位把甲變成什麼。</div>';
+    }
+  }
+
+  ids.forEach(function (i) { bindRange(i, i + "v", draw); });
+
+  $("k2carry").addEventListener("click", function () {
+    const v = get();
+    const A = [v[0], v[1], v[2]];
+    // 從低位往高位找第一個 ≥10 的係數，把它進位
+    for (let i = A.length - 1; i > 0; i--) {
+      if (A[i] >= 10) { A[i] -= 10; A[i - 1] += 1; break; }
+    }
+    $("k2a2").value = Math.min(9, A[0]);
+    $("k2a1").value = Math.min(19, A[1]);
+    $("k2a0").value = Math.min(9, A[2]);
+    ["k2a2", "k2a1", "k2a0"].forEach(function (id) { $(id).dispatchEvent(new Event("input")); });
+  });
+  $("k2reset").addEventListener("click", function () {
+    const vals = { k2a2: 4, k2a1: 13, k2a0: 7, k2b2: 5, k2b1: 3, k2b0: 7 };
+    Object.keys(vals).forEach(function (id) { $(id).value = vals[id]; $(id).dispatchEvent(new Event("input")); });
+  });
+  draw();
+})();
+
+/* ============================================================
+   LAB 3　配對網格
+============================================================ */
+(function () {
+  let P = [1, 2, 3], Q = [4, 5], picked = null;
+
+  function draw() {
+    const dp = P.length - 1, dq = Q.length - 1;
+    // 展開（不合併）：格 (i,j) 給出 P[i]*Q[j] 的 x^(dp-i + dq-j)
+    const merged = {};
+    for (let i = 0; i < P.length; i++) for (let j = 0; j < Q.length; j++) {
+      const e = (dp - i) + (dq - j);
+      merged[e] = (merged[e] || 0) + P[i] * Q[j];
+    }
+    const degs = Object.keys(merged).map(Number).sort(function (a, b) { return b - a; });
+    if (picked === null || degs.indexOf(picked) < 0) picked = degs[Math.floor(degs.length / 2)];
+
+    $("k3eq").innerHTML = "(" + polyStr(coefsToPairs(P)) + ")(" + polyStr(coefsToPairs(Q)) + ")";
+
+    let t = '<table class="pair"><tr><th></th>';
+    for (let j = 0; j < Q.length; j++) t += "<th>" + (Q[j] === 0 ? "0" : polyStr([[Q[j], dq - j]])) + "</th>";
+    t += "</tr>";
+    for (let i = 0; i < P.length; i++) {
+      t += "<tr><th>" + (P[i] === 0 ? "0" : polyStr([[P[i], dp - i]])) + "</th>";
+      for (let j = 0; j < Q.length; j++) {
+        const e = (dp - i) + (dq - j);
+        const c = P[i] * Q[j];
+        t += '<td class="' + (e === picked && c !== 0 ? "hit" : "") + '">' + (c === 0 ? "—" : polyStr([[c, e]])) + "</td>";
+      }
+      t += "</tr>";
+    }
+    t += "</table>";
+    $("k3grid").innerHTML = t;
+
+    $("k3pick").innerHTML = "<span style='font-size:13.5px;color:var(--ink-3)'>點一個次方：</span>" +
+      degs.map(function (e) {
+        return '<button class="rung' + (e === picked ? " on" : "") + '" data-deg="' + e + '">x' +
+          (e === 0 ? "⁰" : e === 1 ? "" : sup(e)) + "</button>";
+      }).join("");
+    $("k3pick").querySelectorAll("[data-deg]").forEach(function (b) {
+      b.addEventListener("click", function () { picked = parseInt(b.dataset.deg, 10); draw(); });
+    });
+
+    let ways = 0;
+    for (let i = 0; i < P.length; i++) for (let j = 0; j < Q.length; j++) {
+      if ((dp - i) + (dq - j) === picked && P[i] * Q[j] !== 0) ways++;
+    }
+    const nz = P.filter(function (c) { return c !== 0; }).length * Q.filter(function (c) { return c !== 0; }).length;
+    $("k3stat").innerHTML =
+      stat("不合併的項數", P.length + " × " + Q.length + " ＝ " + (P.length * Q.length), "") +
+      stat("非零的配對", nz, "") +
+      stat("合併後剩", degs.filter(function (e) { return merged[e] !== 0; }).length + " 項", "cool") +
+      stat("x" + (picked === 0 ? "⁰" : picked === 1 ? "" : sup(picked)) + " 的係數", merged[picked], "hot");
+
+    $("k3msg").innerHTML = '<div class="verdict"><b>x' + (picked === 0 ? "⁰" : picked === 1 ? "" : sup(picked)) +
+      " 的係數是 " + merged[picked] + "，它在數 " + ways + " 種配法。</b>" +
+      "從左邊挑一個次方、從上面挑一個次方，加起來等於 " + picked + " 的挑法就是這幾種……" +
+      "合併同類項不是在化簡，是在<b>數方法數</b>。</div>";
+  }
+
+  document.querySelectorAll("[data-k3]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      const parts = b.dataset.k3.split("|");
+      P = parts[0].split(",").map(Number);
+      Q = parts[1].split(",").map(Number);
+      picked = null;
+      draw();
+    });
+  });
+  draw();
+})();
+
+/* ============================================================
+   LAB 4　面積圖
+============================================================ */
+(function () {
+  let mode = "sum";
+  function draw() {
+    const a = parseInt($("k4a").value, 10);
+    let b = parseInt($("k4b").value, 10);
+    if (b >= a) { b = a - 1; $("k4b").value = b; $("k4bv").textContent = b; }
+
+    const Wd = 620, Ht = 340, PAD = 30, GAP = 38, RLAB = 66;
+    // 每種切法要多少「單位」寬／高；兩張圖共用同一個比例尺
+    const unitsW = mode === "sum" ? a + b : mode === "dif" ? a : a + (a + b);
+    const unitsH = mode === "sum" ? a + b : a;
+    const fixed = mode === "prod" ? GAP + RLAB : 0;   // 非比例的固定像素（間隔、右側標籤）
+    const u = Math.min((Wd - 2 * PAD - fixed) / unitsW, (Ht - 2 * PAD) / unitsH);
+    const X0 = (Wd - (u * unitsW + fixed)) / 2, Y0 = 26;
+    let g = "";
+    const rect = function (x, y, w, h, fill, label) {
+      g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h +
+        '" fill="' + fill + '" stroke="var(--indigo)" stroke-width="1.4"/>';
+      if (label && w > 26 && h > 18) {
+        g += '<text x="' + (x + w / 2) + '" y="' + (y + h / 2 + 5) + '" text-anchor="middle" font-size="14" fill="var(--ink)">' + label + "</text>";
+      }
+    };
+    const tick = function (x, y, w, t) {
+      g += '<text x="' + (x + w / 2) + '" y="' + y + '" text-anchor="middle" font-size="12" fill="var(--indigo)">' + t + "</text>";
+    };
+    let eq = "", lhs = 0, rhs = 0;
+
+    if (mode === "sum") {
+      const A = a * u, B = b * u;
+      rect(X0, Y0, A, A, "var(--indigo-soft)", "a² ＝ " + a * a);
+      rect(X0 + A, Y0, B, A, "var(--orange-soft)", "ab ＝ " + a * b);
+      rect(X0, Y0 + A, A, B, "var(--orange-soft)", "ab ＝ " + a * b);
+      rect(X0 + A, Y0 + A, B, B, "var(--green-soft)", "b² ＝ " + b * b);
+      tick(X0, Y0 - 8, A, "a ＝ " + a); tick(X0 + A, Y0 - 8, B, "b ＝ " + b);
+      lhs = (a + b) * (a + b); rhs = a * a + 2 * a * b + b * b;
+      eq = "(a ＋ b)² ＝ a² ＋ 2ab ＋ b²　→　(" + a + " ＋ " + b + ")² ＝ <span class='hl'>" + lhs + "</span>";
+    } else if (mode === "dif") {
+      const A = a * u, B = b * u, D = (a - b) * u;
+      rect(X0, Y0, D, D, "var(--indigo-soft)", "(a−b)² ＝ " + (a - b) * (a - b));
+      rect(X0 + D, Y0, B, D, "var(--orange-soft)", "b(a−b)");
+      rect(X0, Y0 + D, D, B, "var(--orange-soft)", "b(a−b)");
+      rect(X0 + D, Y0 + D, B, B, "var(--green-soft)", "b² ＝ " + b * b);
+      tick(X0, Y0 - 8, D, "a − b ＝ " + (a - b)); tick(X0 + D, Y0 - 8, B, "b ＝ " + b);
+      g += '<text x="' + (X0 + A / 2) + '" y="' + (Y0 + A + 26) + '" text-anchor="middle" font-size="12" fill="var(--ink-3)">整個大正方形是 a² ＝ ' + a * a + "</text>";
+      lhs = (a - b) * (a - b); rhs = a * a - 2 * a * b + b * b;
+      eq = "(a − b)² ＝ a² − 2ab ＋ b²　→　(" + a + " − " + b + ")² ＝ <span class='hl'>" + lhs + "</span>";
+    } else {
+      const A = a * u, B = b * u, D = (a - b) * u, S = (a + b) * u;
+      // 左：a 的正方形挖掉 b 的正方形
+      rect(X0, Y0, A, A, "var(--indigo-soft)", "");
+      g += '<rect x="' + (X0 + A - B) + '" y="' + (Y0 + A - B) + '" width="' + B + '" height="' + B +
+        '" fill="var(--paper)" stroke="var(--orange)" stroke-width="1.4" stroke-dasharray="4 3"/>';
+      g += '<text x="' + (X0 + A / 2) + '" y="' + (Y0 + A / 2) + '" text-anchor="middle" font-size="14" fill="var(--ink)">a² − b² ＝ ' + (a * a - b * b) + "</text>";
+      tick(X0, Y0 - 8, A, "a ＝ " + a);
+      // 右：拼成的長方形（同一個比例尺，(a＋b) × (a−b)）
+      const RX = X0 + A + GAP;
+      rect(RX, Y0 + (A - D) / 2, S, D, "var(--orange-soft)", "(a＋b)(a−b) ＝ " + (a + b) * (a - b));
+      tick(RX, Y0 + (A - D) / 2 - 8, S, "a ＋ b ＝ " + (a + b));
+      g += '<text x="' + (RX - GAP / 2) + '" y="' + (Y0 + A / 2 + 4) + '" text-anchor="middle" font-size="16" fill="var(--orange)">→</text>';
+      g += '<text x="' + (RX + S + 4) + '" y="' + (Y0 + A / 2 + 4) + '" font-size="12" fill="var(--indigo)">a − b ＝ ' + (a - b) + "</text>";
+      lhs = (a + b) * (a - b); rhs = a * a - b * b;
+      eq = "(a ＋ b)(a − b) ＝ a² − b²　→　" + (a + b) + " × " + (a - b) + " ＝ <span class='hl'>" + lhs + "</span>";
+    }
+    $("k4svg").innerHTML = g;
+    $("k4eq").innerHTML = eq;
+    $("k4stat").innerHTML =
+      stat("左邊", lhs, "cool") + stat("右邊", rhs, "cool") +
+      stat("對得起來嗎", lhs === rhs ? "是" : "否", lhs === rhs ? "cool" : "hot");
+    $("k4msg").innerHTML = mode === "sum"
+      ? '<div class="verdict"><b>容易漏掉的是那兩塊 ab。</b>寫成 a²＋b² 的人漏掉的就是 2ab ＝ ' + 2 * a * b + "，用數字一代就看得見。</div>"
+      : mode === "dif"
+        ? '<div class="verdict"><b>不必重推：把 b 換成 (−b) 就好。</b>只有中間那一項變號，因為 a(−b) 變號、(−b)² 沒變。</div>'
+        : '<div class="verdict"><b>唯一一個「相乘反而變簡單」的式子。</b>挖掉的小正方形是 b² ＝ ' + b * b + "，剩下的 L 形剪一刀轉 90°，就是右邊那個長方形。</div>";
+  }
+  bindRange("k4a", "k4av", draw);
+  bindRange("k4b", "k4bv", draw);
+  $("k4seg").querySelectorAll("[data-k4]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      mode = b.dataset.k4;
+      $("k4seg").querySelectorAll(".seg").forEach(function (o) { o.classList.remove("on"); });
+      b.classList.add("on");
+      draw();
+    });
+  });
+  draw();
+})();
+
+/* ============================================================
+   LAB 5　長除法／綜合除法
+============================================================ */
+(function () {
+  function pad(s, n) { s = String(s); while (s.length < n) s = " " + s; return s; }
+
+  function draw() {
+    const C = [
+      parseInt($("k5c3").value, 10), parseInt($("k5c2").value, 10),
+      parseInt($("k5c1").value, 10), parseInt($("k5c0").value, 10),
+    ];
+    const a = parseInt($("k5a").value, 10);
+
+    // 綜合除法
+    const b = [C[0]];
+    for (let i = 1; i < C.length; i++) b.push(C[i] + a * b[i - 1]);
+    const rem = b[b.length - 1];
+    const quo = b.slice(0, b.length - 1);
+
+    $("k5eq").innerHTML = "(" + polyStr(coefsToPairs(C)) + ") ÷ (x " + (a >= 0 ? "− " + a : "＋ " + (-a)) + ")";
+
+    // 長除法階梯
+    const lines = [];
+    const dividend = polyStr(coefsToPairs(C));
+    lines.push('<div class="ln"><span class="q">' + pad("", 8) + polyStr(coefsToPairs(quo)) + "</span></div>");
+    lines.push('<div class="ln">x ' + (a >= 0 ? "− " + a : "＋ " + (-a)) + " ) " + dividend + "</div>");
+    let workRem = C.slice();
+    for (let i = 0; i < quo.length; i++) {
+      const lead = quo[i];
+      const e = C.length - 1 - i;
+      const sub = [[lead, e], [-a * lead, e - 1]];
+      lines.push('<div class="ln">' + pad("", 8 + i * 4) + polyStr(sub) + "</div>");
+      workRem = workRem.slice();
+      workRem[i] -= lead;
+      workRem[i + 1] -= -a * lead;
+      const restPairs = [];
+      for (let j = i + 1; j < C.length; j++) restPairs.push([workRem[j], C.length - 1 - j]);
+      lines.push('<div class="ln">' + pad("", 8 + (i + 1) * 4) +
+        (j0(restPairs) ? polyStr(restPairs) : "0") + "</div>");
+    }
+    function j0(ps) { return ps.some(function (p) { return p[0] !== 0; }); }
+    $("k5ldiv").innerHTML = lines.join("");
+
+    // 綜合除法那一排
+    let syn = '<div class="cell root">' + neg(a) + '</div><div class="bar">｜</div>';
+    C.forEach(function (c) { syn += '<div class="cell">' + neg(c) + "</div>"; });
+    syn += '<div class="bar">→</div>';
+    quo.forEach(function (c) { syn += '<div class="cell out">' + neg(c) + "</div>"; });
+    syn += '<div class="bar">｜</div><div class="cell rem">' + neg(rem) + "</div>";
+    $("k5syn").innerHTML = syn;
+
+    const fa = evalDesc(C, a);
+    $("k5stat").innerHTML =
+      stat("商", polyStr(coefsToPairs(quo)), "cool") +
+      stat("餘式", neg(rem), "hot") +
+      stat("f(" + neg(a) + ")", neg(fa), "hot") +
+      stat("x ＝ 10 時", neg(evalDesc(C, 10)) + " ÷ " + neg(10 - a), "");
+
+    const q10 = evalDesc(quo, 10), d10 = 10 - a, n10 = evalDesc(C, 10);
+    let extra = "";
+    if (d10 > 0) {
+      const sq = Math.floor(n10 / d10), sr = n10 - sq * d10;
+      extra = "把 x 代回 10：多項式說 " + neg(n10) + " ＝ " + neg(d10) + " × " + neg(q10) + " ＋ " + neg(rem) +
+        "；整數直式除法說 " + neg(n10) + " ＝ " + neg(d10) + " × " + sq + " ＋ " + sr +
+        (rem === sr ? "。這次剛好一樣。" : "。<b>兩組都對，卻不一樣，因為整數要進位。</b>");
+    }
+    $("k5msg").innerHTML = '<div class="verdict' + (rem === 0 ? "" : " warn") + '"><b>' +
+      (rem === 0
+        ? "餘式是 0，所以 (x " + (a >= 0 ? "− " + a : "＋ " + (-a)) + ") 是它的因式。"
+        : "餘式 " + neg(rem) + " ＝ f(" + neg(a) + ")。") +
+      "</b>餘式定理：把 x ＝ " + neg(a) + " 代進 f(x) ＝ (x − " + neg(a) + ")Q(x) ＋ r，(x − " + neg(a) + ") 那一塊被歸零，剩下的就是餘式。" +
+      (extra ? "<br>" + extra : "") + "</div>";
+  }
+
+  ["k5c3", "k5c2", "k5c1", "k5c0"].forEach(function (i) { bindRange(i, i + "v", draw); });
+  bindRange("k5a", "k5av", draw);
+  document.querySelectorAll("[data-k5]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const parts = btn.dataset.k5.split("|");
+      const cs = parts[0].split(",").map(Number);
+      ["k5c3", "k5c2", "k5c1", "k5c0"].forEach(function (id, i) { $(id).value = cs[i]; });
+      $("k5a").value = parts[1];
+      ["k5c3", "k5c2", "k5c1", "k5c0", "k5a"].forEach(function (id) { $(id).dispatchEvent(new Event("input")); });
+    });
+  });
+  draw();
+})();
+
+/* ============================================================
+   LAB 6　11 的次方
+============================================================ */
+(function () {
+  let base = 10;
+  function binom(n, k) {
+    let r = 1;
+    for (let i = 0; i < k; i++) r = r * (n - i) / (i + 1);
+    return Math.round(r);
+  }
+  function draw() {
+    const n = parseInt($("k6n").value, 10);
+    const B = BigInt(base);
+    const val = (B + 1n) ** BigInt(n);
+    // 以 base 為底展開位數
+    const dig = [];
+    let t = val;
+    while (t > 0n) { dig.unshift(Number(t % B)); t = t / B; }
+    if (!dig.length) dig.push(0);
+
+    const coef = [];
+    for (let k = 0; k <= n; k++) coef.push(binom(n, k));
+    const over = coef.some(function (c) { return c >= base; });
+
+    $("k6eq").innerHTML = "(" + base + " ＋ 1)" + sup(n) + " ＝ " +
+      "<span class='hl2'>" + val.toString() + "</span>";
+
+    // 上排：巴斯卡係數；下排：實際位數
+    let h = "";
+    coef.forEach(function (c, k) {
+      h += '<div class="dg' + (c >= base ? " over" : "") + '"><div class="c">' + c +
+        '</div><div class="p">x' + (n - k === 0 ? "⁰" : n - k === 1 ? "" : sup(n - k)) + "</div></div>";
+    });
+    $("k6dg").innerHTML = h;
+
+    $("k6stat").innerHTML =
+      stat("巴斯卡第 " + n + " 列", coef.join(" "), over ? "hot" : "cool") +
+      stat("實際的" + (base === 10 ? "數字" : base + " 進位各格"), dig.join(base === 10 ? "" : " "), "") +
+      stat("有沒有進位", over ? "有" : "沒有", over ? "hot" : "cool");
+
+    $("k6msg").innerHTML = over
+      ? '<div class="verdict warn"><b>這一列壞掉了：有係數 ≥ ' + base + '，放不進一格。</b>' +
+        "進位把它拆散了，所以從數字上再也讀不出巴斯卡三角。試試換一個更大的底數，每一格裝得下的數變大，這一列就救得回來。</div>"
+      : '<div class="verdict"><b>每一個係數都 ＜ ' + base + '，所以每一格都裝得下。</b>' +
+        "數字上看到的就是巴斯卡三角那一列，沒有進位，資訊就沒有被攪混。</div>";
+  }
+  bindRange("k6n", "k6nv", draw);
+  $("k6seg").querySelectorAll("[data-k6]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      base = parseInt(b.dataset.k6, 10);
+      $("k6seg").querySelectorAll(".seg").forEach(function (o) { o.classList.remove("on"); });
+      b.classList.add("on");
+      draw();
+    });
+  });
+  draw();
+})();
+
+/* ============================================================
+   LAB 7　把數字讀成多項式
+============================================================ */
+(function () {
+  const CASES = [
+    { n: 1002001, base: 1000, poly: "x² ＋ 2x ＋ 1", fac: "(x ＋ 1)²", parts: [1001, 1001], why: "係數 1、2、1 直接寫在數字上：1 | 002 | 001。" },
+    { n: 12321, base: 10, poly: "x⁴ ＋ 2x³ ＋ 3x² ＋ 2x ＋ 1", fac: "(x² ＋ x ＋ 1)²", parts: [111, 111], why: "1、2、3、2、1 是 111 的平方，也是巴斯卡的親戚。" },
+    { n: 10101, base: 10, poly: "x⁴ ＋ x² ＋ 1", fac: "(x² ＋ x ＋ 1)(x² − x ＋ 1)", parts: [111, 91], why: "先加一項再減一項：(x²＋1)² − x²，湊成平方差。這招是下一章配方法的雛形。" },
+    { n: 1001, base: 10, poly: "x³ ＋ 1", fac: "(x ＋ 1)(x² − x ＋ 1)", parts: [11, 91], why: "91 ＝ 7 × 13，所以 1001 ＝ 7 × 11 × 13。" },
+    { n: 1030301, base: 100, poly: "x³ ＋ 3x² ＋ 3x ＋ 1", fac: "(x ＋ 1)³", parts: [101, 101, 101], why: "1、3、3、1 又出現了，因為 101 ＝ 100 ＋ 1。" },
+  ];
+  let cur = 2;
+
+  function draw() {
+    $("k7cases").innerHTML = CASES.map(function (c, i) {
+      return '<button class="rung' + (i === cur ? " on" : "") + '" data-c="' + i + '">' + c.n + "</button>";
+    }).join("");
+    $("k7cases").querySelectorAll("[data-c]").forEach(function (b) {
+      b.addEventListener("click", function () { cur = parseInt(b.dataset.c, 10); draw(); });
+    });
+
+    const c = CASES[cur];
+    const prod = c.parts.reduce(function (x, y) { return x * y; }, 1);
+    $("k7eq").innerHTML = c.n + "　讀成 <span class='hl2'>x ＝ " + c.base + "</span> 的多項式　→　" + c.poly;
+    $("k7panes").innerHTML =
+      '<div class="pane"><h4>在多項式裡分解</h4><p class="mono" style="font-size:16px">' + c.poly + " ＝ " + c.fac + "</p><p>" + c.why + "</p></div>" +
+      '<div class="pane ' + (prod === c.n ? "ok" : "bad") + '"><h4>代回 x ＝ ' + c.base + " 驗算</h4>" +
+      '<p class="mono" style="font-size:16px">' + c.parts.join(" × ") + " ＝ " + prod + "</p><p>" +
+      (prod === c.n ? "和原本的 " + c.n + " 一樣：分解成功。" : "對不起來。") + "</p></div>";
+    $("k7stat").innerHTML =
+      stat("原本的數", c.n, "") + stat("因數", c.parts.join(" × "), "cool") +
+      stat("乘回去", prod, prod === c.n ? "cool" : "hot");
+  }
+
+  function verify() {
+    let v = parseInt($("k7abc").value, 10);
+    if (!isFinite(v) || v < 100) v = 100;
+    if (v > 999) v = 999;
+    $("k7abc").value = v;
+    const six = v * 1001;
+    $("k7msg").innerHTML = '<div class="verdict"><b>' + v + " → " + six + " ＝ " + v + " × 1001。</b>" +
+      six + " ÷ 7 ＝ " + (six / 7) + "　　" + six + " ÷ 11 ＝ " + (six / 11) + "　　" + six + " ÷ 13 ＝ " + (six / 13) +
+      "　　三個都整除，因為 1001 ＝ 7 × 11 × 13，而它來自 x³ ＋ 1 ＝ (x＋1)(x²−x＋1) 在 x ＝ 10 的樣子。</div>";
+  }
+  $("k7go").addEventListener("click", verify);
+  $("k7abc").addEventListener("input", verify);
+  draw();
+  verify();
+})();
+
+})();
+
+</script>
+<a class="bk-fab" href="passport.html" aria-label="回到探索紀錄本">← 紀錄本</a>
+<style id="island">
+/* ===== 探索島：預測／紀錄／判斷題／單元章 ===== */
+.isl-box{margin:0;padding:16px 22px;border-bottom:1px solid var(--edge-soft);background:var(--indigo-soft)}
+.isl-box .isl-k{font-size:12.5px;letter-spacing:.14em;font-weight:700;color:var(--indigo);margin-bottom:6px}
+.isl-box .isl-q{font-size:15.5px;color:var(--ink);margin:0 0 10px;max-width:none}
+.isl-obs{background:var(--orange-soft);border-top:1px solid var(--edge-soft);border-bottom:0}
+.isl-obs .isl-k{color:var(--orange)}
+.isl-opts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.isl-opts label{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;
+  padding:5px 12px;border:1px solid var(--edge);border-radius:999px;background:var(--card);cursor:pointer}
+.isl-opts label:has(input:checked){border-color:var(--indigo);color:var(--indigo);font-weight:600}
+.isl-opts input{accent-color:var(--indigo);margin:0}
+.isl-ta{width:100%;min-height:62px;resize:vertical;font:inherit;font-size:15px;line-height:1.6;
+  padding:9px 12px;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink)}
+.isl-ta:focus{outline:2px solid var(--indigo);outline-offset:1px}
+.isl-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.isl-btn{font:inherit;font-size:14.5px;font-weight:600;padding:7px 16px;border-radius:5px;cursor:pointer;
+  border:1px solid var(--indigo);background:var(--indigo);color:var(--card)}
+.isl-btn:disabled{opacity:.4;cursor:not-allowed}
+.isl-btn.ghost{background:var(--card);color:var(--indigo)}
+.isl-hint{font-size:13px;color:var(--ink-3)}
+.isl-mine{font-size:14.5px;color:var(--ink-2);margin:0;max-width:none}
+.isl-mine b{color:var(--indigo)}
+.isl-wait{padding:26px 22px;text-align:center;color:var(--ink-3);font-size:14.5px;
+  background:repeating-linear-gradient(45deg,transparent 0 10px,var(--edge-soft) 10px 11px)}
+.isl-done-tag{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--green);letter-spacing:.08em}
+.lab-foot.isl-reveal::before{content:"對照看看";display:block;font-size:12px;letter-spacing:.14em;
+  font-weight:700;color:var(--green);margin-bottom:2px}
+.isl-gate{margin:20px 0;padding:14px 18px;border:1px dashed var(--edge);border-radius:5px;
+  color:var(--ink-3);font-size:14px;text-align:center}
+
+/* 進度列 */
+.isl-prog{margin:0 0 6px;padding:12px 16px;border:1px solid var(--edge);border-radius:5px;background:var(--card);
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:14px}
+.isl-prog .t{font-weight:700;color:var(--ink-2);letter-spacing:.06em}
+.isl-dots{display:flex;gap:6px;flex-wrap:wrap}
+.isl-dots a{width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;
+  font-size:12.5px;font-weight:700;text-decoration:none;border:1.5px solid var(--edge);color:var(--ink-3);background:var(--paper)}
+.isl-dots a.half{border-color:var(--indigo);color:var(--indigo)}
+.isl-dots a.ok{border-color:var(--green);background:var(--green);color:var(--card)}
+.isl-prog .q{color:var(--ink-3)}
+.isl-prog .q.ok{color:var(--green);font-weight:700}
+
+/* 判斷題 */
+#isl-quiz{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-qcard{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);
+  padding:18px 22px;margin:16px 0}
+.isl-qcard .isl-qn{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--orange)}
+.isl-qcard p.isl-qt{font-size:16px;margin:4px 0 12px;max-width:none}
+.isl-choice{display:block;width:100%;text-align:left;font:inherit;font-size:15px;line-height:1.55;
+  padding:9px 14px;margin:0 0 8px;border:1px solid var(--edge);border-radius:5px;background:var(--paper);
+  color:var(--ink);cursor:pointer}
+.isl-choice:hover:not(:disabled){border-color:var(--indigo)}
+.isl-choice.no{border-color:var(--orange);background:var(--orange-soft);color:var(--ink-2);text-decoration:line-through}
+.isl-choice.yes{border-color:var(--green);background:var(--green-soft);font-weight:600}
+.isl-choice:disabled{cursor:default}
+.isl-fb{margin-top:6px;padding:10px 14px;border-radius:4px;font-size:14.5px;border:1px solid var(--edge)}
+.isl-fb.bad{border-color:var(--orange);background:var(--orange-soft)}
+.isl-fb.good{border-color:var(--green);background:var(--green-soft)}
+
+/* 紀錄與章 */
+#isl-record{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-sheet{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);padding:22px 24px}
+.isl-sheet-head{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--edge-soft);padding-bottom:14px;margin-bottom:6px}
+.isl-sheet-head h3{margin:0;font-size:22px}
+.isl-sheet-head .isl-sub{font-size:13.5px;color:var(--ink-3)}
+.isl-name{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.isl-name input{font:inherit;font-size:15px;padding:5px 10px;width:10em;border:1px solid var(--edge);
+  border-radius:5px;background:var(--paper);color:var(--ink)}
+.isl-tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
+.isl-tbl th,.isl-tbl td{border-bottom:1px solid var(--edge-soft);padding:9px 8px;vertical-align:top;text-align:left}
+.isl-tbl th{font-size:12.5px;letter-spacing:.1em;color:var(--ink-3);font-weight:700}
+.isl-tbl td.n{white-space:nowrap;font-weight:600;color:var(--ink-2);width:9.5em}
+.isl-tbl td .empty{color:var(--ink-3)}
+.isl-stamp-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:18px}
+.isl-stamp{width:150px;height:150px;flex:none}
+.isl-stamp.off{opacity:.18;filter:grayscale(1)}
+.isl-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.isl-clear{font-size:13px;color:var(--ink-3);background:none;border:0;text-decoration:underline;cursor:pointer;font:inherit}
+@media (max-width:600px){
+  .isl-tbl, .isl-tbl tbody, .isl-tbl tr, .isl-tbl td{display:block;width:auto}
+  .isl-tbl thead{display:none}
+  .isl-tbl td{border:0;padding:3px 0}
+  .isl-tbl tr{border-bottom:1px solid var(--edge-soft);padding:10px 0}
+  .isl-tbl td[data-h]::before{content:attr(data-h)"　";font-size:12px;color:var(--ink-3);font-weight:700}
+}
+@media print{
+  body.isl-print .wrap > *:not(#isl-record), body.isl-print .bk-top, body.isl-print .bk-fab,
+  body.isl-print .isl-tools, body.isl-print nav, body.isl-print #isl-record > .isl-hint{display:none !important}
+  body.isl-print{background:#fff}
+  body.isl-print .isl-sheet{box-shadow:none;border:1px solid #999}
+  body.isl-print .isl-name input{border:0;border-bottom:1px solid #999;border-radius:0}
+}
+/* 單元頁的手繪主題對所有 button 用了 !important，這裡要用更高的權重蓋回來 */
+button.isl-choice{background:var(--paper)!important;color:var(--ink)!important;opacity:1}
+button.isl-choice:disabled{color:var(--ink-2)!important}
+button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--green)!important;color:var(--ink)!important}
+button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
+button.isl-btn:disabled{opacity:.35}
+button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
+</style>
+<script>window.ISLAND={"slug": "g8a-ch1-polynomial", "chap": "八上1", "title": "把十換成 x", "topic": "乘法公式與多項式", "plain": "這座島上，把數字裡的 10 換成 x，一個數就變成一條可以餵任何數的規則。", "stations": {"lab1": {"mode": "predict", "q": "3742 的係數 3、7、4、2 都不動，只把 10 換成 2，會變成哪個數？", "obs": "x 換來換去，什麼沒變、什麼變了？"}, "lab2": {"mode": "predict", "q": "甲 4x² ＋ 13x ＋ 7 和乙 5x² ＋ 3x ＋ 7，代 x ＝ 10 都是 537。它們算不算同一個多項式？", "opts": ["算", "不算"], "multi": false, "obs": "兩條曲線在哪裡碰到？其他地方呢？按「把甲進位一次」發生了什麼？"}, "lab3": {"mode": "predict", "q": "(x² ＋ 2x ＋ 3)(4x ＋ 5) 先不合併，乘開會有幾項？合併之後 x 項的係數是多少？", "obs": "點一個次方，亮起來的是哪幾格？係數是怎麼「數」出來的？"}, "lab4": {"mode": "predict", "q": "98 × 102 不用直式，你會怎麼算？", "obs": "(a＋b)²、(a−b)²、(a＋b)(a−b) 在面積圖上各是怎麼切的？"}, "lab5": {"mode": "predict", "q": "3x³ − 3x² ＋ 8x − 3 除以 (x − 2)，餘式是多少？", "obs": "f(2) 和餘式擺在一起，有什麼關係？綜合除法為什麼是「乘 2」而不是「乘 −2」？"}, "lab6": {"mode": "predict", "q": "11⁴ ＝ 14641，剛好是巴斯卡三角的一列。11⁵ 還會是嗎？", "opts": ["還是", "不是了"], "multi": false, "obs": "從第幾列開始對不上？換成 101 的次方呢？"}, "lab7": {"mode": "predict", "q": "隨便一個三位數 abc，寫兩次變成 abcabc。你猜它一定被哪些數整除？", "obs": "1001 拆成哪些數相乘？這和 x³ ＋ 1 的因式分解有什麼關係？"}}, "gates": [{"sel": "#p1", "after": "lab2"}, {"sel": "#p2", "after": "lab3"}, {"sel": "#end", "after": "ALL"}], "quiz": [{"q": "(x ＋ 1)⁵ 乘開之後，x³ 的係數是多少？", "opts": ["5", "10", "15", "1"], "ans": 1, "why": ["5 是 x⁴ 和 x 的係數。x³ 要從 5 個括號裡挑 3 個出 x。", "", "15 是 (x＋1)⁶ 裡的數。數一數：5 個括號挑 3 個，有幾種挑法？", "只有 x⁵ 和常數項是 1。"], "exp": "巴斯卡三角第 5 列是 1, 5, 10, 10, 5, 1，x³ 的係數是 10。多項式不進位，這個 10 會一直留在原位。"}, {"q": "x³ − 7x ＋ 6 除以 (x − 1)，餘式是多少？", "opts": ["0", "6", "−6", "1"], "ans": 0, "why": ["", "6 是常數項。餘式等於 f(1)，要把 x ＝ 1 代進去整個算。", "餘式等於 f(1)，不是 f(−1)。", "餘式等於 f(1) ＝ 1 − 7 ＋ 6。"], "exp": "餘式定理：除以 (x − 1) 的餘式就是 f(1) ＝ 1 − 7 ＋ 6 ＝ 0，所以 (x − 1) 是它的因式。"}, {"q": "4x² ＋ 13x ＋ 7 和 5x² ＋ 3x ＋ 7 相等嗎？", "opts": ["不相等，因為係數不一樣", "相等，因為 x ＝ 10 時都是 537", "相等，因為常數項一樣", "要看 x 是多少"], "ans": 0, "why": ["", "只在一個點的值相等不夠。回去第 2 站看，兩條曲線其他地方都分開。", "常數項一樣只代表 x ＝ 0 時相等。", "說兩個多項式「相等」，是指整條規則一樣，不是某一個 x 的值。"], "exp": "兩個多項式相等，是每一個係數都相等。這兩個只在 x ＝ 10 撞在一起，是因為整數會進位，13 個十進一位就變成 5 個百、3 個十。"}]};</script>
+<script>
+/* ===== 探索島：預測／紀錄／判斷題／單元章 =====
+   沒登入：紀錄只存在這台裝置的瀏覽器（localStorage）。
+   登入且在名單上：island-cloud.js 透過 window.ISLAND_API 接手，另存一份到雲端。 */
+(function () {
+  const C = window.ISLAND;
+  let KEY = "isl:" + C.slug;
+  let NAMEKEY = "isl:name";
+  let nameLocked = false;
+  const mem = {};
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return mem[k] ?? null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } },
+  };
+  let S;
+  try { S = JSON.parse(store.get(KEY)) || {}; } catch (e) { S = {}; }
+  S.st = S.st || {}; S.quiz = S.quiz || {};
+  const save = () => {
+    S.updated = new Date().toISOString();
+    S.n = ids.length; S.nd = ids.filter(id => S.st[id] && S.st[id].done).length;
+    S.q = C.quiz.length; S.qd = C.quiz.filter((_, i) => S.quiz[i] && S.quiz[i].ok).length;
+    store.set(KEY, JSON.stringify(S));
+    if (API.onSave) API.onSave(S);
+  };
+  const API = window.ISLAND_API = window.ISLAND_API || {};
+
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const ids = Object.keys(C.stations);
+  const MIN_OBS = 4;
+
+  const st = id => (S.st[id] = S.st[id] || { opts: [], pred: "", locked: false, obs: "", done: false });
+  const predText = (cfg, s) => {
+    const parts = [];
+    if (cfg.opts && s.opts.length) parts.push(s.opts.map(i => cfg.opts[i]).join("、"));
+    else if (cfg.opts && cfg.multi) parts.push("一個都沒選");
+    if (s.pred.trim()) parts.push(s.pred.trim());
+    return parts.join("；");
+  };
+  const stationDone = id => !!st(id).done;
+  const quizDone = i => !!(S.quiz[i] && S.quiz[i].ok);
+  const allStations = () => ids.every(stationDone);
+  const allQuiz = () => C.quiz.every((_, i) => quizDone(i));
+
+  /* ---------- 每一站 ---------- */
+  ids.forEach(id => {
+    const cfg = C.stations[id];
+    const lab = document.getElementById(id);
+    if (!lab) return;
+    let s = st(id);
+    const head = lab.querySelector(".lab-head");
+    const body = lab.querySelector(".lab-body");
+    const foot = lab.querySelector(".lab-foot");
+    const no = lab.querySelector(".lab-no").textContent.trim();
+    if (cfg.why) lab.querySelector(".lab-why").innerHTML = esc(cfg.why);
+    const tag = el("span", "isl-done-tag", "");
+    head.appendChild(tag);
+
+    /* 預測 */
+    let pbox = null, wait = null;
+    if (cfg.mode === "predict") {
+      pbox = el("div", "isl-box");
+      head.after(pbox);
+      wait = el("div", "isl-wait", "先寫下你的預測，這一站才會打開。");
+      body.before(wait);
+    }
+    const renderPred = () => {
+      if (!pbox) return;
+      if (s.locked) {
+        pbox.innerHTML = '<div class="isl-k">我的預測</div><p class="isl-mine">' + esc(cfg.q) + "<br><b>" + esc(predText(cfg, s)) + "</b></p>";
+        return;
+      }
+      const type = cfg.multi ? "checkbox" : "radio";
+      let h = '<div class="isl-k">先預測，再動手</div><p class="isl-q">' + esc(cfg.q) + "</p>";
+      if (cfg.opts) {
+        h += '<div class="isl-opts">' + cfg.opts.map((o, i) =>
+          '<label><input type="' + type + '" name="o-' + id + '" value="' + i + '"' + (s.opts.includes(i) ? " checked" : "") + "> " + esc(o) + "</label>").join("") + "</div>";
+      }
+      h += '<textarea class="isl-ta" placeholder="' + (cfg.opts ? "為什麼這樣猜？（寫一句就好）" : "寫下你的答案和理由") + '">' + esc(s.pred) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn primary">預測寫好了，開始操作</button><span class="isl-hint">送出後就不能改，猜錯沒關係，等一下對照才有東西看。</span></div>';
+      pbox.innerHTML = h;
+      const ta = pbox.querySelector("textarea"), btn = pbox.querySelector("button");
+      const ok = () => {
+        s.opts = [...pbox.querySelectorAll("input:checked")].map(x => +x.value);
+        s.pred = ta.value;
+        const hasOpt = !cfg.opts || s.opts.length > 0 || !cfg.multi;
+        btn.disabled = !(s.pred.trim().length >= 2 && (cfg.opts ? s.opts.length > 0 || cfg.multi : true));
+        return hasOpt;
+      };
+      pbox.addEventListener("input", () => { ok(); save(); });
+      pbox.addEventListener("change", () => { ok(); save(); });
+      ok();
+      btn.addEventListener("click", () => {
+        ok();
+        if (btn.disabled) return;
+        s.locked = true; s.lockedAt = new Date().toISOString(); save();
+        renderAll(); body.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    /* 觀察紀錄 */
+    const obox = el("div", "isl-box isl-obs");
+    body.after(obox);
+    const renderObs = () => {
+      let h = '<div class="isl-k">我看到的</div><p class="isl-q">' + esc(cfg.obs) + "</p>";
+      h += '<textarea class="isl-ta" placeholder="把你看到的寫下來">' + esc(s.obs) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn' + (s.done ? "" : " primary") + '">' + (s.done ? "更新紀錄" : "記下來，看對照") + '</button><span class="isl-hint"></span></div>';
+      obox.innerHTML = h;
+      const ta = obox.querySelector("textarea"), btn = obox.querySelector("button"), hint = obox.querySelector(".isl-hint");
+      const chk = () => { btn.disabled = ta.value.trim().length < MIN_OBS; };
+      ta.addEventListener("input", () => { s.obs = ta.value; save(); chk(); hint.textContent = s.done ? "已自動儲存" : ""; });
+      chk();
+      btn.addEventListener("click", () => {
+        s.obs = ta.value; if (s.obs.trim().length < MIN_OBS) return;
+        const first = !s.done;
+        s.done = true; s.doneAt = s.doneAt || new Date().toISOString(); save();
+        renderAll();
+        if (first && foot) foot.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    lab._islRender = () => {
+      s = st(id);
+      const open = cfg.mode !== "predict" || s.locked;
+      renderPred();
+      if (wait) wait.hidden = open;
+      body.hidden = !open;
+      obox.hidden = !open;
+      if (open) renderObs();
+      if (foot) { foot.hidden = !s.done; foot.classList.add("isl-reveal"); }
+      tag.textContent = s.done ? "✓ 已記錄" : "";
+    };
+  });
+
+  /* ---------- 會先講出答案的段落 ---------- */
+  const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
+    const sec = document.querySelector(g.sel);
+    if (!sec) return null;
+    const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
+    sec.appendChild(note);
+    return { g, kids, note };
+  }).filter(Boolean);
+
+  /* ---------- 進度列 ---------- */
+  const prog = el("div", "isl-prog");
+  document.querySelector("header").after(prog);
+
+  /* ---------- 判斷題 ---------- */
+  const quiz = el("section", "", "");
+  quiz.id = "isl-quiz";
+  const endSec = document.getElementById("end");
+  (endSec || document.querySelector(".wrap").lastElementChild).before(quiz);
+  const renderQuiz = () => {
+    let h = '<div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>過關前的 ' + C.quiz.length + ' 題</div>' +
+      "<h2>選一個，答錯可以再選</h2>";
+    quiz.innerHTML = h;
+    C.quiz.forEach((q, i) => {
+      const r = S.quiz[i] = S.quiz[i] || { tried: [], ok: false };
+      const card = el("div", "isl-qcard");
+      card.innerHTML = '<div class="isl-qn">第 ' + (i + 1) + " 題</div><p class=\"isl-qt\">" + esc(q.q) + "</p>";
+      q.opts.forEach((o, j) => {
+        const b = el("button", "isl-choice", esc(o));
+        if (r.tried.includes(j)) b.classList.add(j === q.ans ? "yes" : "no");
+        if (r.ok || r.tried.includes(j)) b.disabled = true;
+        b.addEventListener("click", () => {
+          r.tried.push(j);
+          if (j === q.ans) { r.ok = true; r.okAt = new Date().toISOString(); }
+          save(); renderAll();
+        });
+        card.appendChild(b);
+      });
+      const last = r.tried[r.tried.length - 1];
+      if (r.ok) card.appendChild(el("div", "isl-fb good", "<b>對。</b>" + esc(q.exp)));
+      else if (last != null) card.appendChild(el("div", "isl-fb bad", "<b>再想想。</b>" + esc(q.why[last])));
+      quiz.appendChild(card);
+    });
+  };
+
+  /* ---------- 紀錄與章 ---------- */
+  const rec = el("section", "", "");
+  rec.id = "isl-record";
+  document.querySelector(".wrap").appendChild(rec);
+  const stamp = (on, date) => {
+    const d = date ? date.slice(0, 10).replace(/-/g, ".") : "";
+    return '<svg class="isl-stamp' + (on ? "" : " off") + '" viewBox="0 0 150 150" role="img" aria-label="單元章">' +
+      '<g transform="rotate(-8 75 75)" style="fill:none;stroke:var(--crimson)">' +
+      '<circle cx="75" cy="75" r="66" stroke-width="4"/><circle cx="75" cy="75" r="57" stroke-width="1.5"/>' +
+      '<text x="75" y="52" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 13px var(--sans);letter-spacing:2px">' + esc(C.chap) + "　探索完成</text>" +
+      '<text x="75" y="84" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 21px var(--serif)">' + esc(C.title) + "</text>" +
+      '<line x1="34" y1="96" x2="116" y2="96" stroke-width="1.2"/>' +
+      '<text x="75" y="114" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:600 12px var(--sans)">' + (d || "　") + "</text></g></svg>";
+  };
+  let clearArmed = false;
+  const renderRecord = () => {
+    const done = allStations() && allQuiz();
+    const firstOK = C.quiz.filter((q, i) => S.quiz[i] && S.quiz[i].tried[0] === q.ans).length;
+    let h = '<div class="pillar-tag" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>我的探索紀錄</div>';
+    h += '<div class="isl-sheet"><div class="isl-sheet-head"><div><h3>' + esc(C.chap) + "　" + esc(C.title) + '</h3><div class="isl-sub">' + esc(C.topic) + '</div></div>' +
+      '<label class="isl-name">姓名 <input type="text" maxlength="20" value="' + esc(store.get(NAMEKEY) || "") + '"' + (nameLocked ? " readonly" : "") + '></label></div>';
+    h += '<table class="isl-tbl"><thead><tr><th>站</th><th>我的預測</th><th>我看到的</th></tr></thead><tbody>';
+    ids.forEach(id => {
+      const cfg = C.stations[id], s = st(id);
+      const lab = document.getElementById(id);
+      const name = lab ? lab.querySelector(".lab-no").textContent.trim() + "　" + lab.querySelector(".lab-title").textContent.trim() : id;
+      const p = cfg.mode === "predict" ? (s.locked ? esc(predText(cfg, s)) : '<span class="empty">還沒寫</span>') : '<span class="empty">（這站直接操作）</span>';
+      const o = s.done ? esc(s.obs.trim()) : '<span class="empty">還沒寫</span>';
+      h += '<tr><td class="n">' + esc(name) + '</td><td data-h="預測">' + p + '</td><td data-h="看到">' + o + "</td></tr>";
+    });
+    h += "</tbody></table>";
+    h += '<div class="isl-stamp-wrap">' + stamp(done, S.stampAt) + "<div>" +
+      (done ? "<b>這一章探索完成。</b><br>判斷題第一次就答對 " + firstOK + " ／ " + C.quiz.length + " 題。"
+            : "全部 " + ids.length + " 站都記錄完、" + C.quiz.length + " 題判斷題都答對，就會蓋上這個章。<br>目前：" +
+              ids.filter(stationDone).length + " ／ " + ids.length + " 站，" +
+              C.quiz.filter((_, i) => quizDone(i)).length + " ／ " + C.quiz.length + " 題。") +
+      "</div></div></div>";
+    h += '<div class="isl-tools"><button class="isl-btn primary" data-a="print">列印這份紀錄</button>' +
+      '<a class="isl-btn ghost" style="text-decoration:none" href="passport.html">看我的探索紀錄本</a>' +
+      '<button class="isl-clear" data-a="clear">' + (clearArmed ? "確定要清掉？再按一次" : "清除這一章的紀錄") + "</button></div>";
+    h += '<p class="isl-hint" style="margin-top:10px">沒登入時，紀錄只存在這台電腦的瀏覽器裡；登入名單上的帳號，紀錄會存到雲端。在共用電腦上用完記得登出。</p>';
+    rec.innerHTML = h;
+    rec.querySelector(".isl-name input").addEventListener("input", e => store.set(NAMEKEY, e.target.value));
+    rec.querySelector('[data-a="print"]').addEventListener("click", () => {
+      document.body.classList.add("isl-print"); window.print();
+      setTimeout(() => document.body.classList.remove("isl-print"), 500);
+    });
+    rec.querySelector('[data-a="clear"]').addEventListener("click", () => {
+      if (!clearArmed) { clearArmed = true; renderRecord(); setTimeout(() => { clearArmed = false; renderRecord(); }, 4000); return; }
+      if (API.onClear) { API.onClear(); return; }
+      store.del(KEY); location.reload();
+    });
+  };
+
+  function renderAll() {
+    if (allStations() && allQuiz() && !S.stampAt) { S.stampAt = new Date().toISOString(); save(); }
+    ids.forEach(id => { const lab = document.getElementById(id); lab && lab._islRender && lab._islRender(); });
+    gates.forEach(({ g, kids, note }) => {
+      const open = g.after === "ALL" ? allStations() : stationDone(g.after);
+      kids.forEach(k => { if (k !== note) k.hidden = !open; });
+      note.hidden = open;
+    });
+    const nq = C.quiz.filter((_, i) => quizDone(i)).length;
+    prog.innerHTML = '<span class="t">探索紀錄</span><span class="isl-dots">' + ids.map(id => {
+      const s = st(id), cfg = C.stations[id];
+      const n = document.querySelector("#" + id + " .lab-no").textContent.trim();
+      const cls = s.done ? "ok" : (cfg.mode === "predict" && s.locked) ? "half" : "";
+      return '<a class="' + cls + '" href="#' + id + '" title="第 ' + n + ' 站">' + n + "</a>";
+    }).join("") + '</span><a class="q' + (nq === C.quiz.length ? " ok" : "") + '" href="#isl-quiz" style="text-decoration:none">判斷題 ' + nq + " ／ " + C.quiz.length + "</a>" +
+      '<a class="q' + (S.stampAt ? " ok" : "") + '" href="#isl-record" style="text-decoration:none">' + (S.stampAt ? "✓ 已蓋章" : "我的紀錄 →") + "</a>";
+    renderQuiz();
+    renderRecord();
+  }
+  /* 給雲端模組用：換一個人的紀錄、換姓名、整頁重畫 */
+  API.config = C;
+  API.store = store;
+  API.state = () => S;
+  API.adopt = (newKey, newS, opts) => {
+    KEY = newKey;
+    S = newS || {};
+    S.st = S.st || {}; S.quiz = S.quiz || {};
+    if (opts && opts.nameKey) NAMEKEY = opts.nameKey;
+    if (opts && "name" in opts) { store.set(NAMEKEY, opts.name || ""); }
+    nameLocked = !!(opts && opts.nameLocked);
+    clearArmed = false;
+    store.set(KEY, JSON.stringify(S));
+    renderAll();
+  };
+  API.progressBox = prog;
+  API.recordBox = rec;
+  renderAll();
+  if (API.onReady) API.onReady();
+})();
+</script>
+<script src="firebase-config.js"></script>
+<script type="module" src="island-cloud.js"></script>
+</body>
+</html>

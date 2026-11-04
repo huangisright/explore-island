@@ -1378,6 +1378,14 @@ button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--
 button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
 button.isl-btn:disabled{opacity:.35}
 button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
 </style>
 <script>window.ISLAND={"slug": "g8b-ch2-functions", "chap": "八下2", "title": "它不會改口", "topic": "函數與函數圖形", "plain": "這座島上的機器：餵一個數進去，它只吐一個出來，而且從來不改口。", "stations": {"lab1": {"mode": "observe", "why": "換不同的機器餵餵看，最後一台吐的不是數字。也試試把 0 餵給 1 ÷ x。", "obs": "哪一台機器最不像你印象中的「函數」？你覺得它為什麼還算？"}, "lab2": {"mode": "predict", "why": "點格子開關箭頭，自己造一台機器，判別器會當場告訴你它算不算函數。", "q": "下面這四種接法，你猜哪幾種會被判成「不是函數」？", "opts": ["一對一", "多對一", "一對多", "有的沒對到"], "multi": true, "obs": "判別器的判決和你猜的一樣嗎？哪一種和你想的不同？"}, "lab3": {"mode": "predict", "why": "選一個圖形，拖著鉛直線掃過去，右邊會即時數它碰到圖形幾次。", "q": "這六個圖形，你猜哪幾個「不是函數的圖形」？", "opts": ["直線 y ＝ 2x ＋ 1", "鉛直線 x ＝ 1", "圓 x² ＋ y² ＝ 25", "上半圓", "拋物線 y ＝ x² − 4", "y ＝ x 的絕對值"], "multi": true, "obs": "哪一個圖形的結果讓你意外？鉛直線在哪個位置碰到它幾次？"}, "lab4": {"mode": "predict", "why": "左邊那根線往上找，右邊那根線往旁邊找。三個圖形都試試，兩根線都多拉幾個位置。", "q": "以 h(x) ＝ x² − 4 來說：給一個 x 往上找，會找到幾個輸出？給一個輸出往旁邊找，會找到幾個 x？", "obs": "兩個方向找到的個數，各自會變嗎？在什麼位置會變？"}, "lab5": {"mode": "predict", "why": "拉 a 和 b，看那條線和橘點（數列）怎麼一起動；綠點是 f(0)。下面的勾選框先不要勾。", "q": "等比數列 3、6、12、24 畫成點，會不會落在同一條直線上？你可以先在紙上點點看。", "opts": ["會", "不會", "要看 a、b 怎麼調"], "multi": false, "obs": "勾選之後看到什麼？a 在數列裡是哪一個數？"}, "lab6": {"mode": "predict", "why": "1 小時內 30 元，之後每多一小時加 20 元（不滿一小時以一小時計），單日上限 200 元。先拉上面的桿子順著算，再用下面倒過來問。", "q": "倒過來問：被收了 70 元，停了多久？先寫你的答案。", "obs": "在上面「倒過來問」那一列輸入 70 按「倒回去」，得到的是什麼？和你的答案差在哪？"}, "lab7": {"mode": "predict", "why": "先實際玩一局，再看右邊那張表。", "q": "範圍 1～100，最壞要喊幾次一定猜得到？範圍變成 1～200 呢？", "obs": "範圍變成 2 倍，最壞次數怎麼變？這和哪一章學過的東西長得很像？"}}, "gates": [{"sel": "#p3", "after": "lab4"}, {"sel": "#end", "after": "ALL"}], "quiz": [{"q": "「不管 x 是多少，y 都是 3」，這是不是函數？", "opts": ["是函數", "不是，因為不同的 x 給出同一個 y", "不是，因為式子裡沒有 x", "要看 x 的範圍才知道"], "ans": 0, "why": ["", "這就是「多對一」。門檻只管同一個 x 會不會給出兩個 y，不同的 x 給同一個 y 完全沒問題。回去看第 2 站。", "停車費連式子都寫不出來，照樣是函數。有沒有 x 出現在式子裡，不是門檻。", "每一個 x 都只給 3，沒有任何一個 x 會改口，不管範圍怎麼取都一樣。"], "exp": "每一個 x 都只吐出 3，沒有一個 x 會給兩個答案，所以是函數，而且是多對一的函數（第 1 站的 k(x) ＝ 5）。"}, {"q": "圓 x² ＋ y² ＝ 25 不是函數的圖形，關鍵原因是什麼？", "opts": ["有一個 x 對到兩個 y，例如 x ＝ 3 對到 4 和 −4", "有兩個 x 對到同一個 y，例如 y ＝ 4 對到 3 和 −3", "它是彎的，不是直線", "它是封閉的，頭尾接在一起"], "ans": 0, "why": ["", "這是「多對一」，不是壞法。拋物線 y ＝ x² − 4 也有這個現象，它卻是函數。", "拋物線也是彎的，它是函數。", "封閉不是重點：只要有同一個 x 對到兩個 y 就不行。把圓拆成上下兩半，各自都是函數。"], "exp": "鉛直線 x ＝ 3 碰到圓兩次，同一個輸入給出兩個輸出，f(3) 這個名字就指不到東西了。只留上半圓就救回來。"}, {"q": "f(x) ＝ x² − 4。如果 f(x) ＝ 5，x 有幾個可能？", "opts": ["0 個", "1 個", "2 個", "無限多個"], "ans": 2, "why": ["x² ＝ 9 有解，試試 x ＝ 3。", "x ＝ 3 可以，再想想 x ＝ −3。", "", "x² ＝ 9 只有兩個數平方等於 9。"], "exp": "x² ＝ 9，x ＝ 3 或 −3。這是「往旁邊找」：給輸出找 x，定義沒有保證只有一個（第 4 站）。如果是 f(x) ＝ −5，就一個都找不到。"}]};</script>
 <script>
@@ -1517,11 +1525,18 @@ button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)
 
   /* ---------- 會先講出答案的段落 ---------- */
   const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
     const sec = document.querySelector(g.sel);
     if (!sec) return null;
     const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
-    const note = el("div", "isl-gate", g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
-      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。");
     sec.appendChild(note);
     return { g, kids, note };
   }).filter(Boolean);

@@ -20,8 +20,37 @@ def read(p):
         return f.read()
 
 
+def restructure_h4(s, cfg):
+    """舊版單元頁：<div class="lab" id=X><h4>第 N 站　標題</h4><p class="why">…</p>…</div>
+    轉成 lab-head／lab-body／lab-foot，foot 文字由設定檔提供。"""
+    out, pos = [], 0
+    pat = re.compile(r'<div class="lab" id="([^"]+)">\s*<h4>(.*?)</h4>\s*<p class="why">(.*?)</p>', re.S)
+    for m in pat.finditer(s):
+        lid, h4, why = m.group(1), m.group(2), m.group(3)
+        # 找這個 lab 的結尾 </div>
+        depth, i = 1, m.end()
+        tag = re.compile(r"<div\b|</div>")
+        while depth:
+            t = tag.search(s, i)
+            depth += 1 if t.group(0).startswith("<div") else -1
+            i = t.end()
+        inner = s[m.end():i - len("</div>")]
+        nm = re.match(r"\s*第\s*(\d+)\s*站\s*(.*)", re.sub(r"<[^>]+>", "", h4), re.S)
+        no, title = (nm.group(1), nm.group(2).strip()) if nm else ("", h4)
+        foot = cfg["stations"].get(lid, {}).get("foot", "")
+        out.append(s[pos:m.start()])
+        out.append('<div class="lab" id="%s"><div class="lab-head"><span class="lab-no">%s</span><div><p class="lab-title">%s</p><p class="lab-why">%s</p></div></div>'
+                   '<div class="lab-body">%s</div>%s</div>' % (lid, no, title, why, inner,
+                   ('<div class="lab-foot">%s</div>' % foot) if foot else ""))
+        pos = i
+    out.append(s[pos:])
+    return "".join(out)
+
+
 def build_unit(src_site, out, cfg):
     s = read(os.path.join(src_site, "units", cfg["slug"] + ".html"))
+    if cfg.get("restructure") == "h4":
+        s = restructure_h4(s, cfg)
     # 回目錄改成回紀錄本（原本的 ../index.html 在新資料夾裡指不到）
     s = re.sub(r'<div class="bk-top">.*?</div>',
                '<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>', s, count=1, flags=re.S)
@@ -33,7 +62,7 @@ def build_unit(src_site, out, cfg):
         s = s.replace(old, new)
     css = read(os.path.join(HERE, "island.css"))
     js = read(os.path.join(HERE, "island.js"))
-    data = json.dumps({k: v for k, v in cfg.items() if k != "patches"}, ensure_ascii=False)
+    data = json.dumps({k: v for k, v in cfg.items() if k not in ("patches", "restructure")}, ensure_ascii=False)
     inject = ('<style id="island">\n' + css + "</style>\n<script>window.ISLAND=" + data + ";</script>\n<script>\n" + js + "</script>\n"
               '<script src="firebase-config.js"></script>\n<script type="module" src="island-cloud.js"></script>\n')
     assert s.count("</body>") == 1
@@ -87,7 +116,7 @@ def build_home(src_site, out):
 
 def build_teacher(out):
     tpl = read(os.path.join(HERE, "teacher.tpl.html"))
-    page = tpl.replace("/*CFGS*/[]", json.dumps([{k: v for k, v in c.items() if k != "patches"} for c in BUILT], ensure_ascii=False))
+    page = tpl.replace("/*CFGS*/[]", json.dumps([{k: v for k, v in c.items() if k not in ("patches", "restructure")} for c in BUILT], ensure_ascii=False))
     with open(os.path.join(out, "teacher.html"), "w", encoding="utf8") as f:
         f.write(page)
 

@@ -1127,6 +1127,14 @@ button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--
 button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
 button.isl-btn:disabled{opacity:.35}
 button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
 </style>
 <script>window.ISLAND={"slug": "g7a-ch2-fraction-unit", "chap": "七上2", "title": "分母是單位", "topic": "分數的意義與四則運算", "plain": "這座島上，分母是一把尺的刻度：先看一份有多大，再數你有幾份。", "stations": {"lab1": {"mode": "predict", "q": "把 2/6 約成 1/3，塗色的那一段會變長、變短，還是一樣長？", "opts": ["變長", "變短", "一樣長"], "multi": false, "obs": "約分和擴分的時候，到底是什麼東西變了？"}, "lab2": {"mode": "predict", "q": "1/2 ＋ 1/3 通分時，如果不用最小公倍數 6，改用 12 當共同分母，答案會不一樣嗎？", "opts": ["會不一樣", "一樣"], "multi": false, "obs": "換幾種共同分母試試，答案有變嗎？那為什麼大家習慣用最小公倍數？"}, "lab3": {"mode": "predict", "q": "算 2/3 × 4/5：把一個正方形橫切、直切之後，整塊會被切成幾小格？塗到的有幾格？", "obs": "「分母乘分母」和「分子乘分子」，在格子上各是什麼？"}, "lab4": {"mode": "predict", "q": "3 ÷ 1/4 的答案，比 3 大還是比 3 小？是多少？", "obs": "除以一個小於 1 的數，答案為什麼會變大？"}, "lab5": {"mode": "observe", "obs": "連分數的每一個係數，和輾轉相除法哪一步的數字一樣？"}}, "gates": [{"sel": "#p1", "after": "lab1"}], "quiz": [{"q": "1/2 ＋ 1/3 等於多少？", "opts": ["2/5", "5/6", "1/6", "2/6"], "ans": 1, "why": ["分子加分子、分母加分母，就像 3 公分 ＋ 2 公尺寫成 5。份的大小不一樣，不能直接數。", "", "1/6 是 1/2 × 1/3，那是乘法。", "2/6 ＝ 1/3，加了 1/2 怎麼會沒變大？"], "exp": "先換成同一種份：1/2 ＝ 3 個 1/6，1/3 ＝ 2 個 1/6，合起來是 5 個 1/6，也就是 5/6。"}, {"q": "3/4 ÷ 3/8 等於多少？", "opts": ["9/32", "1/2", "2", "8/9"], "ans": 2, "why": ["9/32 是 3/4 × 3/8，那是乘法。", "想想 3/4 裡面塞得下幾個 3/8。3/8 比 3/4 小，塞得下的個數會比 1 多。", "", "8/9 比 1 小，可是 3/8 比 3/4 小，3/4 裡面應該塞得下不只一個。"], "exp": "3/4 ＝ 6/8，裡面塞得下 2 個 3/8，所以答案是 2。"}, {"q": "為什麼分數加減要通分，乘除卻不用？", "opts": ["加減是在數份數，要同一種份；乘除是在取倍率，不必同一種份", "因為乘法比較簡單", "通分是為了讓答案變成最簡分數", "乘除其實也要通分，只是可以省略"], "ans": 0, "why": ["", "難易不是理由。回去第 3 站看看，乘法在格子上在做什麼事。", "不用最小公倍數也能通分，答案一樣，只是最後要約分。通分的目的不是最簡。", "乘法根本不需要同一種份：取 2/3 的 4/5 倍，不用先把兩個分數換成同分母。"], "exp": "加減是在數「幾份」，份的大小要一樣才數得起來。乘除是在取倍率，伸縮多少倍不需要同一種份。"}]};</script>
 <script>
@@ -1266,11 +1274,18 @@ button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)
 
   /* ---------- 會先講出答案的段落 ---------- */
   const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
     const sec = document.querySelector(g.sel);
     if (!sec) return null;
     const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
-    const note = el("div", "isl-gate", g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
-      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。");
     sec.appendChild(note);
     return { g, kids, note };
   }).filter(Boolean);

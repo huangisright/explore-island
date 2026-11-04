@@ -134,11 +134,18 @@
 
   /* ---------- 會先講出答案的段落 ---------- */
   const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
     const sec = document.querySelector(g.sel);
     if (!sec) return null;
     const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
-    const note = el("div", "isl-gate", g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
-      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。");
     sec.appendChild(note);
     return { g, kids, note };
   }).filter(Boolean);

@@ -1458,6 +1458,14 @@ button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--
 button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
 button.isl-btn:disabled{opacity:.35}
 button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
 </style>
 <script>window.ISLAND={"slug": "g7a-ch2-modular", "chap": "七上2", "title": "把數線捲起來", "topic": "同餘與餘數", "plain": "這座島把數線捲成一個圈：只留下餘數，商丟掉不要。", "stations": {"lab1": {"mode": "predict", "q": "−7 除以 5，餘數是多少？在 mod 5 的圈上，−7 會和哪些數落在同一個位置？", "obs": "落在同一個位置的數，彼此之間有什麼關係？"}, "lab2": {"mode": "predict", "q": "在 mod 10 底下，「× 6」和「× 3」哪一個倒得回去（可以消去）？", "opts": ["× 6", "× 3", "兩個都可以", "兩個都不行"], "multi": false, "obs": "倒不回去的時候，映射圖長什麼樣子？什麼樣的乘數不會撞車？"}, "lab3": {"mode": "predict", "q": "2¹⁰⁰ 的個位數是多少？", "obs": "2 · mod 7 和 3 · mod 7 各要走幾步才回到 1？這兩個步數和 7 有什麼關係？"}, "lab4": {"mode": "predict", "q": "棄九法抓得到「把 57 打成 75」這種兩個數字對調的錯嗎？", "opts": ["抓得到", "抓不到", "有時候抓得到"], "multi": false, "obs": "多按幾次「對調」和「差 9 的錯」，棄九法抓到幾次？你覺得為什麼？"}, "lab5": {"mode": "predict", "q": "身分證字號（mod 10）和 ISBN（mod 11），哪一個一定抓得到「兩碼對調」？", "opts": ["身分證字號", "ISBN", "兩個都一定抓得到", "兩個都可能漏掉"], "multi": false, "obs": "多對調幾次，哪一邊漏掉過？漏掉的那一次，數字有什麼特別？"}, "lab6": {"mode": "predict", "q": "模數是 7 的時候，1⁶、2⁶、3⁶、4⁶、5⁶、6⁶ 除以 7 的餘數，你猜會有什麼規律？", "obs": "把模數換成 6 或 9 這種合數，最後一欄怎麼了？561 通過了檢驗，它是質數嗎？"}}, "gates": [{"sel": "#p2", "after": "lab2"}, {"sel": "#p3", "after": "lab3"}, {"sel": "#end", "after": "ALL"}], "quiz": [{"q": "今天星期三，100 天後是星期幾？", "opts": ["星期四", "星期五", "星期六", "星期日"], "ans": 1, "why": ["100 ÷ 7 ＝ 14 餘 2，要往後數 2 天，不是 1 天。", "", "100 ÷ 7 的餘數是 2，不是 3。", "100 ÷ 7 的餘數是 2，不是 4。"], "exp": "100 ÷ 7 ＝ 14 餘 2。14 個整週回到星期三，再往後 2 天是星期五。那個 14 完全用不到。"}, {"q": "6x ≡ 6 × 7 (mod 10)，可以推出 x ≡ 7 (mod 10) 嗎？", "opts": ["不行，因為 6 和 10 不互質", "可以，兩邊同除以 6 就好", "可以，因為 6 不是 0", "不行，因為 7 比 6 大"], "ans": 0, "why": ["", "同餘裡的除法要買門票。試試 x ＝ 2：6 × 2 ＝ 12，和 42 同餘，可是 2 和 7 不同餘。", "不是 0 還不夠。回去第 2 站看 6 · mod 10，有好幾條線撞在一起。", "大小不是重點，重點是 6 和 10 有沒有公因數。"], "exp": "6 和 10 有公因數 2，乘 6 會把不同的數送到同一個餘數（例如 2 和 7），所以倒不回去。只有和模數互質的數才能消去。"}, {"q": "3¹⁰⁰ 的個位數是多少？", "opts": ["1", "3", "7", "9"], "ans": 0, "why": ["", "3 的次方個位數是 3, 9, 7, 1 一直重複，週期是 4。100 是 4 的幾倍？", "週期是 3, 9, 7, 1。100 除以 4 的餘數是 0，對應的是第 4 個。", "週期是 3, 9, 7, 1。100 除以 4 的餘數是 0，對應的是第 4 個。"], "exp": "3 的次方個位數 3, 9, 7, 1 每 4 個一循環。100 是 4 的倍數，所以 3¹⁰⁰ 的個位數和 3⁴ 一樣，是 1。"}]};</script>
 <script>
@@ -1597,11 +1605,18 @@ button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)
 
   /* ---------- 會先講出答案的段落 ---------- */
   const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
     const sec = document.querySelector(g.sel);
     if (!sec) return null;
     const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
-    const note = el("div", "isl-gate", g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
-      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。");
     sec.appendChild(note);
     return { g, kids, note };
   }).filter(Boolean);

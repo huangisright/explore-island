@@ -1433,6 +1433,14 @@ button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--
 button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
 button.isl-btn:disabled{opacity:.35}
 button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
 </style>
 <script>window.ISLAND={"slug": "g7a-ch3-naming", "chap": "七上3", "title": "先給它一個名字", "topic": "一元一次方程式", "plain": "這座島上，還不知道的數可以先取個名字，帶著它一路算下去。", "stations": {"lab6": {"mode": "predict", "q": "3x ＋ 5x 能併成一項嗎？3x ＋ 5x² 呢？", "obs": "拼得起來和拼不起來的兩組，差在哪裡？"}, "lab7": {"mode": "predict", "q": "5 − 2(3 − x) 去括號之後是什麼？", "obs": "走一次「錯誤那條路」：錯在哪一步？"}, "lab5": {"mode": "predict", "q": "不管牌怎麼重排，長列的紅牌數減掉短列的黑牌數，你猜會怎樣？", "opts": ["每次都不一樣", "永遠是同一個數", "看運氣，有時一樣有時不一樣"], "multi": false, "obs": "那個差是多少？它跟哪些數有關、跟哪些數無關？"}, "lab3": {"mode": "predict", "q": "F?25791484 中間那個 ? 是多少？你打算怎麼把它找出來？", "obs": "機器找出了幾個答案？「驗證」和「解方程式」是同一條規則的哪兩個方向？"}, "lab1": {"mode": "predict", "q": "兩邊同時加、減、乘、除同一個數，這四個動作裡哪一個藏著陷阱？", "opts": ["加", "減", "乘", "除"], "multi": true, "obs": "按下那個動作之後，天平發生了什麼？還退得回來嗎？"}, "lab4": {"mode": "predict", "q": "a ＝ 0 的時候，ax ＝ b 有幾個解？", "opts": ["剛好一個", "沒有解", "無限多個", "要看 b 是多少"], "multi": false, "obs": "b 是 0 和 b 不是 0 的時候，各發生什麼事？"}, "lab2": {"mode": "predict", "q": "讀心術魔術最後「減去原先想的數」，答案就跟你想的數無關了。你覺得機器裡發生了什麼？", "obs": "x 的係數在哪一步變成 0？自己疊一組步驟試試。"}}, "gates": [], "quiz": [{"q": "3 − 4(2x − 1) 去括號之後是什麼？", "opts": ["7 − 8x", "−1 − 8x", "3 − 8x − 1", "−1 ＋ 8x"], "ans": 0, "why": ["", "−4 乘 −1 是 ＋4，不是 −4。", "−4 只分給了第一項。括號裡的每一項都要分到，連同符號。", "3 − 4 ＝ −1 先算了？乘法要先做，−4 是跟著括號走的。"], "exp": "−4 要分給括號裡的每一項：−4 × 2x ＝ −8x，−4 × (−1) ＝ ＋4，所以是 3 − 8x ＋ 4 ＝ 7 − 8x。"}, {"q": "3x ＋ 1 ＝ 3x ＋ 5 有幾個解？", "opts": ["一個", "沒有解", "無限多個", "x ＝ 0"], "ans": 1, "why": ["兩邊同減 3x 之後剩下 1 ＝ 5，x 不見了。", "", "兩邊同減 3x 剩下 1 ＝ 5，這句話不對，所以不是每個 x 都行。", "代 x ＝ 0 進去：左邊 1，右邊 5，不相等。"], "exp": "兩邊同減 3x，剩下 1 ＝ 5，這是一句錯的話，不管 x 是多少都不成立，所以沒有解。"}, {"q": "解方程式時，為什麼「移項要變號」？", "opts": ["因為兩邊同時加上或減去同一個數，等號才不會壞", "因為搬到另一邊，就要變成相反", "這是規定，背起來就好", "因為負負得正"], "ans": 0, "why": ["", "東西不會自己「搬家」。真正發生的事，是兩邊同時做了同一個動作。", "這條不是規定的，是等號不准壞掉逼出來的。回去第 1 站的天平看看。", "負負得正是乘法的事，移項跟它無關。"], "exp": "移項只是縮寫：兩邊同時減去（或加上）同一個數，天平還是平的，看起來就像那一項「換邊又變號」。"}]};</script>
 <script>
@@ -1572,11 +1580,18 @@ button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)
 
   /* ---------- 會先講出答案的段落 ---------- */
   const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
     const sec = document.querySelector(g.sel);
     if (!sec) return null;
     const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
-    const note = el("div", "isl-gate", g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
-      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。");
     sec.appendChild(note);
     return { g, kids, note };
   }).filter(Boolean);

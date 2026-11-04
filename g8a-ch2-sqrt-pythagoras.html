@@ -1,0 +1,1637 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>把面積翻回邊長｜數學探索島</title>
+<style>:root{color-scheme:light dark}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* _css_base.css — 學習單互動版共用樣式（金城國中）
+   配色沿用紙本：方格紙底 #F5F2E8、靛青 #2E5A88、赭橙 #C1652F、苔綠 #4A7C59
+   深色模式三段式：:root / @media(prefers-color-scheme:dark) / [data-theme] */
+
+:root{
+  --paper:#F5F2E8; --ink:#1F1F1F; --mute:#6B6B6B; --line:#D8D0BC;
+  --blue:#2E5A88; --orange:#C1652F; --green:#4A7C59; --sand:#E4D9C0;
+  --card:#FFFFFF; --cardline:#E3DCC9; --tint:#FBE9DC; --tint2:#E8EEF4;
+  --shadow:0 1px 2px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.05);
+  --grid:rgba(46,90,136,.055);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#14161A; --ink:#E8E6E1; --mute:#9BA3AC; --line:#2C323A;
+    --blue:#7FB0E0; --orange:#E9955F; --green:#7FBF93; --sand:#3A362C;
+    --card:#1C1F25; --cardline:#2E343D; --tint:#2A2018; --tint2:#18222C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    --grid:rgba(127,176,224,.06);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14161A; --ink:#E8E6E1; --mute:#9BA3AC; --line:#2C323A;
+  --blue:#7FB0E0; --orange:#E9955F; --green:#7FBF93; --sand:#3A362C;
+  --card:#1C1F25; --cardline:#2E343D; --tint:#2A2018; --tint2:#18222C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  --grid:rgba(127,176,224,.06);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"PingFang TC","Noto Sans TC","Hiragino Sans TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+  font-size:16px; line-height:1.75;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+.wrap{max-width:940px;margin:0 auto;padding:0 20px 100px}
+.math{font-family:"Times New Roman",Times,serif;font-style:italic}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal;font-variant-numeric:tabular-nums}
+
+/* 抬頭 */
+header.hd{padding:52px 0 26px;border-bottom:3px solid var(--orange);margin-bottom:34px;
+  display:flex;gap:26px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+header.hd .kicker{font-size:13px;letter-spacing:.16em;color:var(--mute)}
+header.hd h1{margin:.18em 0 .12em;font-size:clamp(30px,5.4vw,46px);line-height:1.15;color:var(--blue);
+  letter-spacing:-.01em;text-wrap:balance}
+header.hd .sub{color:var(--orange);font-size:15px}
+header.hd .mark{flex:none;width:104px;height:104px}
+@media (max-width:560px){header.hd .mark{display:none}}
+
+/* 段落 */
+section{margin:46px 0 0;scroll-margin-top:70px}
+section > h2{
+  text-wrap:balance;
+  font-size:clamp(21px,3.2vw,27px);color:var(--blue);margin:0 0 2px;
+  padding-bottom:8px;border-bottom:2px solid var(--blue);display:flex;gap:.6em;align-items:baseline;flex-wrap:wrap
+}
+section > h2 .tag{font-size:14px;color:var(--orange);font-weight:600}
+section > .lede{color:var(--orange);font-weight:600;margin:10px 0 16px;font-size:15px}
+h3{font-size:18px;margin:30px 0 8px;color:var(--ink)}
+p{margin:0 0 14px}
+b,strong{color:var(--ink)}
+ul{margin:0 0 14px;padding-left:1.35em}
+li{margin:.28em 0}
+a{color:var(--blue)}
+
+/* 提示框 */
+.note{background:var(--tint);border-left:4px solid var(--orange);padding:13px 16px;margin:16px 0;border-radius:0 8px 8px 0;font-size:15px}
+.note.b{background:var(--tint2);border-left-color:var(--blue)}
+.note .vt{display:block;font-weight:700;margin-bottom:.25em;color:var(--blue)}
+
+/* 卡片與表格 */
+.card{background:var(--card);border:1px solid var(--cardline);border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px;background:var(--card);border-radius:10px;overflow:hidden}
+th{background:var(--blue);color:#fff;text-align:left;padding:9px 12px;font-weight:600;font-size:14px}
+td{border-top:1px solid var(--cardline);padding:9px 12px;vertical-align:top;font-variant-numeric:tabular-nums}
+tr:nth-child(even) td{background:color-mix(in srgb,var(--card) 94%,var(--blue))}
+
+/* 探索站 */
+.lab{background:var(--card);border:1px solid var(--cardline);border-radius:14px;padding:20px;margin:22px 0;box-shadow:var(--shadow)}
+.lab > h4{margin:0 0 4px;font-size:17px;color:var(--orange);display:flex;align-items:center;gap:.5em}
+.lab > h4::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--orange);flex:none}
+.lab .why{font-size:13.5px;color:var(--mute);margin:0 0 14px}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:12px 0}
+.ctl label{font-size:14px;color:var(--mute);display:flex;align-items:center;gap:8px}
+input[type=range]{accent-color:var(--blue);width:170px}
+input[type=number],input[type=text],select{
+  font:inherit;font-size:15px;padding:5px 9px;border:1px solid var(--cardline);
+  border-radius:8px;background:var(--paper);color:var(--ink);width:100px
+}
+button{
+  font:inherit;font-size:14px;padding:7px 15px;border:1px solid var(--blue);border-radius:999px;
+  background:var(--blue);color:#fff;cursor:pointer;transition:.15s
+}
+button:hover{filter:brightness(1.08)}
+button.ghost{background:transparent;color:var(--blue)}
+button.ghost:hover{background:color-mix(in srgb,var(--blue) 12%,transparent)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.out{font-size:15px;margin-top:12px;line-height:1.9}
+.verdict{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--tint2);font-size:15px}
+.verdict b{display:block}
+.ok{color:var(--green);font-weight:700}
+.no{color:var(--orange);font-weight:700}
+svg{max-width:100%;height:auto;display:block}
+.scrollx{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* 目錄 */
+nav.toc{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 92%,transparent);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:9px 20px;width:100%}
+nav.toc .in{max-width:940px;margin:0 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav.toc .in::-webkit-scrollbar{display:none}
+nav.toc a{font-size:13px;color:var(--mute);text-decoration:none;white-space:nowrap;padding:4px 10px;border-radius:999px}
+nav.toc a:hover{background:var(--tint2);color:var(--blue)}
+
+/* 主題切換 */
+.theme{position:fixed;right:14px;bottom:14px;z-index:30;border-radius:999px;padding:8px 14px;
+  background:var(--card);color:var(--ink);border:1px solid var(--cardline);box-shadow:var(--shadow);font-size:13px}
+
+:where(a,button,input,select):focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+footer.ft{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
+
+@media (max-width:620px){
+  body{font-size:15px}
+  .wrap{padding:0 14px 80px}
+  input[type=range]{width:130px}
+}
+
+/* a2_extra.css — 《把面積翻回邊長》專用微調 */
+.verdict b{display:inline}
+.verdict > b:first-child{display:block;margin-bottom:.25em}
+.verdict .no,.verdict .ok{display:block;margin-bottom:.25em}
+#lgGrid svg{background:transparent}
+#unitChips button{padding:6px 14px;font-size:15px}
+#ratOut div{white-space:normal}
+.lab svg{margin-top:6px}
+@media (max-width:720px){
+  #lgGrid{grid-template-columns:minmax(0,1fr)!important}
+}
+
+/* 窄螢幕：分母有理化那一列有三個輸入框，要讓它能折行 */
+.ctl label{flex-wrap:wrap}
+@media (max-width:620px){
+  input[type=number],input[type=text],select{width:76px}
+  #lab-rat .ctl label{width:100%}
+  nav.toc{padding:9px 14px}
+}
+
+</style>
+<!--hand-theme--><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet"><link href="https://huangisright.github.io/fonts/isright-hand.css" rel="stylesheet"><style id="hand-theme">
+:root{
+  --paper:#fdfcf8; --grid:transparent; --card:#fffefa;
+  --edge:#b9b5aa; --edge-soft:#dedad0; --ink:#1b1b1b; --ink-2:#4a4844; --ink-3:#77756f;
+  --indigo:#24489a; --indigo-soft:#e8edf8; --orange:#d4472b; --orange-soft:#fde9e3;
+  --green:#2f7a3a; --green-soft:#e6f2e4; --crimson:#c8321e; --black-card:#1b1b1b;
+  --shadow:none; --shadow-lift:none;
+  --mute:#77756f; --line:#d9d6cc; --blue:#24489a; --sand:#efe9d8;
+  --cardline:#1b1b1b; --tint:#fde9e3; --tint2:#e8edf8;
+  --hl:#fff2a8;
+  --serif:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif; --sans:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif; --wob:255px 14px 225px 14px/14px 225px 14px 255px; --wob2:14px 255px 14px 225px/225px 14px 255px 14px;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1c1d1f; --grid:transparent; --card:#222326;
+  --edge:#5e5f62; --edge-soft:#3a3b3e; --ink:#ecebe6; --ink-2:#c4c2bb; --ink-3:#9c9a93;
+  --indigo:#8fb0f0; --indigo-soft:#1f2a40; --orange:#ff7a5c; --orange-soft:#3d221b;
+  --green:#7cc98a; --green-soft:#1d3122; --crimson:#ff6b55; --black-card:#0d0d0e;
+  --shadow:none; --shadow-lift:none;
+  --mute:#9c9a93; --line:#3a3b3e; --blue:#8fb0f0; --sand:#33302a;
+  --cardline:#ecebe6; --tint:#3d221b; --tint2:#1f2a40;
+  --hl:#4a4320;
+}}
+:root[data-theme="dark"]{
+  --paper:#1c1d1f; --grid:transparent; --card:#222326;
+  --edge:#5e5f62; --edge-soft:#3a3b3e; --ink:#ecebe6; --ink-2:#c4c2bb; --ink-3:#9c9a93;
+  --indigo:#8fb0f0; --indigo-soft:#1f2a40; --orange:#ff7a5c; --orange-soft:#3d221b;
+  --green:#7cc98a; --green-soft:#1d3122; --crimson:#ff6b55; --black-card:#0d0d0e;
+  --shadow:none; --shadow-lift:none;
+  --mute:#9c9a93; --line:#3a3b3e; --blue:#8fb0f0; --sand:#33302a;
+  --cardline:#ecebe6; --tint:#3d221b; --tint2:#1f2a40;
+  --hl:#4a4320;
+}
+body{background:var(--paper)!important;background-image:none!important;font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;font-size:17px}
+button,input,select,textarea,label{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif}
+input[type=number],.row input[type=number]{font-family:var(--math,serif)}
+h1,h2,h3,.lab-title{font-family:"IsRight Hand","LXGW WenKai TC","Kaiti TC","KaiTi",serif;font-weight:700;letter-spacing:.02em}
+.lab-title{font-size:22px!important}
+h1{text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:3px;text-underline-offset:10px}
+.eyebrow{color:var(--orange)}
+.thesis{border-left:none!important;padding-left:0!important;background:linear-gradient(transparent 62%,var(--hl) 62%);display:inline}
+nav{background:var(--paper)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:1.5px dashed var(--edge-soft)!important}
+nav a{border-radius:var(--wob)!important}
+nav a:hover,nav a:focus-visible{border:1.5px solid var(--ink)!important;background:transparent!important;color:var(--ink)!important}
+
+.lab{border:2.5px solid var(--ink)!important;border-radius:var(--wob)!important;box-shadow:none!important;overflow:visible!important}
+.lab:nth-of-type(even){border-radius:var(--wob2)!important}
+.lab-head{border-bottom:1.5px dashed var(--edge-soft)!important}
+.lab-no{background:transparent!important;color:var(--ink)!important;border:2px solid var(--ink);border-radius:52% 48% 50% 46%/48% 54% 46% 52%!important;font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;width:28px!important;height:28px!important}
+.lab-foot{background:var(--hl)!important;border:none!important;margin:6px 10px 10px;border-radius:var(--wob2)}
+.lab-foot b{color:var(--ink)!important}
+
+button,.btn{border:2px solid var(--ink)!important;border-radius:var(--wob)!important;background:transparent!important;color:var(--ink)!important;box-shadow:none!important}
+button:nth-of-type(even),.btn:nth-of-type(even){border-radius:var(--wob2)!important}
+button:hover:not(:disabled),.btn:hover{background:var(--hl)!important;color:var(--ink)!important}
+button.primary,.seg.on,.seg.on:hover{background:var(--ink)!important;color:var(--paper)!important}
+button.warn{border-color:var(--orange)!important;color:var(--orange)!important}
+.chip button{border:none!important;background:none!important}
+.segwrap{border:2px solid var(--ink)!important;border-radius:var(--wob)!important}
+.seg{border:none!important;border-right:1.5px dashed var(--edge-soft)!important;border-radius:0!important}
+input[type=number],input[type=text],select,textarea{border:2px solid var(--ink)!important;border-radius:var(--wob2)!important;background:transparent!important}
+input:focus-visible,select:focus-visible{outline:none!important;background:var(--hl)!important}
+input[type=range]{accent-color:var(--ink)}
+
+.msg,.verdict,.fate,.stat,.statbox,.chip,.tape,.pan,.thumb,.idcell{border-width:1.5px!important;border-radius:var(--wob)!important;box-shadow:none!important}
+.card,.box,.panel,.callout,.note,.tip{box-shadow:none!important}
+.dot{border-radius:48% 52% 46% 54%!important}
+::selection{background:var(--hl)}
+
+.bk-top{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;font-size:15px!important}
+.bk-top a{color:var(--ink,#1b1b1b)!important;text-decoration:underline dotted!important}
+.bk-fab{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;background:var(--paper,#fdfcf8)!important;color:var(--ink,#1b1b1b)!important;
+  border:2px solid var(--ink,#1b1b1b)!important;border-radius:255px 14px 225px 14px/14px 225px 14px 255px!important;box-shadow:none!important}
+.bk-fab:hover{background:var(--hl,#fff2a8)!important}
+@media print{.lab{border-width:1.5px!important}}
+</style><!--/hand-theme--></head>
+<body>
+
+<style id="backnav">
+.bk-top{
+  max-width:1080px; margin:0 auto; padding:14px 20px 0;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif; font-size:14px;
+}
+.bk-top a{color:#2E5A88; text-decoration:none; font-weight:600}
+.bk-top a:hover{text-decoration:underline}
+.bk-top .bk-sep{color:#B8AE9C; margin:0 10px}
+.bk-fab{
+  position:fixed; right:16px; bottom:16px; z-index:9999;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 15px; border-radius:24px;
+  background:#FFFDF8; border:1px solid #DFD6C4; color:#2E5A88;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  font-size:14px; font-weight:600; text-decoration:none;
+  box-shadow:0 2px 4px rgba(72,60,40,.10), 0 10px 26px rgba(72,60,40,.16);
+}
+.bk-fab:hover{border-color:#2E5A88}
+.bk-fab:focus-visible{outline:2px solid #2E5A88; outline-offset:2px}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .bk-top a{color:#82ADDC}
+  :root:not([data-theme="light"]) .bk-fab{
+    background:#1F252B; border-color:#333C45; color:#82ADDC;
+    box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+  }
+  :root:not([data-theme="light"]) .bk-fab:hover{border-color:#82ADDC}
+}
+:root[data-theme="dark"] .bk-top a{color:#82ADDC}
+:root[data-theme="dark"] .bk-fab{
+  background:#1F252B; border-color:#333C45; color:#82ADDC;
+  box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+}
+@media print{ .bk-top, .bk-fab{display:none !important} }
+@media (max-width:520px){ .bk-fab{right:12px; bottom:12px; padding:8px 13px; font-size:13px} }
+</style>
+<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>
+<nav class="toc"><div class="in">
+  <a href="#s0">開場</a><a href="#s1">往前回顧</a><a href="#s2">往回走出事</a><a href="#s3">量不出來</a>
+  <a href="#s4">直式開方法</a><a href="#s5">同單位</a><a href="#s6">畢氏定理</a><a href="#s7">三扇門</a><a href="#s8">統整</a>
+</div></nav>
+
+<div class="wrap">
+
+<header class="hd">
+  <div>
+    <div class="kicker">八年級　數與量・空間與形狀　</div>
+    <h1>把面積翻回邊長</h1>
+    <div class="sub">平方根與畢氏定理　　開方是往回走的路，畢氏定理是面積的加法</div>
+  </div>
+  <svg class="mark" viewBox="0 0 104 104" role="img" aria-label="邊長 a＋b 的正方形分成 a²、ab、ab、b² 四塊">
+    <rect x="2" y="2" width="64" height="64" fill="var(--blue)" fill-opacity=".18" stroke="var(--blue)" stroke-width="1.4"/>
+    <rect x="66" y="2" width="36" height="64" fill="var(--orange)" fill-opacity=".22" stroke="var(--orange)" stroke-width="1.4"/>
+    <rect x="2" y="66" width="64" height="36" fill="var(--orange)" fill-opacity=".22" stroke="var(--orange)" stroke-width="1.4"/>
+    <rect x="66" y="66" width="36" height="36" fill="var(--sand)" stroke="var(--orange)" stroke-width="1.4"/>
+    <text x="34" y="40" text-anchor="middle" font-size="19" font-weight="700" fill="var(--blue)" font-family="Times New Roman, serif" font-style="italic">a²</text>
+    <text x="84" y="89" text-anchor="middle" font-size="13" font-weight="700" fill="var(--orange)" font-family="Times New Roman, serif" font-style="italic">b²</text>
+  </svg>
+</header>
+
+<section id="s0">
+  <p>這一章有兩個主角。前半是<b>開方</b>：平方把邊長變成面積，開方要把面積翻回邊長。後半是<b>畢氏定理</b>：它表面上在講三段長度，骨子裡在講三個正方形的面積。把這兩件事接起來的，是你上一章剛學完的 <span class="math">(a+b)</span><sup>2</sup>。</p>
+  <div class="note b"><span class="vt">這個網頁只做紙上做不到的事</span>下面每一站，都是為了讓你「看見一個過程」，而不是「得到一個答案」。答案課本上就有；過程只有在這裡看得到。</div>
+</section>
+
+<!-- ══════════ 1 ══════════ -->
+<section id="s1">
+  <h2>往前回顧<span class="tag">這是你第三次被逼著擴張數系</span></h2>
+  <p>每一次數系變大，都不是因為誰想把數學變難，而是因為<b>有個逆運算做不完</b>。</p>
+  <div class="scrollx"><table>
+    <tr><th>正運算</th><th>逆運算</th><th>做不完的例子</th><th>被逼出來的數</th></tr>
+    <tr><td>加法</td><td>減法</td><td>3 − 5 在自然數裡無解</td><td>負數（七上）</td></tr>
+    <tr><td>乘法</td><td>除法</td><td>3 ÷ 5 在整數裡無解</td><td>分數（七上）</td></tr>
+    <tr><td>平方</td><td>開平方</td><td>面積 2 的正方形，邊長是多少？</td><td>無理數（今天）</td></tr>
+  </table></div>
+  <div class="note">記住上一章那張圖：邊長 <span class="math">a+b</span> 的正方形切成 <span class="math">a</span><sup>2</sup>、<span class="math">ab</span>、<span class="math">ab</span>、<span class="math">b</span><sup>2</sup> 四塊。它今天會出現 <b>四次</b>：直式開方法、雙重根號、根式加減、畢氏定理的重排證明。</div>
+</section>
+
+<!-- ══════════ 2 ══════════ -->
+<section id="s2">
+  <h2>核心一<span class="tag">平方往前走，開方往回走</span></h2>
+  <p class="lede">往回走會出事，出事的地方就是這一章所有規定的來源。</p>
+  <ul>
+    <li><b>出事一　可能沒有答案</b>：沒有實數的平方是負的，所以 √(−4) 在實數裡不存在。</li>
+    <li><b>出事二　可能有兩個答案</b>：<span class="math">x</span><sup>2</sup>＝9 有兩解，但「√9」必須只代表一個數，所以規定只取正根。</li>
+    <li><b>出事三　所以 √(<span class="math">a</span><sup>2</sup>) ＝ |<span class="math">a</span>|</b>，不是 <span class="math">a</span>。這是整章最容易錯的一行。</li>
+  </ul>
+
+  <div class="lab" id="lab-abs"><div class="lab-head"><span class="lab-no">1</span><div><p class="lab-title">平方再開方，會回到原地嗎？</p><p class="lab-why">拉動滑桿改變 <span class="math">a</span>，看 <span class="math">a</span> → <span class="math">a</span><sup>2</sup> → √(<span class="math">a</span><sup>2</sup>) 這條路。負的那一半會發生什麼事？</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label><span class="math">a</span> ＝ <input type="range" id="absA" min="-60" max="60" value="-35"><b id="absAv" class="mono"></b></label>
+    </div>
+    <svg id="absSvg" viewBox="0 0 640 190" role="img" aria-label="a 平方後再開方的路徑圖"></svg>
+    <div class="verdict" id="absOut"></div>
+  </div><div class="lab-foot">負的那一半，平方再開方之後會被翻成正的：<b>√(a²) ＝ |a|</b>，不是 a。因為 √ 規定只取正根，一個符號只能代表一個數。</div></div>
+</section>
+
+<!-- ══════════ 3 ══════════ -->
+<section id="s3">
+  <h2>核心二<span class="tag">量不出來的那一段</span></h2>
+  <p class="lede">√2 不是「算不完」，是「不可能寫成分數」。</p>
+
+  <div class="lab" id="lab-squeeze"><div class="lab-head"><span class="lab-no">2</span><div><p class="lab-title">十分逼近器</p><p class="lab-why">每按一次，區間就縮小成十分之一。完全平方數會停下來，其他的永遠停不下來，這件事在紙上要算很久才感覺得到。</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label>要開方的數 <input type="number" id="sqN" value="2" min="2" max="9999" step="1"></label>
+      <button id="sqStep">再逼一位</button>
+      <button id="sqStep5" class="ghost">一次逼五位</button>
+      <button id="sqReset" class="ghost">重來</button>
+    </div>
+    <div class="scrollx"><table id="sqTbl"></table></div>
+    <div class="verdict" id="sqOut"></div>
+  </div><div class="lab-foot">只有完全平方數會停下來。√2 永遠停不下來，<b>不是因為還沒算完，是因為它根本不能寫成分數</b>。</div></div>
+
+  <h3>假設它是分數，會怎樣？</h3>
+  <ul>
+    <li>假設 √2 ＝ <span class="math">p</span>／<span class="math">q</span>，而且已經約到<b>最簡</b>。</li>
+    <li>兩邊平方：<span class="math">p</span><sup>2</sup> ＝ 2<span class="math">q</span><sup>2</sup> ⇒ <span class="math">p</span><sup>2</sup> 是偶數 ⇒ <span class="math">p</span> 是偶數，設 <span class="math">p</span> ＝ 2<span class="math">k</span>。</li>
+    <li>代回去：4<span class="math">k</span><sup>2</sup> ＝ 2<span class="math">q</span><sup>2</sup> ⇒ <span class="math">q</span><sup>2</sup> ＝ 2<span class="math">k</span><sup>2</sup> ⇒ <span class="math">q</span> 也是偶數。</li>
+    <li>兩個都是偶數 → 還能再約 → 和「已經最簡」矛盾。</li>
+  </ul>
+  <div class="note">矛盾不是出在算式，是出在「最簡」這個詞。<b>只要能一直往下降，就不存在最底層。</b></div>
+
+  <div class="lab" id="lab-incom"><div class="lab-head"><span class="lab-no">3</span><div><p class="lab-title">切不完的正方形（不可公度）</p><p class="lab-why">七上你用輾轉相除法切正方形求最大公因數。同一個動作拿來切「邊長 1、對角線 √2」這一組，你會看到它永遠切不完，而且每次剩下的形狀都和原來一模一樣。</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label>長邊 ÷ 短邊 ＝
+        <select id="icRatio">
+          <option value="1.5">3／2　（有理數）</option>
+          <option value="1.6">8／5　（有理數）</option>
+          <option value="1.4142135623730951" selected>√2　（無理數）</option>
+          <option value="1.618033988749895">黃金比例　（無理數）</option>
+        </select>
+      </label>
+      <label>切幾刀 <input type="range" id="icSteps" min="1" max="12" value="4"><b id="icStepsV" class="mono"></b></label>
+    </div>
+    <svg id="icSvg" viewBox="0 0 640 300" role="img" aria-label="輾轉相除法切正方形示意"></svg>
+    <div class="verdict" id="icOut"></div>
+  </div><div class="lab-foot">每切一次，剩下的形狀都和原來一模一樣，所以<b>永遠切不完</b>：1 和 √2 找不到共同的單位長，√2 不是分數。</div></div>
+</section>
+
+<!-- ══════════ 4 ══════════ -->
+<section id="s4">
+  <h2>核心三<span class="tag">直式開方法就是 (a＋b)² 一位一位地用</span></h2>
+  <p>課本教的直式開方法看起來像口訣：「商乘以 2 寫在旁邊、試除、再往下拉兩位」。它其實就是 <span class="math">(a+b)</span><sup>2</sup> ＝ <span class="math">a</span><sup>2</sup>＋2<span class="math">ab</span>＋<span class="math">b</span><sup>2</sup> 拆成一位一位在用。</p>
+
+  <div class="lab" id="lab-long"><div class="lab-head"><span class="lab-no">4</span><div><p class="lab-title">把直式開方法畫成正方形</p><p class="lab-why">左邊是課本的直式，右邊是同一件事的圖。每按一次「下一位」，正方形就長大一圈，長出來的那一圈，正好是 2<span class="math">ab</span>＋<span class="math">b</span><sup>2</sup>。不是完全平方數的話，可以補 00 一直往小數位試下去；圈會越來越薄，所以圖每一步放大 10 倍、只看右上角，綠色虛線是 √n 真正的位置。</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label>要開方的數 <input type="number" id="lgN" value="1849" min="1" max="99999999" step="1"></label>
+      <button id="lgNext">下一位</button>
+      <button id="lgAll" class="ghost">全部展開</button>
+      <button id="lgReset" class="ghost">重來</button>
+      <label><input type="checkbox" id="lgWhole"> 看全貌</label>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:start" id="lgGrid">
+      <div><div class="scrollx"><table id="lgTbl"></table></div></div>
+      <div><svg id="lgSvg" viewBox="0 0 320 370" role="img" aria-label="開方過程的正方形分割圖"></svg></div>
+    </div>
+    <div class="verdict" id="lgOut"></div>
+  </div><div class="lab-foot">直式開方法每一步都在用 <b>(a＋b)² ＝ a² ＋ 2ab ＋ b²</b>：已經有的是 a²，新長出來的那一圈就是 2ab ＋ b²。</div></div>
+</section>
+
+<!-- ══════════ 5 ══════════ -->
+<section id="s5">
+  <h2>核心四<span class="tag">加減要同單位，乘除只論倍率</span></h2>
+  <p class="lede">七上《分母是單位》那句話，原封不動搬到根號上面。</p>
+
+  <div class="lab" id="lab-unit"><div class="lab-head"><span class="lab-no">5</span><div><p class="lab-title">同單位才能合併</p><p class="lab-why">點一下把根式丟進袋子。系統會自動化成最簡根式，再依「單位」分堆，不同堆之間永遠加不起來。</p></div></div><div class="lab-body">
+    <div class="ctl" id="unitChips"></div>
+    <div class="ctl"><button id="unitClear" class="ghost">清空</button></div>
+    <div id="unitBins" class="out"></div>
+    <div class="verdict" id="unitOut"></div>
+  </div><div class="lab-foot">化成最簡根式之後，√2 就是一種單位。<b>同單位才能合併</b>：√8 ＋ √18 ＝ 2√2 ＋ 3√2 ＝ 5√2，而 √2 和 √3 永遠是兩堆。</div></div>
+
+  <div class="lab" id="lab-rat"><div class="lab-head"><span class="lab-no">6</span><div><p class="lab-title">分母有理化＝平方差公式在工作</p><p class="lab-why">改分母的三個數字，看共軛怎麼把根號平方掉。這一站的重點不是答案，是中間那一行 <span class="math">(a+b)(a−b)</span> ＝ <span class="math">a</span><sup>2</sup>−<span class="math">b</span><sup>2</sup>。</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label>分子 <input type="number" id="ratP" value="3" step="1"></label>
+      <label>分母 <input type="number" id="ratA" value="0" step="1"> ＋ <input type="number" id="ratB" value="1" step="1"> √<input type="number" id="ratC" value="5" min="1" step="1"></label>
+      <label>再減 <input type="number" id="ratD" value="1" step="1"> √<input type="number" id="ratE" value="2" min="0" step="1"></label>
+    </div>
+    <div class="out" id="ratOut"></div>
+  </div><div class="lab-foot">乘上共軛 √3 ＋ √2，分母變成 (√3)² − (√2)² ＝ 1，根號被平方掉了。<b>分母有理化就是平方差公式在工作。</b></div></div>
+</section>
+
+<!-- ══════════ 6 ══════════ -->
+<section id="s6">
+  <h2>核心五<span class="tag">畢氏定理說的是面積</span></h2>
+  <p><span class="math">a</span><sup>2</sup>＋<span class="math">b</span><sup>2</sup>＝<span class="math">c</span><sup>2</sup> 這一行，<b>三個項都是面積</b>。把它讀成「長度的關係」，就會犯下 <span class="math">a</span>＋<span class="math">b</span>＝<span class="math">c</span> 那種錯。</p>
+
+  <div class="lab" id="lab-rearr"><div class="lab-head"><span class="lab-no">7</span><div><p class="lab-title">重排證明：兩種擺法，同一個大正方形</p><p class="lab-why">兩個大正方形都是 <span class="math">(a+b)</span><sup>2</sup>。左邊擺出 <span class="math">a</span><sup>2</sup>＋<span class="math">b</span><sup>2</sup>，右邊擺出 <span class="math">c</span><sup>2</sup>，扣掉的四個三角形一模一樣。拉滑桿改變形狀，等式不會壞。</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label><span class="math">a</span> ＝ <input type="range" id="reA" min="20" max="80" value="60"><b id="reAv" class="mono"></b></label>
+      <label><span class="math">b</span> ＝ <input type="range" id="reB" min="20" max="80" value="35"><b id="reBv" class="mono"></b></label>
+    </div>
+    <svg id="reSvg" viewBox="0 0 640 300" role="img" aria-label="畢氏定理重排證明"></svg>
+    <div class="verdict" id="reOut"></div>
+  </div><div class="lab-foot">左邊剩下 a² ＋ b²，右邊剩下 c²，扣掉的四個三角形一模一樣，所以 <b>a² ＋ b² ＝ c²</b>。畢氏定理說的是三個正方形的面積。</div></div>
+
+  <div class="note"><span class="vt">逆定理不能白拿</span>「<b>所有</b>直角三角形都滿足 <span class="math">a</span><sup>2</sup>＋<span class="math">b</span><sup>2</sup>＝<span class="math">c</span><sup>2</sup>」和「<b>滿足</b>的都是直角三角形」是兩句不同的話。這個陷阱很常見：「正方形都是長方形」對，「長方形都是正方形」就錯；「4 的倍數都是偶數」對，「偶數都是 4 的倍數」就錯（6 是反例）。</div>
+</section>
+
+<!-- ══════════ 7 ══════════ -->
+<section id="s7">
+  <h2>〔把直角拿掉看看〕<span class="tag">畢氏定理的三次推廣</span></h2>
+  <p><span class="math">a</span><sup>2</sup>＋<span class="math">b</span><sup>2</sup>＝<span class="math">c</span><sup>2</sup> 裡藏著三個沒明講的前提：三邊上蓋的是<b>正方形</b>、圖畫在<b>平面</b>上、那個角是<b>直角</b>。一次拿掉一個，就得到三個推廣。</p>
+
+  <div class="lab" id="lab-door1"><div class="lab-head"><span class="lab-no">8</span><div><p class="lab-title">第一扇門：把正方形換掉</p><p class="lab-why">三邊上改蓋任意三個彼此相似的圖形，面積關係一樣成立。切換形狀看看數字會不會壞。</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label>三邊上蓋
+        <select id="d1Shape">
+          <option value="sq">正方形</option>
+          <option value="semi">半圓</option>
+          <option value="tri">正三角形</option>
+          <option value="pent">正五邊形</option>
+        </select>
+      </label>
+      <label><span class="math">a</span> ＝ <input type="range" id="d1A" min="20" max="80" value="60"><b id="d1Av" class="mono"></b></label>
+      <label><span class="math">b</span> ＝ <input type="range" id="d1B" min="20" max="80" value="45"><b id="d1Bv" class="mono"></b></label>
+    </div>
+    <svg id="d1Svg" viewBox="0 0 640 330" role="img" aria-label="三邊上的相似圖形面積關係"></svg>
+    <div class="verdict" id="d1Out"></div>
+  </div><div class="lab-foot">只要三邊上蓋的是<b>彼此相似</b>的圖形，面積都跟著邊長的平方放大，關係一樣成立。</div></div>
+
+  <div class="lab" id="lab-lune"><div class="lab-head"><span class="lab-no">9</span><div><p class="lab-title">月牙定理：答案裡沒有 π</p><p class="lab-why">先猜：兩個月牙的面積和，和三角形比誰大？猜完再按「量給我看」。（希波克拉底，約西元前 440 年）</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label><span class="math">a</span> ＝ <input type="range" id="luA" min="25" max="80" value="60"><b id="luAv" class="mono"></b></label>
+      <label><span class="math">b</span> ＝ <input type="range" id="luB" min="25" max="80" value="42"><b id="luBv" class="mono"></b></label>
+      <button id="luShow">量給我看</button>
+    </div>
+    <svg id="luSvg" viewBox="0 0 640 300" role="img" aria-label="月牙定理示意圖"></svg>
+    <div class="verdict" id="luOut">先猜，再按上面的按鈕。</div>
+  </div><div class="lab-foot">兩個月牙的面積和<b>剛好等於三角形</b>。半圓的面積關係抵消了所有的 π，這是兩千多年前希波克拉底發現的。</div></div>
+
+  <div class="lab" id="lab-door3"><div class="lab-head"><span class="lab-no">10</span><div><p class="lab-title">第三扇門：把直角換掉</p><p class="lab-why">把夾角從 20° 拉到 160°，看 <span class="math">c</span><sup>2</sup> 和 <span class="math">a</span><sup>2</sup>＋<span class="math">b</span><sup>2</sup> 的差距怎麼變。那個差距就是 2<span class="math">ab</span>·cos <span class="math">C</span>——「直角壞掉要付的錢」。</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label>夾角 <span class="math">C</span> ＝ <input type="range" id="d3C" min="20" max="160" value="90"><b id="d3Cv" class="mono"></b>°</label>
+    </div>
+    <svg id="d3Svg" viewBox="0 0 640 280" role="img" aria-label="餘弦定理：夾角改變時三邊平方的關係"></svg>
+    <div class="verdict" id="d3Out"></div>
+  </div><div class="lab-foot">直角是分界線：夾角大於 90°，c² 比 a² ＋ b² 大；小於 90°，c² 比較小。那個差距是 2ab·cos C，「直角壞掉要付的錢」。</div></div>
+
+  <div class="lab" id="lab-triple"><div class="lab-head"><span class="lab-no">11</span><div><p class="lab-title">畢氏數機器</p><p class="lab-why">畢氏數不是碰運氣找到的，是被乘法公式生出來的。輸入 <span class="math">m</span> ＞ <span class="math">n</span>，機器就吐一組。</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label><span class="math">m</span> ＝ <input type="number" id="tpM" value="3" min="2" max="40"></label>
+      <label><span class="math">n</span> ＝ <input type="number" id="tpN" value="2" min="1" max="39"></label>
+      <button id="tpGen">生一組</button>
+      <button id="tpTable" class="ghost">列出前 12 組</button>
+    </div>
+    <div class="out" id="tpOut"></div>
+  </div><div class="lab-foot">m² − n²、2mn、m² ＋ n² 一定是一組畢氏數，因為 <b>(m² − n²)² ＋ (2mn)² ＝ (m² ＋ n²)²</b>，這是乘法公式生出來的。</div></div>
+
+  <div class="lab" id="lab-spiral"><div class="lab-head"><span class="lab-no">12</span><div><p class="lab-title">√n 螺線與畢氏樹</p><p class="lab-why">回家作業的預覽。先在這裡拉一次，再拿方格紙畫，你會知道自己要畫什麼。</p></div></div><div class="lab-body">
+    <div class="ctl">
+      <label>圖形 <select id="spKind"><option value="spiral">√n 螺線</option><option value="tree">畢氏樹</option></select></label>
+      <label id="spNWrap">畫到 √<b id="spNv" class="mono"></b> <input type="range" id="spN" min="2" max="34" value="17"></label>
+      <label id="spDWrap" hidden>層數 <input type="range" id="spD" min="1" max="9" value="7"><b id="spDv" class="mono"></b></label>
+      <label id="spAWrap" hidden>角度 <input type="range" id="spA" min="20" max="70" value="45"><b id="spAv" class="mono"></b>°</label>
+    </div>
+    <svg id="spSvg" viewBox="0 0 640 380" role="img" aria-label="根號 n 螺線與畢氏樹"></svg>
+    <div class="verdict" id="spOut"></div>
+  </div><div class="lab-foot">螺線每多一個三角形，新加的那一邊長是 1，斜邊就從 √n 變成 √(n＋1)。</div></div>
+</section>
+
+<!-- ══════════ 8 ══════════ -->
+<section id="s8">
+  <h2>統整<span class="tag">帶走的三句話</span></h2>
+  <ol>
+    <li>開方是平方的<b>逆運算</b>；逆運算一出事，就會逼出<b>新的數</b>，或逼出一條<b>新的規定</b>。</li>
+    <li>根式的加減要<b>同單位</b>，乘除只論<b>倍率</b>。不能合併時多出來的那一項，叫<b>交叉項 2ab</b>。</li>
+    <li>畢氏定理說的是<b>三個正方形面積</b>的關係；它的逆定理必須<b>另外證明</b>。</li>
+  </ol>
+  <div class="scrollx"><table>
+    <tr><th>這一章的規定</th><th>是被誰逼出來的</th></tr>
+    <tr><td>√ 只取正根</td><td>一個符號只能代表一個數（不准分岔）</td></tr>
+    <tr><td>√(<span class="math">a</span><sup>2</sup>) ＝ |<span class="math">a</span>|</td><td>同上，因為 √ 的結果規定非負</td></tr>
+    <tr><td>√<span class="math">a</span>×√<span class="math">b</span> ＝ √(<span class="math">ab</span>)</td><td>平方回去剛好相等，而且兩邊都是正的</td></tr>
+    <tr><td>√<span class="math">a</span>＋√<span class="math">b</span> ≠ √(<span class="math">a</span>＋<span class="math">b</span>)</td><td><span class="math">(a+b)</span><sup>2</sup> 有交叉項 2<span class="math">ab</span></td></tr>
+    <tr><td>分母有理化的做法</td><td>平方差公式 <span class="math">(a+b)(a−b)</span> ＝ <span class="math">a</span><sup>2</sup>−<span class="math">b</span><sup>2</sup></td></tr>
+    <tr><td><span class="math">a</span><sup>1／2</sup> ＝ √<span class="math">a</span></td><td>指數律不准壞掉</td></tr>
+    <tr><td>畢氏逆定理要另外證</td><td>「所有 A 都有 P」≠「有 P 的都是 A」</td></tr>
+  </table></div>
+  <div class="note"><b>規則不是規定的，是被某條律不准壞掉逼出來的。</b>這句話你在這個系列裡已經看過好幾次：分配律逼出負負得正、指數律逼出 <span class="math">a</span><sup>0</sup>＝1、唯一分解逼出 1 不是質數、倒數能抵消逼出顛倒相乘、消去律逼出「不互質不能消去」，現在是「一個符號只能代表一個數」逼出 √ 只取正根。</div>
+</section>
+
+<footer class="ft">
+  平方根與畢氏定理《把面積翻回邊長》　互動版<br>
+  金城國中　黃士祐 老師（IsRight）
+</footer>
+
+</div>
+<button class="theme" id="themeBtn">深色／淺色</button>
+
+<script>
+/* a2_script.js — 《把面積翻回邊長》互動版 12 個探索站 */
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const NS = "http://www.w3.org/2000/svg";
+  const fmt = (x, d) => (Math.round(x * Math.pow(10, d == null ? 2 : d)) / Math.pow(10, d == null ? 2 : d)).toString();
+
+  function el(tag, attrs, style) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs || {}) e.setAttribute(k, attrs[k]);
+    for (const k in style || {}) e.style[k] = style[k];
+    return e;
+  }
+  function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); }
+  function txt(x, y, s, o) {
+    o = o || {};
+    const t = el("text", { x: x, y: y, "text-anchor": o.anchor || "middle", "font-size": o.size || 13,
+      "font-family": o.mono ? "ui-monospace,Menlo,monospace" : '"PingFang TC","Noto Sans TC",sans-serif',
+      "font-weight": o.bold ? "700" : "400" }, { fill: o.fill || "var(--ink)" });
+    t.textContent = s; return t;
+  }
+
+  // 半圓：由 A 到 B，弧往 target 那一側鼓（SVG y 向下：sweep=1 鼓向 M+r*p，p=(dy,−dx)）
+  function semiTo(A, B, target) {
+    const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy), r = L / 2;
+    const M = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+    const p = [dy / L, -dx / L];
+    const P1 = [M[0] + r * p[0], M[1] + r * p[1]];
+    const d1 = (P1[0] - target[0]) ** 2 + (P1[1] - target[1]) ** 2;
+    const P0 = [M[0] - r * p[0], M[1] - r * p[1]];
+    const d0 = (P0[0] - target[0]) ** 2 + (P0[1] - target[1]) ** 2;
+    const sweep = d1 < d0 ? 1 : 0;
+    return el("path", { d: `M${A[0]} ${A[1]} A${r} ${r} 0 0 ${sweep} ${B[0]} ${B[1]} Z` });
+  }
+
+  /* ══════ 1　平方再開方 ══════ */
+  (function () {
+    const sv = $("absSvg"), R = $("absA"), V = $("absAv"), O = $("absOut");
+    if (!sv) return;
+    function box(x, label, val, col) {
+      const g = el("g");
+      g.appendChild(el("rect", { x: x, y: 46, width: 150, height: 56, rx: 12 },
+        { fill: "var(--card)", stroke: col, strokeWidth: "2" }));
+      g.appendChild(txt(x + 75, 68, label, { size: 12, fill: "var(--mute)" }));
+      g.appendChild(txt(x + 75, 92, val, { size: 20, bold: true, fill: col, mono: true }));
+      return g;
+    }
+    function arrow(x1, x2, label, col) {
+      const g = el("g");
+      g.appendChild(el("path", { d: `M${x1} 74 L${x2 - 9} 74`, "marker-end": "url(#ah)" },
+        { stroke: col, strokeWidth: "2", fill: "none" }));
+      g.appendChild(txt((x1 + x2) / 2, 62, label, { size: 12, fill: col }));
+      return g;
+    }
+    function draw() {
+      const a = +R.value; V.textContent = a;
+      clear(sv);
+      const defs = el("defs");
+      const m = el("marker", { id: "ah", viewBox: "0 0 10 10", refX: "9", refY: "5",
+        markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" });
+      m.appendChild(el("path", { d: "M0 0 L10 5 L0 10 z" }, { fill: "var(--mute)" }));
+      defs.appendChild(m); sv.appendChild(defs);
+      const back = a < 0 ? "var(--orange)" : "var(--green)";
+      sv.appendChild(box(20, "起點　a", String(a), "var(--blue)"));
+      sv.appendChild(arrow(172, 245, "平方", "var(--mute)"));
+      sv.appendChild(box(245, "a²", String(a * a), "var(--mute)"));
+      sv.appendChild(arrow(397, 470, "開方", back));
+      sv.appendChild(box(470, "√(a²)", String(Math.abs(a)), back));
+      if (a < 0) {
+        sv.appendChild(el("path", { d: "M545 110 C545 155, 95 155, 95 110" },
+          { stroke: "var(--orange)", strokeWidth: "1.6", fill: "none", strokeDasharray: "5 4" }));
+        sv.appendChild(txt(320, 172, "沒有回到原地：走過去 " + a + "，走回來 " + (-a),
+          { size: 13, fill: "var(--orange)", bold: true }));
+      } else {
+        sv.appendChild(txt(320, 172, "回到原地了", { size: 13, fill: "var(--green)", bold: true }));
+      }
+      O.innerHTML = a < 0
+        ? '<b class="no">√(a²) ＝ |a| ＝ −a，不是 a。</b>平方把負號吃掉了，開方規定只吐正的出來，所以走一圈回不到原點。這就是為什麼答案要寫絕對值。'
+        : (a === 0 ? '<b class="ok">a ＝ 0 是分界點。</b>從這裡開始往左，等式 √(a²) ＝ a 就會壞掉。'
+          : '<b class="ok">√(a²) ＝ a，這一半沒問題。</b>把滑桿拉到 0 的左邊看看。');
+    }
+    R.addEventListener("input", draw); draw();
+  })();
+
+  /* ══════ 2　十分逼近器 ══════ */
+  (function () {
+    const N = $("sqN"), T = $("sqTbl"), O = $("sqOut");
+    if (!N) return;
+    let st = null;
+    function isqrt(v) { let x = 0n, b = 1n; while (b * b <= v) b *= 2n; while (b) { const c = x + b; if (c * c <= v) x = c; b /= 2n; } return x; }
+    function init() {
+      const n = Math.max(2, Math.min(9999, Math.floor(+N.value || 2)));
+      st = { n: BigInt(n), t: 0, v: isqrt(BigInt(n)), rows: [], done: false };
+      push(); render();
+    }
+    function push() {
+      const p = BigInt(10) ** BigInt(st.t);
+      const lo = st.v, hi = st.v + 1n;
+      const dec = (x) => { const s = x.toString().padStart(st.t + 1, "0"); return st.t ? s.slice(0, s.length - st.t) + "." + s.slice(s.length - st.t) : s; };
+      const sq = (x) => { const s = (x * x).toString().padStart(2 * st.t + 1, "0"); return st.t ? s.slice(0, s.length - 2 * st.t) + "." + s.slice(s.length - 2 * st.t) : s; };
+      st.rows.push({ t: st.t, lo: dec(lo), losq: sq(lo), hi: dec(hi), hisq: sq(hi) });
+      if (lo * lo === st.n * p * p) st.done = true;
+    }
+    function step() {
+      if (st.done) return;
+      st.t += 1;
+      const p = BigInt(10) ** BigInt(2 * st.t);
+      let v = st.v * 10n;
+      for (let d = 9n; d >= 0n; d--) { if ((v + d) * (v + d) <= st.n * p) { v = v + d; break; } }
+      st.v = v; push();
+    }
+    function render() {
+      let h = "<tr><th>小數位</th><th>下界</th><th>下界²</th><th>上界</th><th>上界²</th></tr>";
+      st.rows.forEach((r) => {
+        h += `<tr><td>${r.t}</td><td class="mono">${r.lo}</td><td class="mono">${r.losq}</td><td class="mono">${r.hi}</td><td class="mono">${r.hisq}</td></tr>`;
+      });
+      T.innerHTML = h;
+      const n = Number(st.n), r = Math.round(Math.sqrt(n));
+      if (st.done) {
+        O.innerHTML = `<b class="ok">停下來了。</b>${n} ＝ ${r}²，是完全平方數，所以夾到某一步就剛好命中，區間長度變成 0。`;
+      } else {
+        const w = Math.pow(10, -st.t);
+        O.innerHTML = `<b class="no">還沒停，也停不下來。</b>目前區間寬 ${w.toExponential(0)}，每按一次縮小成十分之一，但下界的平方永遠差那麼一點。`
+          + `因為 ${n} 不是完全平方數，√${n} 不是分數，而<b>任何有限小數都是分數</b>，所以這串小數不可能終止。`;
+      }
+    }
+    $("sqStep").onclick = () => { step(); render(); };
+    $("sqStep5").onclick = () => { for (let i = 0; i < 5; i++) step(); render(); };
+    $("sqReset").onclick = init; N.onchange = init;
+    init();
+  })();
+
+  /* ══════ 3　切不完的正方形 ══════ */
+  (function () {
+    const sv = $("icSvg"), SEL = $("icRatio"), R = $("icSteps"), V = $("icStepsV"), O = $("icOut");
+    if (!sv) return;
+    function cf(r, k) { const a = []; let x = r; for (let i = 0; i < k; i++) { const q = Math.floor(x); a.push(q); const f = x - q; if (f < 1e-9) break; x = 1 / f; } return a; }
+    function draw() {
+      const r = +SEL.value, steps = +R.value; V.textContent = steps;
+      clear(sv);
+      const MW = 560, MH = 250, PX = 40, PY = 25;
+      let H = MH, W = H * r; if (W > MW) { W = MW; H = W / r; }
+      sv.appendChild(el("rect", { x: PX, y: PY, width: W, height: H }, { fill: "var(--tint2)", stroke: "var(--blue)", strokeWidth: "1.5" }));
+      let x = PX, y = PY, w = W, h = H, i = 0, ended = false;
+      while (i < steps) {
+        if (w < 0.7 || h < 0.7) { ended = true; break; }
+        let s;
+        if (w >= h) { s = h; sv.appendChild(el("rect", { x: x, y: y, width: s, height: s }, { fill: "var(--orange)", fillOpacity: String(0.13 + 0.05 * (i % 4)), stroke: "var(--orange)", strokeWidth: "1" })); if (s > 22) sv.appendChild(txt(x + s / 2, y + s / 2 + 5, String(i + 1), { size: 12, fill: "var(--orange)", bold: true })); x += s; w -= s; }
+        else { s = w; sv.appendChild(el("rect", { x: x, y: y, width: s, height: s }, { fill: "var(--orange)", fillOpacity: String(0.13 + 0.05 * (i % 4)), stroke: "var(--orange)", strokeWidth: "1" })); if (s > 22) sv.appendChild(txt(x + s / 2, y + s / 2 + 5, String(i + 1), { size: 12, fill: "var(--orange)", bold: true })); y += s; h -= s; }
+        i += 1;
+      }
+      if (!ended && w > 0.7 && h > 0.7) {
+        sv.appendChild(el("rect", { x: x, y: y, width: w, height: h }, { fill: "var(--green)", fillOpacity: ".22", stroke: "var(--green)", strokeWidth: "1.5" }));
+        const rr = Math.max(w, h) / Math.min(w, h);
+        sv.appendChild(txt(PX + W / 2, PY + H + 22, "剩下的長方形　長 ÷ 寬 ＝ " + fmt(rr, 4), { size: 13, fill: "var(--green)", bold: true }));
+      } else {
+        sv.appendChild(txt(PX + W / 2, PY + H + 22, "切完了，沒有剩下", { size: 13, fill: "var(--blue)", bold: true }));
+      }
+      const q = cf(r, 10);
+      const rational = ended || q.length < 10;
+      O.innerHTML = rational
+        ? `<b class="ok">切得完。</b>切完表示這兩段長度有<b>共同單位</b>，比值寫得成分數。連分數是 [${q[0]}; ${q.slice(1).join(", ")}]，有限長。`
+        : `<b class="no">永遠切不完。</b>連分數 [${q[0]}; ${q.slice(1).join(", ")}, …] 不會結束……`
+          + `注意綠色那塊剩下的長方形，它的長寬比一直回到同一個數，所以下一輪會發生一模一樣的事，無限循環。`
+          + `這就是「不可公度」：兩段長度<b>沒有</b>共同單位，任何刻度都量不準其中一段。`;
+    }
+    SEL.onchange = draw; R.oninput = draw; draw();
+  })();
+
+  /* ══════ 4　直式開方法 ══════ */
+  (function () {
+    const N = $("lgN"), T = $("lgTbl"), sv = $("lgSvg"), O = $("lgOut"), Z = $("lgWhole"), NX = $("lgNext");
+    if (!N) return;
+    const MAXDEC = 6;
+    let st = null;
+    function init() {
+      let n = Math.floor(+N.value);
+      if (!(n >= 1)) n = 1;
+      if (n > 99999999) n = 99999999;
+      const s = String(n), pairs = [];
+      for (let i = s.length; i > 0; i -= 2) pairs.unshift(s.slice(Math.max(0, i - 2), i));
+      st = { n: n, pairs: pairs, m: pairs.length, k: 0, root: 0, rem: 0, rows: [] };
+      render();
+    }
+    const canNext = () => st.k < st.m || (st.rem !== 0 && st.k < st.m + MAXDEC);
+    function next() {
+      if (!canNext()) return;
+      const pair = st.k < st.m ? parseInt(st.pairs[st.k], 10) : 0;
+      const cur = st.rem * 100 + pair;
+      let d = 0;
+      while ((20 * st.root + d + 1) * (d + 1) <= cur) d++;
+      const trial = (20 * st.root + d) * d;
+      st.rows.push({ k: st.k, bring: cur, twice: st.k === 0 ? "—" : String(20 * st.root), d: d, trial: trial, rem: cur - trial, prev: st.root });
+      st.root = st.root * 10 + d; st.rem = cur - trial; st.k += 1;
+      render();
+    }
+    // R 是目前算出的 kk 位數字，第一位在 10^(m−1) 的位置
+    function sideOf(R, kk) {
+      const m = st.m, s = String(R);
+      if (kk <= m) return s + "0".repeat(m - kk);
+      return s.slice(0, m) + "." + s.slice(m);
+    }
+    function areaOf(R, kk) {
+      const m = st.m, A = BigInt(R) * BigInt(R);
+      if (kk <= m) return (A * BigInt(10) ** BigInt(2 * (m - kk))).toString();
+      const dd = 2 * (kk - m), s = A.toString().padStart(dd + 1, "0");
+      return s.slice(0, s.length - dd) + "." + s.slice(s.length - dd);
+    }
+    function placeOf(k) {
+      const e = st.m - 1 - k;
+      return e >= 0 ? "1" + "0".repeat(e) : "0." + "0".repeat(-e - 1) + "1";
+    }
+    const S = 300, P = 10;
+    function zoomView(r) {
+      const k = r.k, A = r.prev * 10, d = r.d, c = k === 0 ? 0 : 5, span = k === 0 ? 10 : 15, u = S / span;
+      const X = (x) => P + x * u, Y = (y) => P + S - y * u;
+      for (let i = 0; i <= span; i++) {
+        sv.appendChild(el("line", { x1: X(i), y1: Y(0), x2: X(i), y2: Y(span) }, { stroke: "var(--line)", strokeWidth: ".6" }));
+        sv.appendChild(el("line", { x1: X(0), y1: Y(i), x2: X(span), y2: Y(i) }, { stroke: "var(--line)", strokeWidth: ".6" }));
+      }
+      const box = (x0, y0, x1, y1, fill, op, stroke) => sv.appendChild(el("rect", { x: X(x0), y: Y(y1), width: (x1 - x0) * u, height: (y1 - y0) * u }, { fill: fill, fillOpacity: op, stroke: stroke, strokeWidth: "1.2" }));
+      if (k === 0) {
+        if (d) box(0, 0, d, d, "var(--blue)", ".22", "var(--blue)");
+        if (d >= 2) sv.appendChild(txt(X(d / 2), Y(d / 2) + 5, "a² ＝ " + areaOf(d, 1), { size: 12, fill: "var(--blue)", bold: true }));
+      } else {
+        box(0, 0, c, c, "var(--blue)", ".22", "var(--blue)");
+        sv.appendChild(txt(X(c / 2), Y(c / 2) - 4, "a²", { size: 13, fill: "var(--blue)", bold: true }));
+        sv.appendChild(txt(X(c / 2), Y(c / 2) + 14, "a ＝ " + sideOf(r.prev, k), { size: 11, fill: "var(--blue)" }));
+        if (d) {
+          box(c, 0, c + d, c, "var(--orange)", ".3", "var(--orange)");
+          box(0, c, c, c + d, "var(--orange)", ".3", "var(--orange)");
+          box(c, c, c + d, c + d, "var(--sand)", ".85", "var(--orange)");
+          sv.appendChild(txt(X(c + d / 2), Y(c / 2) + 4, "ab", { size: 11, fill: "var(--orange)", bold: true }));
+          sv.appendChild(txt(X(c / 2), Y(c + d / 2) + 4, "ab", { size: 11, fill: "var(--orange)", bold: true }));
+          sv.appendChild(txt(X(c + d / 2), Y(c + d / 2) + 4, "b²", { size: 11, fill: "var(--orange)", bold: true }));
+        }
+      }
+      // 再多一格就超過
+      const f = c + d + 1;
+      sv.appendChild(el("polyline", { points: [X(0), Y(f), X(f), Y(f), X(f), Y(0)].join(" ") }, { fill: "none", stroke: "var(--mute)", strokeWidth: "1.2", strokeDasharray: "5 4" }));
+      sv.appendChild(txt(X(f) - 4, Y(f) + 13, (k === 0 ? "試 " : "b 試 ") + (d + 1) + " 就超過", { size: 10, fill: "var(--mute)", anchor: "end" }));
+      // √n 真正的位置
+      const g = Math.sqrt(st.n) * Math.pow(10, k + 1 - st.m) - (k === 0 ? 0 : A - 5);
+      if (g >= 0 && g <= span) {
+        sv.appendChild(el("polyline", { points: [X(0), Y(g), X(g), Y(g), X(g), Y(0)].join(" ") }, { fill: "none", stroke: "var(--green)", strokeWidth: "1.6", strokeDasharray: "2 3" }));
+        const right = g > span - 2;
+        sv.appendChild(txt(right ? X(g) - 4 : X(g) + 4, Y(0) - 6, "√" + st.n, { size: 11, fill: "var(--green)", bold: true, anchor: right ? "end" : "start" }));
+      }
+      return k === 0 ? "一小格 ＝ " + placeOf(0) : "只看右上角：一小格 ＝ " + placeOf(k) + "（上一步的 1/10）";
+    }
+    function wholeView() {
+      const full = Math.sqrt(st.n), sc = S / full;
+      st.rows.forEach((r) => {
+        const p = Math.pow(10, st.m - 1 - r.k), aO = r.prev * 10 * p, aN = (r.prev * 10 + r.d) * p;
+        const uO = aO * sc, uN = aN * sc, t = uN - uO;
+        if (r.k === 0) {
+          sv.appendChild(el("rect", { x: P, y: P + S - uN, width: uN, height: uN }, { fill: "var(--blue)", fillOpacity: ".22", stroke: "var(--blue)", strokeWidth: "1.2" }));
+          if (uN > 60) sv.appendChild(txt(P + uN / 2, P + S - uN / 2 + 5, "a²", { size: 13, fill: "var(--blue)", bold: true }));
+        } else if (t > 0) {
+          sv.appendChild(el("rect", { x: P + uO, y: P + S - uO, width: t, height: uO }, { fill: "var(--orange)", fillOpacity: ".3", stroke: "var(--orange)", strokeWidth: ".8" }));
+          sv.appendChild(el("rect", { x: P, y: P + S - uN, width: uO, height: t }, { fill: "var(--orange)", fillOpacity: ".3", stroke: "var(--orange)", strokeWidth: ".8" }));
+          sv.appendChild(el("rect", { x: P + uO, y: P + S - uN, width: t, height: t }, { fill: "var(--sand)", fillOpacity: ".85", stroke: "var(--orange)", strokeWidth: ".8" }));
+        }
+      });
+      sv.appendChild(el("rect", { x: P, y: P, width: S, height: S }, { fill: "none", stroke: "var(--green)", strokeWidth: "1.4", strokeDasharray: "2 3" }));
+      return st.k > st.m ? "全貌（真實比例）：小數那幾圈薄到看不見" : "全貌（真實比例）：綠框是 √" + st.n;
+    }
+    function render() {
+      const m = st.m;
+      let h = "<tr><th>步</th><th>帶下來</th><th>商的兩倍</th><th>試的位 d</th><th>(2×商＋d)×d</th><th>餘</th><th>目前的商</th></tr>";
+      st.rows.forEach((r) => {
+        const stp = r.k < m ? String(r.k + 1) : (r.k + 1) + '<br><small style="color:var(--mute);white-space:nowrap">小數 ' + (r.k - m + 1) + "</small>";
+        h += `<tr><td>${stp}</td><td class="mono">${r.bring}</td><td class="mono">${r.twice}</td><td class="mono">${r.d}</td><td class="mono">${r.trial}</td><td class="mono">${r.rem}</td><td class="mono"><b>${r.k + 1 <= m ? String(r.prev * 10 + r.d) : sideOf(r.prev * 10 + r.d, r.k + 1)}</b></td></tr>`;
+      });
+      T.innerHTML = st.rows.length ? h : "<tr><th>按「下一位」開始</th></tr>";
+      NX.disabled = !canNext();
+      clear(sv);
+      if (!st.rows.length) {
+        sv.appendChild(el("rect", { x: P, y: P, width: S, height: S }, { fill: "none", stroke: "var(--line)", strokeWidth: "1", strokeDasharray: "4 4" }));
+      } else {
+        const cap = Z && Z.checked ? wholeView() : zoomView(st.rows[st.rows.length - 1]);
+        sv.appendChild(txt(P + S / 2, 330, cap, { size: 12, fill: "var(--mute)" }));
+        sv.appendChild(txt(P + S / 2, 348, "目前邊長 " + sideOf(st.root, st.k), { size: 12, fill: "var(--ink)" }));
+        sv.appendChild(txt(P + S / 2, 365, "面積 " + areaOf(st.root, st.k) + "（原數 " + st.n + "）", { size: 12, fill: "var(--mute)" }));
+      }
+      const k = st.k, n = st.n;
+      let msg;
+      if (!st.rows.length) msg = "按「下一位」，看正方形一圈一圈長出來。";
+      else if (k < m) msg = `<b>還沒完。</b>下一步要帶下來的是 ${st.pairs[k]}，旁邊要寫的是商的兩倍 ${2 * st.root}。`;
+      else if (st.rem === 0 && k === m) {
+        const L = st.rows[st.rows.length - 1], aO = L.prev * 10, bO = L.d;
+        const parts = st.rows.length > 1
+          ? `拆開看：a² ＝ ${aO * aO}，兩條 2ab ＝ 2×${aO}×${bO} ＝ ${2 * aO * bO}，b² ＝ ${bO * bO}；合計 ${aO * aO + 2 * aO * bO + bO * bO} ＝ ${n}。`
+          : "";
+        msg = `<b class="ok">√${n} ＝ ${st.root}，整除。</b>${parts}橘色那兩條就是 2ab，沙色那一小塊就是 b²。課本要你「把商乘以 2 寫在旁邊」，那個 2 就是<b>兩條橘色長方形</b>。`;
+      } else if (k === m) msg = `<b>整數部分是 ${st.root}，餘 ${st.rem}。</b>${n} 不是完全平方數，還可以繼續：按「下一位」，在後面補一組 00，往小數第 1 位試下去。`;
+      else if (k < m + MAXDEC) msg = `<b>√${n} ≈ ${sideOf(st.root, k)}…（到小數第 ${k - m} 位）</b>每多一位，正方形只多長一圈更薄的邊，所以畫面每一步放大 10 倍才看得到。試的方法完全一樣：補 00、寫商的兩倍、試 d。綠色虛線是 √${n} 真正的位置，正方形永遠追不上它。`;
+      else msg = `<b>√${n} ≈ ${sideOf(st.root, k)}…，先停在小數第 ${MAXDEC} 位。</b>餘數永遠不會變成 0，這個方法可以一直做下去：√${n} 不是有限小數。`;
+      O.innerHTML = msg;
+    }
+    NX.onclick = next;
+    $("lgAll").onclick = () => { while (canNext()) next(); };
+    $("lgReset").onclick = init;
+    N.addEventListener("input", init);
+    N.addEventListener("change", init);
+    if (Z) Z.addEventListener("change", render);
+    init();
+  })();
+
+  /* ══════ 5　同單位才能合併 ══════ */
+  (function () {
+    const CH = $("unitChips"), BIN = $("unitBins"), O = $("unitOut");
+    if (!CH) return;
+    const pool = [8, 18, 50, 32, 12, 27, 75, 3, 5, 20, 45, 98];
+    let bag = [];
+    function reduce(n) { let k = 1, m = n; for (let d = 2; d * d <= m; d++) { while (m % (d * d) === 0) { m /= d * d; k *= d; } } return { k: k, m: m }; }
+    pool.forEach((n) => {
+      const b = document.createElement("button");
+      b.className = "ghost"; b.textContent = "√" + n;
+      b.onclick = () => { bag.push(n); render(); };
+      CH.appendChild(b);
+    });
+    function render() {
+      const bins = {};
+      bag.forEach((n) => { const r = reduce(n); bins[r.m] = (bins[r.m] || 0) + r.k; });
+      const keys = Object.keys(bins).map(Number).sort((a, b) => a - b);
+      if (!bag.length) { BIN.innerHTML = '<span style="color:var(--mute)">袋子是空的。點上面的根式丟進來。</span>'; O.innerHTML = ""; return; }
+      let h = "<div>你丟進來的：" + bag.map((n) => "√" + n).join(" ＋ ") + "</div>";
+      h += '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px">';
+      keys.forEach((m) => {
+        h += `<div style="border:1px solid var(--cardline);border-radius:10px;padding:9px 13px;background:var(--tint2)">
+          <div style="font-size:12px;color:var(--mute)">單位 √${m}</div>
+          <div style="font-size:18px;font-weight:700;color:var(--blue)">${bins[m] === 1 ? "" : bins[m]}√${m}</div></div>`;
+      });
+      h += "</div>";
+      BIN.innerHTML = h;
+      const parts = keys.map((m) => (bins[m] === 1 ? "" : bins[m]) + "√" + m);
+      O.innerHTML = keys.length === 1
+        ? `<b class="ok">全部同單位，可以合併成 ${parts[0]}。</b>換算成最簡根式就是在「統一單位」，和分數的通分是同一件事。`
+        : `<b class="no">有 ${keys.length} 種不同的單位，只能寫成 ${parts.join(" ＋ ")}。</b>`
+          + `不同單位之間<b>永遠</b>加不起來，因為 (√x＋√y)² ＝ x＋y＋2√(xy)，硬併會漏掉交叉項。`;
+    }
+    $("unitClear").onclick = () => { bag = []; render(); };
+    render();
+  })();
+
+  /* ══════ 6　分母有理化 ══════ */
+  (function () {
+    const ids = ["ratP", "ratA", "ratB", "ratC", "ratD", "ratE"], O = $("ratOut");
+    if (!O) return;
+    const gcd = (a, b) => (b ? gcd(b, a % b) : Math.abs(a));
+    function rad(k, c) { if (k === 0) return ""; if (c === 1) return String(k); const kk = k === 1 ? "" : (k === -1 ? "−" : k); return kk + "√" + c; }
+    function calc() {
+      const p = +$("ratP").value, A = +$("ratA").value, B = +$("ratB").value, C = Math.max(1, +$("ratC").value),
+        D = +$("ratD").value, E = Math.max(1, +$("ratE").value);
+      // 分母 = A + B√C − D√E，取其中恰兩個非零項
+      const terms = [];
+      if (A !== 0) terms.push({ k: A, c: 1, s: String(A) });
+      if (B !== 0) terms.push({ k: B, c: C, s: rad(B, C) });
+      if (D !== 0) terms.push({ k: -D, c: E, s: (D > 0 ? "− " : "＋ ") + rad(Math.abs(D), E) });
+      if (terms.length !== 2) {
+        O.innerHTML = '<span class="no">分母請剛好留兩項</span>（三個係數中要有一個是 0）。例如 3−√5 就填 A=3、B=0、C=任意、D=1、E=5。';
+        return;
+      }
+      const X = terms[0], Y = terms[1];
+      const X2 = X.k * X.k * X.c, Y2 = Y.k * Y.k * Y.c, den = X2 - Y2;
+      if (den === 0) { O.innerHTML = '<span class="no">兩項平方後相等，分母會變成 0。</span>換一組數字。'; return; }
+      const conj = (Y.k > 0 ? "− " : "＋ ") + rad(Math.abs(Y.k), Y.c);
+      const denStr = X.s + " " + (Y.k > 0 ? "＋ " : "− ") + rad(Math.abs(Y.k), Y.c);
+      const conjStr = X.s + " " + conj;
+      // 分子 p(X − Y) → 兩項
+      const n1 = p * X.k, n2 = -p * Y.k;
+      const g = gcd(gcd(Math.abs(n1), Math.abs(n2)), Math.abs(den)) || 1;
+      const s = den < 0 ? -1 : 1;
+      const a1 = (n1 / g) * s, a2 = (n2 / g) * s, dd = Math.abs(den / g);
+      const numStr = (a1 === 0 ? "" : rad(a1, X.c)) + (a2 === 0 ? "" : (a1 === 0 ? rad(a2, Y.c) : (a2 > 0 ? " ＋ " + rad(a2, Y.c) : " − " + rad(Math.abs(a2), Y.c))));
+      O.innerHTML =
+        `<div style="font-size:17px;line-height:2.2">
+        <div>原式　<b>${p} ／ ( ${denStr} )</b></div>
+        <div>上下同乘共軛　<b>${conjStr}</b></div>
+        <div style="color:var(--orange)">分母變成　( ${X.s} )² − ( ${rad(Math.abs(Y.k), Y.c)} )² ＝ ${X2} − ${Y2} ＝ <b>${den}</b>　← 平方差公式在這裡工作</div>
+        <div>分子變成　${p} × ( ${conjStr} ) ＝ ${rad(p * X.k, X.c)} ${(-p * Y.k) >= 0 ? "＋ " + rad(Math.abs(p * Y.k), Y.c) : "− " + rad(Math.abs(p * Y.k), Y.c)}</div>
+        <div style="color:var(--blue);font-size:19px">結果　<b>${dd === 1 ? numStr : "( " + numStr + " ) ／ " + dd}</b></div>
+      </div>`;
+    }
+    ids.forEach((i) => { $(i).oninput = calc; });
+    calc();
+  })();
+
+  /* ══════ 7　重排證明 ══════ */
+  (function () {
+    const sv = $("reSvg"), RA = $("reA"), RB = $("reB"), VA = $("reAv"), VB = $("reBv"), O = $("reOut");
+    if (!sv) return;
+    function tri(pts) { return el("polygon", { points: pts.map((p) => p.join(",")).join(" ") }, { fill: "var(--green)", fillOpacity: ".28", stroke: "var(--green)", strokeWidth: "1.2" }); }
+    function draw() {
+      const a = +RA.value, b = +RB.value; VA.textContent = a; VB.textContent = b;
+      clear(sv);
+      const S = 210, L = a + b, k = S / L, A = a * k, B = b * k;
+      const ox = 40, oy = 35, px = 380;
+      // 左：a² + b² + 4 三角形
+      sv.appendChild(el("rect", { x: ox, y: oy, width: S, height: S }, { fill: "var(--card)", stroke: "var(--blue)", strokeWidth: "1.6" }));
+      sv.appendChild(el("rect", { x: ox, y: oy, width: A, height: A }, { fill: "var(--blue)", fillOpacity: ".2", stroke: "var(--blue)", strokeWidth: "1" }));
+      sv.appendChild(el("rect", { x: ox + A, y: oy + A, width: B, height: B }, { fill: "var(--sand)", stroke: "var(--orange)", strokeWidth: "1" }));
+      // 右上長方形（寬 b、高 a）對切成兩個 a-b 直角三角形
+      sv.appendChild(tri([[ox + A, oy], [ox + S, oy], [ox + S, oy + A]]));
+      sv.appendChild(tri([[ox + A, oy], [ox + S, oy + A], [ox + A, oy + A]]));
+      // 左下長方形（寬 a、高 b）同樣對切
+      sv.appendChild(tri([[ox, oy + A], [ox + A, oy + A], [ox + A, oy + S]]));
+      sv.appendChild(tri([[ox, oy + A], [ox + A, oy + S], [ox, oy + S]]));
+      if (A > 30) sv.appendChild(txt(ox + A / 2, oy + A / 2 + 5, "a²", { size: 16, bold: true, fill: "var(--blue)" }));
+      if (B > 26) sv.appendChild(txt(ox + A + B / 2, oy + A + B / 2 + 5, "b²", { size: 14, bold: true, fill: "var(--orange)" }));
+      sv.appendChild(txt(ox + S / 2, oy + S + 22, "a² ＋ b² ＝ " + (a * a + b * b), { size: 14, bold: true, fill: "var(--blue)" }));
+      // 右：c² + 4 三角形
+      sv.appendChild(el("rect", { x: px, y: oy, width: S, height: S }, { fill: "var(--card)", stroke: "var(--blue)", strokeWidth: "1.6" }));
+      const P = [[px + A, oy], [px + S, oy + A], [px + B, oy + S], [px, oy + B]];
+      sv.appendChild(el("polygon", { points: P.map((p) => p.join(",")).join(" ") }, { fill: "var(--green)", fillOpacity: ".16", stroke: "var(--green)", strokeWidth: "1.6" }));
+      sv.appendChild(tri([[px, oy], [px + A, oy], [px, oy + B]]));
+      sv.appendChild(tri([[px + A, oy], [px + S, oy], [px + S, oy + A]]));
+      sv.appendChild(tri([[px + S, oy + A], [px + S, oy + S], [px + B, oy + S]]));
+      sv.appendChild(tri([[px, oy + B], [px + B, oy + S], [px, oy + S]]));
+      sv.appendChild(txt(px + S / 2, oy + S / 2 + 6, "c² ＝ " + (a * a + b * b), { size: 16, bold: true, fill: "var(--green)" }));
+      sv.appendChild(txt(px + S / 2, oy + S + 22, "c ＝ " + fmt(Math.sqrt(a * a + b * b), 3), { size: 14, bold: true, fill: "var(--green)" }));
+      sv.appendChild(txt(310, oy + S / 2 + 8, "＝", { size: 26, bold: true, fill: "var(--orange)" }));
+      O.innerHTML = `<b>兩個大正方形都是 (a＋b)² ＝ ${(a + b) * (a + b)}。</b>`
+        + `各扣掉四個一樣的三角形（共 2ab ＝ ${2 * a * b}），左邊剩 a²＋b² ＝ ${a * a + b * b}，右邊剩 c² ＝ ${a * a + b * b}。`
+        + `<b class="ok">怎麼拉滑桿都相等。</b>`;
+    }
+    RA.oninput = draw; RB.oninput = draw; draw();
+  })();
+
+  /* ══════ 8　第一扇門：換掉正方形 ══════ */
+  (function () {
+    const sv = $("d1Svg"), SH = $("d1Shape"), RA = $("d1A"), RB = $("d1B"), VA = $("d1Av"), VB = $("d1Bv"), O = $("d1Out");
+    if (!sv) return;
+    const K = { sq: 1, semi: Math.PI / 8, tri: Math.sqrt(3) / 4, pent: 0.25 * Math.sqrt(25 + 10 * Math.sqrt(5)) };
+    const NAME = { sq: "正方形", semi: "半圓", tri: "正三角形", pent: "正五邊形" };
+    const PENT = [[0, 0], [1, 0], [1.309017, 0.951057], [0.5, 1.538842], [-0.309017, 0.951057]];
+    function shapePath(P, Q, out, kind) {
+      const ex = Q[0] - P[0], ey = Q[1] - P[1];
+      const nx = out[0], ny = out[1];
+      const map = (u, v) => [P[0] + u * ex + v * nx, P[1] + u * ey + v * ny];
+      if (kind === "semi") {
+        const mid = [(P[0] + Q[0]) / 2, (P[1] + Q[1]) / 2];
+        return semiTo(P, Q, [mid[0] + nx, mid[1] + ny]);
+      }
+      const tpl = kind === "sq" ? [[0, 0], [1, 0], [1, 1], [0, 1]] : kind === "tri" ? [[0, 0], [1, 0], [0.5, Math.sqrt(3) / 2]] : PENT;
+      return el("polygon", { points: tpl.map((p) => map(p[0], p[1]).join(",")).join(" ") });
+    }
+    function draw() {
+      const a = +RA.value, b = +RB.value, kind = SH.value;
+      VA.textContent = a; VB.textContent = b;
+      clear(sv);
+      const c = Math.hypot(a, b), sc = 1.15;
+      const C = [0, 0], A = [a * sc, 0], B = [0, -b * sc];
+      const cen = [(C[0] + A[0] + B[0]) / 3, (C[1] + A[1] + B[1]) / 3];
+      function outward(P, Q) {
+        const ex = Q[0] - P[0], ey = Q[1] - P[1], L = Math.hypot(ex, ey);
+        let n = [-ey / L, ex / L];
+        const mid = [(P[0] + Q[0]) / 2, (P[1] + Q[1]) / 2];
+        if ((mid[0] + n[0] - cen[0]) ** 2 + (mid[1] + n[1] - cen[1]) ** 2 < (mid[0] - cen[0]) ** 2 + (mid[1] - cen[1]) ** 2) n = [-n[0], -n[1]];
+        return [n[0] * L, n[1] * L];
+      }
+      const shapes = [
+        { P: C, Q: A, col: "var(--blue)", lbl: "a" },
+        { P: B, Q: C, col: "var(--orange)", lbl: "b" },
+        { P: A, Q: B, col: "var(--green)", lbl: "c" },
+      ];
+      const g = el("g");
+      shapes.forEach((s) => {
+        const p = shapePath(s.P, s.Q, outward(s.P, s.Q), kind);
+        p.style.fill = s.col; p.style.fillOpacity = ".22"; p.style.stroke = s.col; p.style.strokeWidth = "1.5";
+        g.appendChild(p);
+      });
+      const tp = el("polygon", { points: [C, A, B].map((p) => p.join(",")).join(" ") }, { fill: "var(--ink)", fillOpacity: ".12", stroke: "var(--ink)", strokeWidth: "1.5" });
+      g.appendChild(tp);
+      sv.appendChild(g);
+      // 自動置中縮放
+      const bb = g.getBBox();
+      const pad = 26, VW = 640, VH = 330;
+      const k = Math.min((VW - 2 * pad) / bb.width, (VH - 2 * pad - 26) / bb.height);
+      g.setAttribute("transform", `translate(${pad - bb.x * k + (VW - 2 * pad - bb.width * k) / 2} ${pad - bb.y * k}) scale(${k})`);
+      const f = K[kind], Sa = f * a * a, Sb = f * b * b, Sc = f * c * c;
+      sv.appendChild(txt(320, VH - 8, `S(a) ＝ ${fmt(Sa, 1)}　＋　S(b) ＝ ${fmt(Sb, 1)}　＝　S(c) ＝ ${fmt(Sa + Sb, 1)}`,
+        { size: 14, bold: true, fill: "var(--blue)" }));
+      O.innerHTML = `<b class="ok">換成${NAME[kind]}，等式照樣成立。</b>`
+        + `相似圖形的面積都是「常數 × 邊長²」，這裡的常數是 ${fmt(f, 4)}。把 a²＋b²＝c² 整條乘上這個常數，就得到 ${fmt(Sa, 1)} ＋ ${fmt(Sb, 1)} ＝ ${fmt(Sc, 1)}。`
+        + `<b>「正方形」從來不是重點，「平方」才是。</b>`;
+    }
+    SH.onchange = draw; RA.oninput = draw; RB.oninput = draw; draw();
+  })();
+
+  /* ══════ 9　月牙定理 ══════ */
+  (function () {
+    const sv = $("luSvg"), RA = $("luA"), RB = $("luB"), VA = $("luAv"), VB = $("luBv"), O = $("luOut"), BT = $("luShow");
+    if (!sv) return;
+    let shown = false;
+    function draw() {
+      const a = +RA.value, b = +RB.value; VA.textContent = a; VB.textContent = b;
+      clear(sv);
+      const sc = 1.5, ox = 210, oy = 250;
+      const C = [ox, oy], A = [ox + a * sc, oy], B = [ox, oy - b * sc];
+      const g = el("g");
+      const cen = [(C[0] + A[0] + B[0]) / 3, (C[1] + A[1] + B[1]) / 3];
+      const away = (P, Q) => { const m = [(P[0] + Q[0]) / 2, (P[1] + Q[1]) / 2]; return [2 * m[0] - cen[0], 2 * m[1] - cen[1]]; };
+      // 兩股上向外的半圓（月牙色）
+      const s1 = semiTo(C, A, away(C, A)); s1.style.fill = "var(--orange)"; s1.style.fillOpacity = ".5"; s1.style.stroke = "var(--orange)"; s1.style.strokeWidth = "1.2";
+      const s2 = semiTo(B, C, away(B, C)); s2.style.fill = "var(--orange)"; s2.style.fillOpacity = ".5"; s2.style.stroke = "var(--orange)"; s2.style.strokeWidth = "1.2";
+      g.appendChild(s1); g.appendChild(s2);
+      // 斜邊上、含 C 的半圓：用底色蓋掉重疊處，剩下的橘色就是兩個月牙
+      const s3 = semiTo(A, B, C); s3.style.fill = "var(--card)"; s3.style.stroke = "var(--blue)"; s3.style.strokeWidth = "1.4";
+      g.appendChild(s3);
+      // 三角形
+      g.appendChild(el("polygon", { points: [C, A, B].map((p) => p.join(",")).join(" ") },
+        { fill: "var(--green)", fillOpacity: ".3", stroke: "var(--green)", strokeWidth: "1.6" }));
+      g.appendChild(txt(C[0] - 12, C[1] + 16, "C", { size: 12, fill: "var(--mute)" }));
+      g.appendChild(txt(A[0] + 10, A[1] + 16, "A", { size: 12, fill: "var(--mute)" }));
+      g.appendChild(txt(B[0] - 14, B[1] - 4, "B", { size: 12, fill: "var(--mute)" }));
+      sv.appendChild(g);
+      const bb = g.getBBox(), pad = 18, VW = 640, VH = 300;
+      const k = Math.min((VW - 2 * pad) / bb.width, (VH - 2 * pad) / bb.height, 1.4);
+      g.setAttribute("transform", `translate(${pad - bb.x * k + (VW - 2 * pad - bb.width * k) / 2} ${pad - bb.y * k + (VH - 2 * pad - bb.height * k) / 2}) scale(${k})`);
+      if (shown) {
+        const T = a * b / 2, L = T;
+        O.innerHTML = `<b class="ok">一樣大。</b>三角形面積 ＝ ${fmt(T, 1)}，兩個月牙面積和 ＝ ${fmt(L, 1)}。`
+          + `推導：整塊圖形 ＝ 兩股半圓 ＋ 三角形，也 ＝ 斜邊半圓 ＋ 兩月牙；由第一扇門，兩股半圓 ＝ 斜邊半圓，兩式相減就得到。`
+          + `<b>注意答案裡沒有 π</b>——這是人類史上第一次求出曲線圍成區域的精確面積（希波克拉底，約西元前 440 年）。`;
+      } else {
+        O.innerHTML = "先猜，再按「量給我看」。（橘色的兩塊就是月牙）";
+      }
+    }
+    BT.onclick = () => { shown = true; draw(); };
+    RA.oninput = draw; RB.oninput = draw; draw();
+  })();
+
+  /* ══════ 10　第三扇門：換掉直角 ══════ */
+  (function () {
+    const sv = $("d3Svg"), R = $("d3C"), V = $("d3Cv"), O = $("d3Out");
+    if (!sv) return;
+    function draw() {
+      const deg = +R.value; V.textContent = deg;
+      const a = 8, b = 6, th = deg * Math.PI / 180;
+      const c2 = a * a + b * b - 2 * a * b * Math.cos(th), c = Math.sqrt(c2);
+      clear(sv);
+      const g = el("g"), sc = 11, ox = 112, oy = 200;
+      const C = [ox, oy], A = [ox + a * sc, oy], B = [ox + b * sc * Math.cos(th), oy - b * sc * Math.sin(th)];
+      g.appendChild(el("polygon", { points: [C, A, B].map((p) => p.join(",")).join(" ") },
+        { fill: "var(--blue)", fillOpacity: ".16", stroke: "var(--blue)", strokeWidth: "1.8" }));
+      const r = 26, sw = 0;
+      g.appendChild(el("path", { d: `M${C[0] + r} ${C[1]} A${r} ${r} 0 0 ${deg > 180 ? 1 : 0} ${C[0] + r * Math.cos(th)} ${C[1] - r * Math.sin(th)}` },
+        { fill: "none", stroke: "var(--orange)", strokeWidth: "1.6" }));
+      g.appendChild(txt(C[0] + 40, C[1] - 14, deg + "°", { size: 13, bold: true, fill: "var(--orange)" }));
+      g.appendChild(txt((C[0] + A[0]) / 2, C[1] + 18, "a ＝ 8", { size: 12, fill: "var(--mute)" }));
+      g.appendChild(txt((C[0] + B[0]) / 2 - 22, (C[1] + B[1]) / 2, "b ＝ 6", { size: 12, fill: "var(--mute)" }));
+      g.appendChild(txt((A[0] + B[0]) / 2 + 20, (A[1] + B[1]) / 2 - 8, "c ＝ " + fmt(c, 2), { size: 12, bold: true, fill: "var(--green)" }));
+      sv.appendChild(g);
+      // 條狀比較
+      const bx = 380, bw = 210, top = 60, hh = 34, max = 196;
+      const s1 = (a * a + b * b) / max * 1, sB = bw / 196;
+      sv.appendChild(txt(bx, top - 12, "a² ＋ b² ＝ 100", { anchor: "start", size: 13, fill: "var(--blue)", bold: true }));
+      sv.appendChild(el("rect", { x: bx, y: top, width: 100 * sB, height: hh, rx: 5 }, { fill: "var(--blue)", fillOpacity: ".35", stroke: "var(--blue)" }));
+      sv.appendChild(txt(bx, top + hh + 34, "c² ＝ " + fmt(c2, 1), { anchor: "start", size: 13, fill: "var(--green)", bold: true }));
+      sv.appendChild(el("rect", { x: bx, y: top + hh + 46, width: Math.max(2, c2 * sB), height: hh, rx: 5 }, { fill: "var(--green)", fillOpacity: ".35", stroke: "var(--green)" }));
+      sv.appendChild(el("line", { x1: bx + 100 * sB, y1: top - 4, x2: bx + 100 * sB, y2: top + hh + 46 + hh + 6 }, { stroke: "var(--blue)", strokeWidth: "1.4", strokeDasharray: "4 4" }));
+      const pay = -2 * a * b * Math.cos(th);
+      sv.appendChild(txt(bx, top + 2 * hh + 96, "差額 −2ab·cos C ＝ " + (pay >= 0 ? "＋" : "−") + fmt(Math.abs(pay), 1), { anchor: "start", size: 13, bold: true, fill: "var(--orange)" }));
+      const kind = deg < 90 ? "銳角" : deg > 90 ? "鈍角" : "直角";
+      O.innerHTML = deg === 90
+        ? `<b class="ok">C ＝ 90°，cos C ＝ 0，那一項整個消失，c² 剛好等於 a²＋b²。</b>畢氏定理就是餘弦定理在這一點的樣子。`
+        : `<b class="no">C ＝ ${deg}°（${kind}），c² ＝ ${fmt(c2, 1)}，${deg < 90 ? "比" : "比"} a²＋b² ＝ 100 ${deg < 90 ? "小" : "大"} ${fmt(Math.abs(c2 - 100), 1)}。</b>`
+          + `這個差額就是 2ab·cos C，直角壞掉要付的錢。由此得到判別法（c 為最長邊）：c² ＜ a²＋b² 是銳角三角形，＝ 是直角，＞ 是鈍角。`;
+    }
+    R.oninput = draw; draw();
+  })();
+
+  /* ══════ 11　畢氏數機器 ══════ */
+  (function () {
+    const M = $("tpM"), N = $("tpN"), O = $("tpOut");
+    if (!M) return;
+    const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+    function one() {
+      let m = Math.max(2, Math.floor(+M.value || 2)), n = Math.max(1, Math.floor(+N.value || 1));
+      if (n >= m) { O.innerHTML = '<span class="no">需要 m ＞ n。</span>'; return; }
+      const a = m * m - n * n, b = 2 * m * n, c = m * m + n * n;
+      const prim = gcd(m, n) === 1 && (m - n) % 2 === 1;
+      O.innerHTML = `<div style="font-size:17px;line-height:2.1">
+        <div>a ＝ m²−n² ＝ ${m * m}−${n * n} ＝ <b>${a}</b>　　b ＝ 2mn ＝ <b>${b}</b>　　c ＝ m²＋n² ＝ <b>${c}</b></div>
+        <div style="color:var(--green)">驗算　${a}² ＋ ${b}² ＝ ${a * a} ＋ ${b * b} ＝ ${a * a + b * b} ＝ ${c}² ✓</div>
+        <div style="color:var(--mute);font-size:14px">${prim ? "這是一組本原畢氏數（三個數沒有公因數）。" : "這一組還有公因數 " + gcd(gcd(a, b), c) + "，是某組本原畢氏數的倍數。"}</div>
+        <div style="color:var(--orange);font-size:14px">為什麼一定成立？(m²−n²)² ＋ (2mn)² ＝ m⁴ − 2m²n² + n⁴ + 4m²n² ＝ m⁴ + 2m²n² + n⁴ ＝ (m²＋n²)²，用的就是上一章的乘法公式。</div>
+      </div>`;
+    }
+    $("tpGen").onclick = one;
+    $("tpTable").onclick = function () {
+      let rows = [], m = 2;
+      while (rows.length < 12 && m < 12) {
+        for (let n = 1; n < m && rows.length < 12; n++) {
+          if (gcd(m, n) !== 1 || (m - n) % 2 === 0) continue;
+          rows.push([m, n, m * m - n * n, 2 * m * n, m * m + n * n]);
+        }
+        m++;
+      }
+      let h = '<div class="scrollx"><table><tr><th>m</th><th>n</th><th>a</th><th>b</th><th>c</th><th>驗算 a²＋b²</th></tr>';
+      rows.forEach((r) => { h += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="mono">${r[2] * r[2] + r[3] * r[3]} ＝ ${r[4]}²</td></tr>`; });
+      O.innerHTML = h + "</table></div>";
+    };
+    M.oninput = one; N.oninput = one; one();
+  })();
+
+  /* ══════ 12　√n 螺線與畢氏樹 ══════ */
+  (function () {
+    const sv = $("spSvg"), KIND = $("spKind"), RN = $("spN"), VN = $("spNv"),
+      RD = $("spD"), VD = $("spDv"), RA = $("spA"), VA = $("spAv"), O = $("spOut");
+    if (!sv) return;
+    const VW = 640, VH = 380;
+    // 先在數學座標（y 向上）算好形狀，最後才換成畫面座標，字和線粗就不會跟著圖一起放大
+    function spiralModel(n) {
+      const shapes = [], spokes = [];
+      let P = [0, 0], Q = [1, 0], th = 0;
+      spokes.push({ j: 1, v: Q, th: 0 });
+      for (let k = 1; k < n; k++) {
+        const L = Math.hypot(Q[0], Q[1]);
+        const R = [Q[0] - Q[1] / L, Q[1] + Q[0] / L];
+        shapes.push({ pts: [P, Q, R], fill: k % 2 ? "var(--blue)" : "var(--orange)", op: ".16", stroke: "var(--blue)", sw: 1.2 });
+        th += Math.atan(1 / Math.sqrt(k));
+        spokes.push({ j: k + 1, v: R, th: th });
+        Q = R;
+      }
+      return { shapes: shapes, spokes: spokes, thEnd: th };
+    }
+    function treeModel(depth, angDeg) {
+      const shapes = [], tris = [], ang = angDeg * Math.PI / 180;
+      function sq(x, y, s, rot, d) {
+        if (d > depth) return;
+        const co = Math.cos(rot), si = Math.sin(rot);
+        const B = [x, y], C = [x + s * co, y + s * si], D = [x + s * (co - si), y + s * (si + co)], A = [x - s * si, y + s * co];
+        shapes.push({ pts: [B, C, D, A], fill: d % 2 ? "var(--green)" : "var(--blue)", op: String(0.12 + 0.18 * (depth - d) / Math.max(depth - 1, 1)), stroke: "var(--green)", sw: d <= 3 ? 1.2 : 0.8 });
+        if (d === depth) return;
+        // 正方形頂邊 A→D 上蓋一個直角三角形，直角在 apex
+        const s1 = s * Math.cos(ang), s2 = s * Math.sin(ang);
+        const apex = [A[0] + s1 * Math.cos(rot + ang), A[1] + s1 * Math.sin(rot + ang)];
+        tris.push({ pts: [A, D, apex], fill: "var(--sand)", op: ".9", stroke: "var(--green)", sw: d <= 3 ? 1.2 : 0.8 });
+        sq(A[0], A[1], s1, rot + ang, d + 1);
+        sq(apex[0], apex[1], s2, rot + ang - Math.PI / 2, d + 1);
+      }
+      sq(0, 0, 1, 0, 1);
+      return { shapes: shapes.concat(tris), spokes: [] };
+    }
+    function draw() {
+      const kind = KIND.value;
+      $("spNWrap").hidden = kind !== "spiral";
+      $("spDWrap").hidden = kind !== "tree";
+      $("spAWrap").hidden = kind !== "tree";
+      clear(sv);
+      // 手機上 SVG 會被縮小，字要按比例放大才看得清楚
+      const shown = sv.getBoundingClientRect().width || VW;
+      const fs = Math.min(24, Math.max(12, 12 * VW / shown)), lw = Math.max(1, VW / shown);
+      let M, n = 0;
+      if (kind === "spiral") { n = +RN.value; VN.textContent = n; M = spiralModel(n); }
+      else { const d = +RD.value, a = +RA.value; VD.textContent = d; VA.textContent = a; M = treeModel(d, a); }
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      M.shapes.forEach((s) => s.pts.forEach((p) => { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }));
+      const pad = kind === "spiral" ? fs * 2.4 : 14;
+      const k = Math.min((VW - 2 * pad) / (x1 - x0), (VH - 2 * pad) / (y1 - y0));
+      const ox = (VW - k * (x1 - x0)) / 2, oy = (VH - k * (y1 - y0)) / 2;
+      const X = (p) => ox + (p[0] - x0) * k, Y = (p) => VH - oy - (p[1] - y0) * k;
+      M.shapes.forEach((s) => {
+        sv.appendChild(el("polygon", { points: s.pts.map((p) => X(p).toFixed(2) + "," + Y(p).toFixed(2)).join(" ") },
+          { fill: s.fill, fillOpacity: s.op, stroke: s.stroke, strokeWidth: String(s.sw * lw), strokeLinejoin: "round" }));
+      });
+      if (kind === "spiral") {
+        // 只標最外面一圈的斜邊（裡面那幾圈會被後來的三角形蓋住）；字放在頂點外側，不壓線
+        const vis = M.spokes.filter((s) => s.j >= 2 && M.thEnd - s.th < 2 * Math.PI - 0.15);
+        const gap = k; // 相鄰兩個外頂點在畫面上大約隔一個單位長
+        const every = gap >= fs * 2.6 ? 1 : gap >= fs * 1.4 ? 2 : 3;
+        vis.forEach((s) => {
+          if (s.j !== n && s.j !== vis[0].j && (s.j % every) !== 0) return;
+          const L = Math.hypot(s.v[0], s.v[1]), ux = s.v[0] / L, uy = s.v[1] / L, off = fs * 1.15;
+          const px = X(s.v) + ux * off, py = Y(s.v) - uy * off + fs * 0.35;
+          const t = txt(px, py, "√" + s.j, { size: fs, fill: s.j === n ? "var(--blue)" : "var(--ink)", bold: s.j === n });
+          t.style.paintOrder = "stroke"; t.style.stroke = "var(--card)"; t.style.strokeWidth = String(fs * 0.3); t.style.strokeLinejoin = "round";
+          sv.appendChild(t);
+          sv.appendChild(el("line", { x1: X(s.v), y1: Y(s.v), x2: X(s.v) + ux * fs * 0.45, y2: Y(s.v) - uy * fs * 0.45 }, { stroke: "var(--mute)", strokeWidth: String(lw) }));
+        });
+        if (M.thEnd < 2 * Math.PI - 0.15) {
+          const t = txt(X([0.68, 0]), Y([0, 0.16]) + fs * 0.35, "1", { size: fs, fill: "var(--mute)", bold: true });
+          sv.appendChild(t);
+        }
+      }
+      O.innerHTML = kind === "spiral"
+        ? `<b>每一個三角形都在用一次畢氏定理。</b>第 k 個三角形的兩股是 √k 和 1，斜邊就是 √(k＋1)。所以這條螺線把 √2、√3、√4…… 一次全部畫了出來，長度量不出來的數，可以<b>畫</b>得出來。轉過一圈以後，新的三角形會蓋住裡面那一圈，所以圖上只標最外圈的長度。`
+        : `<b>每一個分叉都是一次畢氏定理。</b>沙色的直角三角形，斜邊貼著母正方形，兩股各長出一個子正方形：母正方形的面積 ＝ 兩個子正方形面積的和，所以每一層的<b>總面積都相等</b>。把角度拉離 45°，樹會歪，但這件事不會變。`;
+    }
+    KIND.onchange = draw; RN.oninput = draw; RD.oninput = draw; RA.oninput = draw;
+    window.addEventListener("resize", draw);
+    draw();
+  })();
+
+  /* ══════ 主題切換 ══════ */
+  (function () {
+    const b = $("themeBtn"); if (!b) return;
+    let cur = null;
+    try { cur = localStorage.getItem("ws-theme"); } catch (e) { cur = null; }
+    if (cur) document.documentElement.setAttribute("data-theme", cur);
+    b.onclick = function () {
+      const now = document.documentElement.getAttribute("data-theme");
+      const isDark = now ? now === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const next = isDark ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("ws-theme", next); } catch (e) {}
+      window.dispatchEvent(new Event("resize"));
+    };
+  })();
+})();
+
+</script>
+<a class="bk-fab" href="passport.html" aria-label="回到探索紀錄本">← 紀錄本</a>
+<style id="island">
+/* ===== 探索島：預測／紀錄／判斷題／單元章 ===== */
+.isl-box{margin:0;padding:16px 22px;border-bottom:1px solid var(--edge-soft);background:var(--indigo-soft)}
+.isl-box .isl-k{font-size:12.5px;letter-spacing:.14em;font-weight:700;color:var(--indigo);margin-bottom:6px}
+.isl-box .isl-q{font-size:15.5px;color:var(--ink);margin:0 0 10px;max-width:none}
+.isl-obs{background:var(--orange-soft);border-top:1px solid var(--edge-soft);border-bottom:0}
+.isl-obs .isl-k{color:var(--orange)}
+.isl-opts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.isl-opts label{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;
+  padding:5px 12px;border:1px solid var(--edge);border-radius:999px;background:var(--card);cursor:pointer}
+.isl-opts label:has(input:checked){border-color:var(--indigo);color:var(--indigo);font-weight:600}
+.isl-opts input{accent-color:var(--indigo);margin:0}
+.isl-ta{width:100%;min-height:62px;resize:vertical;font:inherit;font-size:15px;line-height:1.6;
+  padding:9px 12px;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink)}
+.isl-ta:focus{outline:2px solid var(--indigo);outline-offset:1px}
+.isl-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.isl-btn{font:inherit;font-size:14.5px;font-weight:600;padding:7px 16px;border-radius:5px;cursor:pointer;
+  border:1px solid var(--indigo);background:var(--indigo);color:var(--card)}
+.isl-btn:disabled{opacity:.4;cursor:not-allowed}
+.isl-btn.ghost{background:var(--card);color:var(--indigo)}
+.isl-hint{font-size:13px;color:var(--ink-3)}
+.isl-mine{font-size:14.5px;color:var(--ink-2);margin:0;max-width:none}
+.isl-mine b{color:var(--indigo)}
+.isl-wait{padding:26px 22px;text-align:center;color:var(--ink-3);font-size:14.5px;
+  background:repeating-linear-gradient(45deg,transparent 0 10px,var(--edge-soft) 10px 11px)}
+.isl-done-tag{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--green);letter-spacing:.08em}
+.lab-foot.isl-reveal::before{content:"對照看看";display:block;font-size:12px;letter-spacing:.14em;
+  font-weight:700;color:var(--green);margin-bottom:2px}
+.isl-gate{margin:20px 0;padding:14px 18px;border:1px dashed var(--edge);border-radius:5px;
+  color:var(--ink-3);font-size:14px;text-align:center}
+
+/* 進度列 */
+.isl-prog{margin:0 0 6px;padding:12px 16px;border:1px solid var(--edge);border-radius:5px;background:var(--card);
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:14px}
+.isl-prog .t{font-weight:700;color:var(--ink-2);letter-spacing:.06em}
+.isl-dots{display:flex;gap:6px;flex-wrap:wrap}
+.isl-dots a{width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;
+  font-size:12.5px;font-weight:700;text-decoration:none;border:1.5px solid var(--edge);color:var(--ink-3);background:var(--paper)}
+.isl-dots a.half{border-color:var(--indigo);color:var(--indigo)}
+.isl-dots a.ok{border-color:var(--green);background:var(--green);color:var(--card)}
+.isl-prog .q{color:var(--ink-3)}
+.isl-prog .q.ok{color:var(--green);font-weight:700}
+
+/* 判斷題 */
+#isl-quiz{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-qcard{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);
+  padding:18px 22px;margin:16px 0}
+.isl-qcard .isl-qn{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--orange)}
+.isl-qcard p.isl-qt{font-size:16px;margin:4px 0 12px;max-width:none}
+.isl-choice{display:block;width:100%;text-align:left;font:inherit;font-size:15px;line-height:1.55;
+  padding:9px 14px;margin:0 0 8px;border:1px solid var(--edge);border-radius:5px;background:var(--paper);
+  color:var(--ink);cursor:pointer}
+.isl-choice:hover:not(:disabled){border-color:var(--indigo)}
+.isl-choice.no{border-color:var(--orange);background:var(--orange-soft);color:var(--ink-2);text-decoration:line-through}
+.isl-choice.yes{border-color:var(--green);background:var(--green-soft);font-weight:600}
+.isl-choice:disabled{cursor:default}
+.isl-fb{margin-top:6px;padding:10px 14px;border-radius:4px;font-size:14.5px;border:1px solid var(--edge)}
+.isl-fb.bad{border-color:var(--orange);background:var(--orange-soft)}
+.isl-fb.good{border-color:var(--green);background:var(--green-soft)}
+
+/* 紀錄與章 */
+#isl-record{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-sheet{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);padding:22px 24px}
+.isl-sheet-head{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--edge-soft);padding-bottom:14px;margin-bottom:6px}
+.isl-sheet-head h3{margin:0;font-size:22px}
+.isl-sheet-head .isl-sub{font-size:13.5px;color:var(--ink-3)}
+.isl-name{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.isl-name input{font:inherit;font-size:15px;padding:5px 10px;width:10em;border:1px solid var(--edge);
+  border-radius:5px;background:var(--paper);color:var(--ink)}
+.isl-tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
+.isl-tbl th,.isl-tbl td{border-bottom:1px solid var(--edge-soft);padding:9px 8px;vertical-align:top;text-align:left}
+.isl-tbl th{font-size:12.5px;letter-spacing:.1em;color:var(--ink-3);font-weight:700}
+.isl-tbl td.n{white-space:nowrap;font-weight:600;color:var(--ink-2);width:9.5em}
+.isl-tbl td .empty{color:var(--ink-3)}
+.isl-stamp-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:18px}
+.isl-stamp{width:150px;height:150px;flex:none}
+.isl-stamp.off{opacity:.18;filter:grayscale(1)}
+.isl-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.isl-clear{font-size:13px;color:var(--ink-3);background:none;border:0;text-decoration:underline;cursor:pointer;font:inherit}
+@media (max-width:600px){
+  .isl-tbl, .isl-tbl tbody, .isl-tbl tr, .isl-tbl td{display:block;width:auto}
+  .isl-tbl thead{display:none}
+  .isl-tbl td{border:0;padding:3px 0}
+  .isl-tbl tr{border-bottom:1px solid var(--edge-soft);padding:10px 0}
+  .isl-tbl td[data-h]::before{content:attr(data-h)"　";font-size:12px;color:var(--ink-3);font-weight:700}
+}
+@media print{
+  body.isl-print .wrap > *:not(#isl-record), body.isl-print .bk-top, body.isl-print .bk-fab,
+  body.isl-print .isl-tools, body.isl-print nav, body.isl-print #isl-record > .isl-hint{display:none !important}
+  body.isl-print{background:#fff}
+  body.isl-print .isl-sheet{box-shadow:none;border:1px solid #999}
+  body.isl-print .isl-name input{border:0;border-bottom:1px solid #999;border-radius:0}
+}
+/* 單元頁的手繪主題對所有 button 用了 !important，這裡要用更高的權重蓋回來 */
+button.isl-choice{background:var(--paper)!important;color:var(--ink)!important;opacity:1}
+button.isl-choice:disabled{color:var(--ink-2)!important}
+button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--green)!important;color:var(--ink)!important}
+button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
+button.isl-btn:disabled{opacity:.35}
+button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
+</style>
+<script>window.ISLAND={"slug": "g8a-ch2-sqrt-pythagoras", "chap": "八上2", "title": "把面積翻回邊長", "topic": "平方根與畢氏定理", "plain": "這座島上，平方把邊長變成面積，開方要把面積翻回邊長；往回翻的時候會出事。", "stations": {"lab-abs": {"mode": "predict", "q": "a ＝ −35 時，先平方、再開方，會回到 −35 嗎？", "opts": ["會回到 −35", "不會，會變成 35", "不會，會變成別的數"], "multi": false, "obs": "a 是負數的時候，路走到哪一步就回不去了？", "foot": "負的那一半，平方再開方之後會被翻成正的：<b>√(a²) ＝ |a|</b>，不是 a。因為 √ 規定只取正根，一個符號只能代表一個數。"}, "lab-squeeze": {"mode": "predict", "q": "√2 一位一位逼下去，會不會在某一位停下來（剛好開得盡）？", "opts": ["會停下來", "永遠停不下來"], "multi": false, "obs": "換一個完全平方數（例如 1369）試試，什麼時候停？", "foot": "只有完全平方數會停下來。√2 永遠停不下來，<b>不是因為還沒算完，是因為它根本不能寫成分數</b>。"}, "lab-incom": {"mode": "predict", "q": "邊長 1、對角線 √2 這一組，用輾轉相除法一直切正方形，切得完嗎？", "opts": ["切得完", "永遠切不完"], "multi": false, "obs": "每一次剩下的形狀，和一開始的形狀有什麼關係？", "foot": "每切一次，剩下的形狀都和原來一模一樣，所以<b>永遠切不完</b>：1 和 √2 找不到共同的單位長，√2 不是分數。"}, "lab-long": {"mode": "observe", "obs": "每多算一位，正方形長出來的那一圈面積是什麼？", "foot": "直式開方法每一步都在用 <b>(a＋b)² ＝ a² ＋ 2ab ＋ b²</b>：已經有的是 a²，新長出來的那一圈就是 2ab ＋ b²。"}, "lab-unit": {"mode": "predict", "q": "√8 ＋ √18 能合併成一項嗎？如果能，是多少？", "obs": "哪些根式最後掉進同一堆？", "foot": "化成最簡根式之後，√2 就是一種單位。<b>同單位才能合併</b>：√8 ＋ √18 ＝ 2√2 ＋ 3√2 ＝ 5√2，而 √2 和 √3 永遠是兩堆。"}, "lab-rat": {"mode": "predict", "q": "1 ÷ (√3 − √2) 要把分母的根號去掉，分子和分母要同乘什麼？", "obs": "中間那一行 (a＋b)(a−b) 做了什麼事？", "foot": "乘上共軛 √3 ＋ √2，分母變成 (√3)² − (√2)² ＝ 1，根號被平方掉了。<b>分母有理化就是平方差公式在工作。</b>"}, "lab-rearr": {"mode": "predict", "q": "兩個一樣大的正方形，各自拿掉四個一模一樣的直角三角形，剩下的部分面積會一樣嗎？", "opts": ["一樣", "不一樣"], "multi": false, "obs": "拉滑桿改變形狀時，什麼變了、什麼沒變？", "foot": "左邊剩下 a² ＋ b²，右邊剩下 c²，扣掉的四個三角形一模一樣，所以 <b>a² ＋ b² ＝ c²</b>。畢氏定理說的是三個正方形的面積。"}, "lab-door1": {"mode": "predict", "q": "直角三角形三邊上改蓋半圓（不是正方形），兩個小半圓的面積和，會等於大半圓嗎？", "opts": ["會", "不會"], "multi": false, "obs": "換成正三角形或其他形狀，數字有沒有壞掉？", "foot": "只要三邊上蓋的是<b>彼此相似</b>的圖形，面積都跟著邊長的平方放大，關係一樣成立。"}, "lab-lune": {"mode": "predict", "q": "兩個月牙的面積加起來，跟中間的直角三角形比，誰比較大？", "opts": ["月牙比較大", "三角形比較大", "一樣大"], "multi": false, "obs": "拉一拉形狀，結果有沒有變？答案裡為什麼沒有 π？", "foot": "兩個月牙的面積和<b>剛好等於三角形</b>。半圓的面積關係抵消了所有的 π，這是兩千多年前希波克拉底發現的。"}, "lab-door3": {"mode": "predict", "why": "把夾角從 20° 拉到 160°，看 c² 和 a² ＋ b² 的差距怎麼變。", "q": "夾角大於 90° 時，c² 會比 a² ＋ b² 大還是小？", "opts": ["比較大", "比較小", "一樣"], "multi": false, "obs": "差距在什麼角度剛好是 0？", "foot": "直角是分界線：夾角大於 90°，c² 比 a² ＋ b² 大；小於 90°，c² 比較小。那個差距是 2ab·cos C，「直角壞掉要付的錢」。"}, "lab-triple": {"mode": "predict", "q": "輸入 m ＝ 2、n ＝ 1，你猜機器會吐出哪一組畢氏數？", "obs": "多試幾組 m、n，三個數是怎麼從 m、n 算出來的？", "foot": "m² − n²、2mn、m² ＋ n² 一定是一組畢氏數，因為 <b>(m² − n²)² ＋ (2mn)² ＝ (m² ＋ n²)²</b>，這是乘法公式生出來的。"}, "lab-spiral": {"mode": "observe", "obs": "第 n 個三角形的斜邊是多少？", "foot": "螺線每多一個三角形，新加的那一邊長是 1，斜邊就從 √n 變成 √(n＋1)。"}}, "gates": [{"hide": "#s2 > ul", "after": "lab-abs"}, {"hide": "#s3 > h3, #s3 > ul", "after": "lab-incom"}, {"sel": "#s8", "after": "ALL"}], "quiz": [{"q": "√((−5)²) 等於多少？", "opts": ["−5", "5", "±5", "25"], "ans": 1, "why": ["√ 規定只取正根，結果一定不是負的。回去第 1 站看負的那一半。", "", "一個符號只能代表一個數，√25 只代表 5。", "25 是 (−5)²，還要再開方。"], "exp": "(−5)² ＝ 25，√25 ＝ 5。所以 √(a²) ＝ |a|，不是 a。"}, {"q": "√2 ＋ √8 等於多少？", "opts": ["√10", "3√2", "4", "2√5"], "ans": 1, "why": ["√a ＋ √b 不等於 √(a ＋ b)，平方之後少了交叉項。", "", "√2 ＋ √8 不是整數。", "√20 ＝ 2√5，可是 √2 ＋ √8 不等於 √20。"], "exp": "√8 ＝ 2√2，所以 √2 ＋ √8 ＝ √2 ＋ 2√2 ＝ 3√2。化成同一種單位（√2）才能合併。"}, {"q": "三邊長 5、12、13 的三角形，是不是直角三角形？", "opts": ["是，因為 5² ＋ 12² ＝ 13²，而且畢氏逆定理成立", "不一定，滿足 a² ＋ b² ＝ c² 的不一定是直角三角形", "是，因為 5 ＋ 12 ＞ 13", "不是"], "ans": 0, "why": ["", "畢氏逆定理要另外證，但它是對的：三邊滿足 a² ＋ b² ＝ c²，就一定是直角三角形。", "5 ＋ 12 ＞ 13 只說明它圍得成三角形，看不出是不是直角。", "25 ＋ 144 ＝ 169 ＝ 13²，滿足畢氏逆定理。"], "exp": "25 ＋ 144 ＝ 169 ＝ 13²。畢氏逆定理（另外證過）說：三邊滿足 a² ＋ b² ＝ c²，最長邊對面的角就是直角。"}]};</script>
+<script>
+/* ===== 探索島：預測／紀錄／判斷題／單元章 =====
+   沒登入：紀錄只存在這台裝置的瀏覽器（localStorage）。
+   登入且在名單上：island-cloud.js 透過 window.ISLAND_API 接手，另存一份到雲端。 */
+(function () {
+  const C = window.ISLAND;
+  let KEY = "isl:" + C.slug;
+  let NAMEKEY = "isl:name";
+  let nameLocked = false;
+  const mem = {};
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return mem[k] ?? null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } },
+  };
+  let S;
+  try { S = JSON.parse(store.get(KEY)) || {}; } catch (e) { S = {}; }
+  S.st = S.st || {}; S.quiz = S.quiz || {};
+  const save = () => {
+    S.updated = new Date().toISOString();
+    S.n = ids.length; S.nd = ids.filter(id => S.st[id] && S.st[id].done).length;
+    S.q = C.quiz.length; S.qd = C.quiz.filter((_, i) => S.quiz[i] && S.quiz[i].ok).length;
+    store.set(KEY, JSON.stringify(S));
+    if (API.onSave) API.onSave(S);
+  };
+  const API = window.ISLAND_API = window.ISLAND_API || {};
+
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const ids = Object.keys(C.stations);
+  const MIN_OBS = 4;
+
+  const st = id => (S.st[id] = S.st[id] || { opts: [], pred: "", locked: false, obs: "", done: false });
+  const predText = (cfg, s) => {
+    const parts = [];
+    if (cfg.opts && s.opts.length) parts.push(s.opts.map(i => cfg.opts[i]).join("、"));
+    else if (cfg.opts && cfg.multi) parts.push("一個都沒選");
+    if (s.pred.trim()) parts.push(s.pred.trim());
+    return parts.join("；");
+  };
+  const stationDone = id => !!st(id).done;
+  const quizDone = i => !!(S.quiz[i] && S.quiz[i].ok);
+  const allStations = () => ids.every(stationDone);
+  const allQuiz = () => C.quiz.every((_, i) => quizDone(i));
+
+  /* ---------- 每一站 ---------- */
+  ids.forEach(id => {
+    const cfg = C.stations[id];
+    const lab = document.getElementById(id);
+    if (!lab) return;
+    let s = st(id);
+    const head = lab.querySelector(".lab-head");
+    const body = lab.querySelector(".lab-body");
+    const foot = lab.querySelector(".lab-foot");
+    const no = lab.querySelector(".lab-no").textContent.trim();
+    if (cfg.why) lab.querySelector(".lab-why").innerHTML = esc(cfg.why);
+    const tag = el("span", "isl-done-tag", "");
+    head.appendChild(tag);
+
+    /* 預測 */
+    let pbox = null, wait = null;
+    if (cfg.mode === "predict") {
+      pbox = el("div", "isl-box");
+      head.after(pbox);
+      wait = el("div", "isl-wait", "先寫下你的預測，這一站才會打開。");
+      body.before(wait);
+    }
+    const renderPred = () => {
+      if (!pbox) return;
+      if (s.locked) {
+        pbox.innerHTML = '<div class="isl-k">我的預測</div><p class="isl-mine">' + esc(cfg.q) + "<br><b>" + esc(predText(cfg, s)) + "</b></p>";
+        return;
+      }
+      const type = cfg.multi ? "checkbox" : "radio";
+      let h = '<div class="isl-k">先預測，再動手</div><p class="isl-q">' + esc(cfg.q) + "</p>";
+      if (cfg.opts) {
+        h += '<div class="isl-opts">' + cfg.opts.map((o, i) =>
+          '<label><input type="' + type + '" name="o-' + id + '" value="' + i + '"' + (s.opts.includes(i) ? " checked" : "") + "> " + esc(o) + "</label>").join("") + "</div>";
+      }
+      h += '<textarea class="isl-ta" placeholder="' + (cfg.opts ? "為什麼這樣猜？（寫一句就好）" : "寫下你的答案和理由") + '">' + esc(s.pred) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn primary">預測寫好了，開始操作</button><span class="isl-hint">送出後就不能改，猜錯沒關係，等一下對照才有東西看。</span></div>';
+      pbox.innerHTML = h;
+      const ta = pbox.querySelector("textarea"), btn = pbox.querySelector("button");
+      const ok = () => {
+        s.opts = [...pbox.querySelectorAll("input:checked")].map(x => +x.value);
+        s.pred = ta.value;
+        const hasOpt = !cfg.opts || s.opts.length > 0 || !cfg.multi;
+        btn.disabled = !(s.pred.trim().length >= 2 && (cfg.opts ? s.opts.length > 0 || cfg.multi : true));
+        return hasOpt;
+      };
+      pbox.addEventListener("input", () => { ok(); save(); });
+      pbox.addEventListener("change", () => { ok(); save(); });
+      ok();
+      btn.addEventListener("click", () => {
+        ok();
+        if (btn.disabled) return;
+        s.locked = true; s.lockedAt = new Date().toISOString(); save();
+        renderAll(); body.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    /* 觀察紀錄 */
+    const obox = el("div", "isl-box isl-obs");
+    body.after(obox);
+    const renderObs = () => {
+      let h = '<div class="isl-k">我看到的</div><p class="isl-q">' + esc(cfg.obs) + "</p>";
+      h += '<textarea class="isl-ta" placeholder="把你看到的寫下來">' + esc(s.obs) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn' + (s.done ? "" : " primary") + '">' + (s.done ? "更新紀錄" : "記下來，看對照") + '</button><span class="isl-hint"></span></div>';
+      obox.innerHTML = h;
+      const ta = obox.querySelector("textarea"), btn = obox.querySelector("button"), hint = obox.querySelector(".isl-hint");
+      const chk = () => { btn.disabled = ta.value.trim().length < MIN_OBS; };
+      ta.addEventListener("input", () => { s.obs = ta.value; save(); chk(); hint.textContent = s.done ? "已自動儲存" : ""; });
+      chk();
+      btn.addEventListener("click", () => {
+        s.obs = ta.value; if (s.obs.trim().length < MIN_OBS) return;
+        const first = !s.done;
+        s.done = true; s.doneAt = s.doneAt || new Date().toISOString(); save();
+        renderAll();
+        if (first && foot) foot.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    lab._islRender = () => {
+      s = st(id);
+      const open = cfg.mode !== "predict" || s.locked;
+      renderPred();
+      if (wait) wait.hidden = open;
+      body.hidden = !open;
+      obox.hidden = !open;
+      if (open) renderObs();
+      if (foot) { foot.hidden = !s.done; foot.classList.add("isl-reveal"); }
+      tag.textContent = s.done ? "✓ 已記錄" : "";
+    };
+  });
+
+  /* ---------- 會先講出答案的段落 ---------- */
+  const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
+    const sec = document.querySelector(g.sel);
+    if (!sec) return null;
+    const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
+    sec.appendChild(note);
+    return { g, kids, note };
+  }).filter(Boolean);
+
+  /* ---------- 進度列 ---------- */
+  const prog = el("div", "isl-prog");
+  document.querySelector("header").after(prog);
+
+  /* ---------- 判斷題 ---------- */
+  const quiz = el("section", "", "");
+  quiz.id = "isl-quiz";
+  const endSec = document.getElementById("end");
+  (endSec || document.querySelector(".wrap").lastElementChild).before(quiz);
+  const renderQuiz = () => {
+    let h = '<div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>過關前的 ' + C.quiz.length + ' 題</div>' +
+      "<h2>選一個，答錯可以再選</h2>";
+    quiz.innerHTML = h;
+    C.quiz.forEach((q, i) => {
+      const r = S.quiz[i] = S.quiz[i] || { tried: [], ok: false };
+      const card = el("div", "isl-qcard");
+      card.innerHTML = '<div class="isl-qn">第 ' + (i + 1) + " 題</div><p class=\"isl-qt\">" + esc(q.q) + "</p>";
+      q.opts.forEach((o, j) => {
+        const b = el("button", "isl-choice", esc(o));
+        if (r.tried.includes(j)) b.classList.add(j === q.ans ? "yes" : "no");
+        if (r.ok || r.tried.includes(j)) b.disabled = true;
+        b.addEventListener("click", () => {
+          r.tried.push(j);
+          if (j === q.ans) { r.ok = true; r.okAt = new Date().toISOString(); }
+          save(); renderAll();
+        });
+        card.appendChild(b);
+      });
+      const last = r.tried[r.tried.length - 1];
+      if (r.ok) card.appendChild(el("div", "isl-fb good", "<b>對。</b>" + esc(q.exp)));
+      else if (last != null) card.appendChild(el("div", "isl-fb bad", "<b>再想想。</b>" + esc(q.why[last])));
+      quiz.appendChild(card);
+    });
+  };
+
+  /* ---------- 紀錄與章 ---------- */
+  const rec = el("section", "", "");
+  rec.id = "isl-record";
+  document.querySelector(".wrap").appendChild(rec);
+  const stamp = (on, date) => {
+    const d = date ? date.slice(0, 10).replace(/-/g, ".") : "";
+    return '<svg class="isl-stamp' + (on ? "" : " off") + '" viewBox="0 0 150 150" role="img" aria-label="單元章">' +
+      '<g transform="rotate(-8 75 75)" style="fill:none;stroke:var(--crimson)">' +
+      '<circle cx="75" cy="75" r="66" stroke-width="4"/><circle cx="75" cy="75" r="57" stroke-width="1.5"/>' +
+      '<text x="75" y="52" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 13px var(--sans);letter-spacing:2px">' + esc(C.chap) + "　探索完成</text>" +
+      '<text x="75" y="84" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 21px var(--serif)">' + esc(C.title) + "</text>" +
+      '<line x1="34" y1="96" x2="116" y2="96" stroke-width="1.2"/>' +
+      '<text x="75" y="114" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:600 12px var(--sans)">' + (d || "　") + "</text></g></svg>";
+  };
+  let clearArmed = false;
+  const renderRecord = () => {
+    const done = allStations() && allQuiz();
+    const firstOK = C.quiz.filter((q, i) => S.quiz[i] && S.quiz[i].tried[0] === q.ans).length;
+    let h = '<div class="pillar-tag" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>我的探索紀錄</div>';
+    h += '<div class="isl-sheet"><div class="isl-sheet-head"><div><h3>' + esc(C.chap) + "　" + esc(C.title) + '</h3><div class="isl-sub">' + esc(C.topic) + '</div></div>' +
+      '<label class="isl-name">姓名 <input type="text" maxlength="20" value="' + esc(store.get(NAMEKEY) || "") + '"' + (nameLocked ? " readonly" : "") + '></label></div>';
+    h += '<table class="isl-tbl"><thead><tr><th>站</th><th>我的預測</th><th>我看到的</th></tr></thead><tbody>';
+    ids.forEach(id => {
+      const cfg = C.stations[id], s = st(id);
+      const lab = document.getElementById(id);
+      const name = lab ? lab.querySelector(".lab-no").textContent.trim() + "　" + lab.querySelector(".lab-title").textContent.trim() : id;
+      const p = cfg.mode === "predict" ? (s.locked ? esc(predText(cfg, s)) : '<span class="empty">還沒寫</span>') : '<span class="empty">（這站直接操作）</span>';
+      const o = s.done ? esc(s.obs.trim()) : '<span class="empty">還沒寫</span>';
+      h += '<tr><td class="n">' + esc(name) + '</td><td data-h="預測">' + p + '</td><td data-h="看到">' + o + "</td></tr>";
+    });
+    h += "</tbody></table>";
+    h += '<div class="isl-stamp-wrap">' + stamp(done, S.stampAt) + "<div>" +
+      (done ? "<b>這一章探索完成。</b><br>判斷題第一次就答對 " + firstOK + " ／ " + C.quiz.length + " 題。"
+            : "全部 " + ids.length + " 站都記錄完、" + C.quiz.length + " 題判斷題都答對，就會蓋上這個章。<br>目前：" +
+              ids.filter(stationDone).length + " ／ " + ids.length + " 站，" +
+              C.quiz.filter((_, i) => quizDone(i)).length + " ／ " + C.quiz.length + " 題。") +
+      "</div></div></div>";
+    h += '<div class="isl-tools"><button class="isl-btn primary" data-a="print">列印這份紀錄</button>' +
+      '<a class="isl-btn ghost" style="text-decoration:none" href="passport.html">看我的探索紀錄本</a>' +
+      '<button class="isl-clear" data-a="clear">' + (clearArmed ? "確定要清掉？再按一次" : "清除這一章的紀錄") + "</button></div>";
+    h += '<p class="isl-hint" style="margin-top:10px">沒登入時，紀錄只存在這台電腦的瀏覽器裡；登入名單上的帳號，紀錄會存到雲端。在共用電腦上用完記得登出。</p>';
+    rec.innerHTML = h;
+    rec.querySelector(".isl-name input").addEventListener("input", e => store.set(NAMEKEY, e.target.value));
+    rec.querySelector('[data-a="print"]').addEventListener("click", () => {
+      document.body.classList.add("isl-print"); window.print();
+      setTimeout(() => document.body.classList.remove("isl-print"), 500);
+    });
+    rec.querySelector('[data-a="clear"]').addEventListener("click", () => {
+      if (!clearArmed) { clearArmed = true; renderRecord(); setTimeout(() => { clearArmed = false; renderRecord(); }, 4000); return; }
+      if (API.onClear) { API.onClear(); return; }
+      store.del(KEY); location.reload();
+    });
+  };
+
+  function renderAll() {
+    if (allStations() && allQuiz() && !S.stampAt) { S.stampAt = new Date().toISOString(); save(); }
+    ids.forEach(id => { const lab = document.getElementById(id); lab && lab._islRender && lab._islRender(); });
+    gates.forEach(({ g, kids, note }) => {
+      const open = g.after === "ALL" ? allStations() : stationDone(g.after);
+      kids.forEach(k => { if (k !== note) k.hidden = !open; });
+      note.hidden = open;
+    });
+    const nq = C.quiz.filter((_, i) => quizDone(i)).length;
+    prog.innerHTML = '<span class="t">探索紀錄</span><span class="isl-dots">' + ids.map(id => {
+      const s = st(id), cfg = C.stations[id];
+      const n = document.querySelector("#" + id + " .lab-no").textContent.trim();
+      const cls = s.done ? "ok" : (cfg.mode === "predict" && s.locked) ? "half" : "";
+      return '<a class="' + cls + '" href="#' + id + '" title="第 ' + n + ' 站">' + n + "</a>";
+    }).join("") + '</span><a class="q' + (nq === C.quiz.length ? " ok" : "") + '" href="#isl-quiz" style="text-decoration:none">判斷題 ' + nq + " ／ " + C.quiz.length + "</a>" +
+      '<a class="q' + (S.stampAt ? " ok" : "") + '" href="#isl-record" style="text-decoration:none">' + (S.stampAt ? "✓ 已蓋章" : "我的紀錄 →") + "</a>";
+    renderQuiz();
+    renderRecord();
+  }
+  /* 給雲端模組用：換一個人的紀錄、換姓名、整頁重畫 */
+  API.config = C;
+  API.store = store;
+  API.state = () => S;
+  API.adopt = (newKey, newS, opts) => {
+    KEY = newKey;
+    S = newS || {};
+    S.st = S.st || {}; S.quiz = S.quiz || {};
+    if (opts && opts.nameKey) NAMEKEY = opts.nameKey;
+    if (opts && "name" in opts) { store.set(NAMEKEY, opts.name || ""); }
+    nameLocked = !!(opts && opts.nameLocked);
+    clearArmed = false;
+    store.set(KEY, JSON.stringify(S));
+    renderAll();
+  };
+  API.progressBox = prog;
+  API.recordBox = rec;
+  renderAll();
+  if (API.onReady) API.onReady();
+})();
+</script>
+<script src="firebase-config.js"></script>
+<script type="module" src="island-cloud.js"></script>
+</body>
+</html>
