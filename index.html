@@ -41,12 +41,6 @@ svg.map a:focus-visible .isle{stroke:var(--blue);stroke-width:3.5}
 .how b{font-size:19px;display:block;margin-bottom:2px}
 .how p{margin:0;color:var(--ink-2);font-size:15.5px}
 .how a{color:var(--blue)}
-.list{margin-top:30px}
-.list h2{font-size:22px;margin:0 0 8px}
-.list ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px 18px}
-.list li{font-size:15.5px;color:var(--ink-3)}
-.list li a{color:var(--blue);text-decoration:none;font-weight:700}
-.list li .s{color:var(--red);font-weight:700}
 footer{margin-top:36px;text-align:center;color:var(--ink-3);font-size:14px}
 .isl-auth{font-family:var(--hand)!important}
 </style>
@@ -67,7 +61,6 @@ footer{margin-top:36px;text-align:center;color:var(--ink-3);font-size:14px}
   <div><b>4. 蓋章</b><p>每站都寫完、最後幾題都答對，那座島就會蓋上章。<a href="passport.html">看看你的本子 →</a></p></div>
 </div>
 
-<div class="list" id="list"></div>
 <footer>數理資優班　互動探索站</footer>
 </div>
 
@@ -190,13 +183,6 @@ function draw(cloud) {
   s += callout(sx + 30, sy - 6, sx + 110, sy - 30, "用學校的帳號登入，你走過的地方換一台電腦也還在。", 13);
   document.getElementById("map").innerHTML = s;
 
-  // 文字清單（手機與讀屏用）
-  let h = "<h2>所有的島</h2><ul>";
-  UNITS.forEach(u => {
-    const S = cloud ? cloud[u.slug] : null;
-    h += "<li>" + (u.open ? '<a href="' + u.slug + '.html">' + esc(u.ch + "　" + u.title) + "</a>" + (S && S.stampAt ? ' <span class="s">完成</span>' : "") : esc(u.ch + "　" + u.title) + "（橋還沒蓋好）") + "</li>";
-  });
-  document.getElementById("list").innerHTML = h + "</ul>";
 }
 window.ISLAND_PASSPORT = { show: (cloud, name) => { window.__who = name || ""; draw(cloud); } };
 draw(null);
