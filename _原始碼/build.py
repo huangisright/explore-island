@@ -8,9 +8,10 @@ import html, json, os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from units_g8b2 import CFG as G8B2
+import glob, importlib
 
-BUILT = [G8B2]
+# 每一章一個設定檔 units_*.py（CFG），依檔名排序
+BUILT = [importlib.import_module(os.path.basename(f)[:-3]).CFG for f in sorted(glob.glob(os.path.join(HERE, "units_*.py")))]
 GRADES = ["七年級上", "七年級下", "八年級上", "八年級下", "九年級上", "九年級下"]
 
 

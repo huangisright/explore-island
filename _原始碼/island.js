@@ -137,7 +137,7 @@
     const sec = document.querySelector(g.sel);
     if (!sec) return null;
     const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
-    const note = el("div", "isl-gate", g.after === "ALL" ? "七站都記錄完，這一段才會打開。" :
+    const note = el("div", "isl-gate", g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
       "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。");
     sec.appendChild(note);
     return { g, kids, note };
@@ -211,7 +211,7 @@
     h += "</tbody></table>";
     h += '<div class="isl-stamp-wrap">' + stamp(done, S.stampAt) + "<div>" +
       (done ? "<b>這一章探索完成。</b><br>判斷題第一次就答對 " + firstOK + " ／ " + C.quiz.length + " 題。"
-            : "七站都記錄完、" + C.quiz.length + " 題判斷題都答對，就會蓋上這個章。<br>目前：" +
+            : "全部 " + ids.length + " 站都記錄完、" + C.quiz.length + " 題判斷題都答對，就會蓋上這個章。<br>目前：" +
               ids.filter(stationDone).length + " ／ " + ids.length + " 站，" +
               C.quiz.filter((_, i) => quizDone(i)).length + " ／ " + C.quiz.length + " 題。") +
       "</div></div></div>";
