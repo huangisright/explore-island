@@ -37,7 +37,7 @@ def build_unit(src_site, out, cfg):
               '<script src="firebase-config.js"></script>\n<script type="module" src="island-cloud.js"></script>\n')
     assert s.count("</body>") == 1
     s = s.replace("</body>", inject + "</body>")
-    s = re.sub(r"<title>(.*?)</title>", lambda m: "<title>" + m.group(1) + "｜探索島</title>", s, count=1)
+    s = re.sub(r"<title>(.*?)</title>", lambda m: "<title>" + m.group(1) + "｜數學探索島</title>", s, count=1)
     with open(os.path.join(out, cfg["slug"] + ".html"), "w", encoding="utf8") as f:
         f.write(s)
 
