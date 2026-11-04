@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>誰能代表大家｜數學探索島</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Crimson+Text:ital,wght@0,600;1,400;1,600&display=swap">
+<style>
+
+:root{
+  --paper:#F5F2E8;
+  --grid:rgba(46,90,136,.075);
+  --card:#FFFDF8;
+  --edge:#DFD6C4;
+  --edge-soft:#EBE3D4;
+  --ink:#23282D;
+  --ink-2:#5C554A;
+  --ink-3:#847B6C;
+  --indigo:#2E5A88;
+  --indigo-soft:#E7EEF6;
+  --orange:#C1652F;
+  --orange-soft:#FBEEE1;
+  --green:#4A7C59;
+  --green-soft:#E7F0E9;
+  --crimson:#B23A3A;
+  --black-card:#2B2F35;
+  --shadow:0 1px 2px rgba(72,60,40,.06), 0 6px 18px rgba(72,60,40,.07);
+  --shadow-lift:0 2px 4px rgba(72,60,40,.08), 0 14px 34px rgba(72,60,40,.12);
+  --serif:"Noto Serif TC",'Songti TC','Times New Roman',serif;
+  --sans:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --math:"Crimson Text","Times New Roman",Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#161A1E;
+    --grid:rgba(127,169,214,.07);
+    --card:#1F252B;
+    --edge:#333C45;
+    --edge-soft:#2A323A;
+    --ink:#E7E2D6;
+    --ink-2:#B3AC9E;
+    --ink-3:#8B857A;
+    --indigo:#82ADDC;
+    --indigo-soft:#1E2C3B;
+    --orange:#E28B52;
+    --orange-soft:#3A2718;
+    --green:#82B893;
+    --green-soft:#1D2C22;
+    --crimson:#D66B6B;
+    --black-card:#0E1114;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+    --shadow-lift:0 2px 4px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#161A1E;
+  --grid:rgba(127,169,214,.07);
+  --card:#1F252B;
+  --edge:#333C45;
+  --edge-soft:#2A323A;
+  --ink:#E7E2D6;
+  --ink-2:#B3AC9E;
+  --ink-3:#8B857A;
+  --indigo:#82ADDC;
+  --indigo-soft:#1E2C3B;
+  --orange:#E28B52;
+  --orange-soft:#3A2718;
+  --green:#82B893;
+  --green-soft:#1D2C22;
+  --crimson:#D66B6B;
+  --black-card:#0E1114;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+  --shadow-lift:0 2px 4px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, var(--grid) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 26px);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px 100px}
+em,.v{font-family:var(--math);font-style:italic;font-size:1.08em;letter-spacing:.01em}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---- header ---- */
+header{padding:58px 0 34px}
+.eyebrow{
+  font-size:12.5px;letter-spacing:.22em;color:var(--orange);
+  font-weight:700;margin-bottom:16px;
+}
+h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(38px,7vw,62px);line-height:1.12;margin:0 0 14px;
+  letter-spacing:.02em;text-wrap:balance;
+}
+.sub{font-size:clamp(16px,2.4vw,19px);color:var(--ink-2);margin:0 0 26px}
+.thesis{
+  border-left:3px solid var(--orange);
+  padding:4px 0 4px 20px;margin:0;
+  font-family:var(--serif);font-size:clamp(16px,2.4vw,19px);
+  line-height:1.85;color:var(--ink);max-width:64ch;
+}
+
+/* ---- nav ---- */
+nav{
+  position:sticky;top:0;z-index:30;
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:11px 0;margin-bottom:8px;
+  background:color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--edge-soft);
+}
+nav a{
+  font-size:13.5px;text-decoration:none;color:var(--ink-2);
+  padding:5px 12px;border-radius:999px;border:1px solid transparent;
+  transition:.16s;
+}
+nav a:hover,nav a:focus-visible{color:var(--indigo);border-color:var(--edge);background:var(--card)}
+
+/* ---- sections ---- */
+section{padding:44px 0 8px;scroll-margin-top:64px}
+.pillar-tag{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:12.5px;letter-spacing:.16em;font-weight:700;
+  margin-bottom:12px;
+}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+h2{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(25px,4.2vw,34px);line-height:1.3;margin:0 0 12px;
+  text-wrap:balance;
+}
+h3{font-family:var(--serif);font-size:19px;margin:30px 0 8px;font-weight:500}
+p{margin:0 0 15px;max-width:66ch}
+.lede{font-size:17.5px;color:var(--ink-2);max-width:64ch}
+
+/* ---- lab ---- */
+.lab{
+  background:var(--card);border:1px solid var(--edge);
+  border-radius:5px;box-shadow:var(--shadow);
+  margin:26px 0 30px;overflow:hidden;
+}
+.lab-head{
+  display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  padding:17px 22px 13px;border-bottom:1px solid var(--edge-soft);
+}
+.lab-no{
+  font-family:var(--math);font-size:13px;font-weight:600;font-style:normal;
+  color:var(--card);background:var(--indigo);
+  width:23px;height:23px;border-radius:50%;
+  display:grid;place-items:center;flex:none;align-self:center;
+}
+.lab-title{font-family:var(--serif);font-weight:700;font-size:18px;margin:0}
+.lab-why{font-size:13.5px;color:var(--ink-3);margin:0}
+.lab-body{padding:22px}
+.lab-foot{
+  padding:14px 22px;background:var(--green-soft);
+  border-top:1px solid var(--edge-soft);
+  font-size:14.5px;color:var(--ink);
+}
+.lab-foot b{color:var(--green)}
+
+/* ---- controls ---- */
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{
+  font-family:var(--sans);font-size:14px;
+  padding:7px 14px;border-radius:4px;
+  border:1px solid var(--edge);background:var(--paper);color:var(--ink);
+  cursor:pointer;transition:.14s;line-height:1.5;
+}
+button:hover:not(:disabled){border-color:var(--indigo);color:var(--indigo)}
+button:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.primary{background:var(--indigo);border-color:var(--indigo);color:#fff}
+button.primary:hover{filter:brightness(1.12);color:#fff}
+button.warn{border-color:var(--orange);color:var(--orange)}
+button.ghost{background:transparent}
+input[type=number],input[type=text]{
+  font-family:var(--math);font-size:16px;
+  width:66px;padding:6px 9px;border-radius:4px;
+  border:1px solid var(--edge);background:var(--paper);color:var(--ink);
+}
+input[type=text].wide{width:190px;letter-spacing:.09em;font-family:var(--sans);font-size:15px}
+input:focus-visible{outline:2px solid var(--indigo);outline-offset:1px}
+label{font-size:13.5px;color:var(--ink-2)}
+input[type=range]{accent-color:var(--indigo);width:160px}
+
+/* ---- balance ---- */
+.scale{padding:8px 0 4px}
+.beam-wrap{position:relative;height:150px;margin:0 auto;max-width:560px}
+.beam{
+  position:absolute;left:0;right:0;top:52px;height:5px;
+  background:var(--ink);border-radius:3px;
+  transform-origin:50% 50%;transition:transform .5s cubic-bezier(.34,1.3,.5,1);
+}
+.post{position:absolute;left:50%;top:52px;width:6px;height:78px;margin-left:-3px;background:var(--ink-3)}
+.base{position:absolute;left:50%;bottom:8px;width:90px;height:12px;margin-left:-45px;background:var(--ink-3);border-radius:2px}
+.string{position:absolute;top:57px;width:2px;height:22px;background:var(--ink-3)}
+.pan{
+  position:absolute;top:79px;width:170px;margin-left:-85px;
+  padding:11px 8px;border-radius:5px;text-align:center;
+  font-family:var(--math);font-size:24px;font-style:italic;
+  border:1px solid var(--edge);
+}
+.pan.l{background:var(--indigo-soft);color:var(--indigo);border-color:var(--indigo)}
+.pan.r{background:var(--orange-soft);color:var(--orange);border-color:var(--orange)}
+.crushed .beam,.crushed .pan{opacity:.4}
+.eq-now{
+  text-align:center;font-family:var(--math);font-size:27px;font-style:italic;
+  padding:12px 0 4px;letter-spacing:.02em;
+}
+.log{
+  margin-top:14px;border-top:1px dashed var(--edge);padding-top:12px;
+  font-family:var(--math);font-size:15.5px;max-height:190px;overflow-y:auto;
+}
+.log div{padding:3px 0;display:flex;gap:12px;align-items:baseline}
+.log span.op{font-family:var(--sans);font-style:normal;font-size:12.5px;color:var(--ink-3);min-width:112px;flex:none}
+.msg{
+  margin-top:12px;padding:10px 14px;border-radius:4px;font-size:14.5px;
+  border:1px solid var(--edge);background:var(--paper);
+}
+.msg.bad{border-color:var(--orange);background:var(--orange-soft);color:var(--orange)}
+.msg.good{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+
+/* ---- machine ---- */
+.steps{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--edge);background:var(--paper);
+  border-radius:999px;padding:4px 6px 4px 13px;font-size:14px;
+}
+.chip button{border:none;background:none;padding:0 6px;font-size:15px;color:var(--ink-3);line-height:1}
+.chip button:hover{color:var(--orange)}
+.tape{
+  border:1px solid var(--edge-soft);border-radius:4px;overflow:hidden;
+  margin-top:6px;
+}
+.tape div{
+  display:flex;gap:14px;align-items:baseline;
+  padding:7px 14px;border-bottom:1px solid var(--edge-soft);
+}
+.tape div:last-child{border-bottom:none}
+.tape div.zero{background:var(--green-soft)}
+.tape .lbl{font-size:12.5px;color:var(--ink-3);min-width:96px;flex:none}
+.tape .exp{font-family:var(--math);font-style:italic;font-size:19px}
+.verdict{
+  margin-top:16px;padding:15px 18px;border-radius:4px;border:1px solid;
+  font-size:15px;line-height:1.8;
+}
+.verdict.leak{border-color:var(--indigo);background:var(--indigo-soft)}
+.verdict.hide{border-color:var(--green);background:var(--green-soft)}
+.verdict b{font-family:var(--serif);font-size:17px;display:block;margin-bottom:4px}
+.verdict.leak b{color:var(--indigo)}
+.verdict.hide b{color:var(--green)}
+
+/* ---- id table ---- */
+.idgrid{display:flex;gap:3px;flex-wrap:wrap;margin:16px 0 10px}
+.idcell{
+  min-width:40px;flex:1;text-align:center;border:1px solid var(--edge-soft);
+  border-radius:3px;padding:6px 2px;background:var(--paper);
+}
+.idcell .ch{font-family:var(--math);font-size:19px;font-weight:600;font-style:normal}
+.idcell .wt{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.idcell .pr{font-size:12.5px;color:var(--indigo);font-variant-numeric:tabular-nums}
+.idcell.unk{border-color:var(--orange);border-style:dashed;background:var(--orange-soft)}
+.idcell.unk .ch,.idcell.unk .pr{color:var(--orange)}
+
+/* ---- fates ---- */
+.numline{position:relative;height:62px;margin:16px 0 6px}
+.axis{position:absolute;left:0;right:0;top:30px;height:2px;background:var(--ink-3)}
+.axis.all{height:8px;top:27px;background:var(--green);border-radius:4px;opacity:.55}
+.tick{position:absolute;top:24px;width:1px;height:14px;background:var(--edge)}
+.tlab{position:absolute;top:40px;font-size:11px;color:var(--ink-3);transform:translateX(-50%);font-variant-numeric:tabular-nums}
+.sol{
+  position:absolute;top:22px;width:18px;height:18px;margin-left:-9px;
+  border-radius:50%;background:var(--indigo);border:3px solid var(--card);
+  box-shadow:0 0 0 2px var(--indigo);transition:left .3s;
+}
+.fate{
+  margin-top:8px;padding:13px 17px;border-radius:4px;border:1px solid;font-size:15px;
+}
+.fate.one{border-color:var(--indigo);background:var(--indigo-soft)}
+.fate.none{border-color:var(--orange);background:var(--orange-soft)}
+.fate.inf{border-color:var(--green);background:var(--green-soft)}
+.fate b{font-family:var(--serif);font-size:18px;margin-right:10px}
+.fate.one b{color:var(--indigo)} .fate.none b{color:var(--orange)} .fate.inf b{color:var(--green)}
+
+/* ---- cards (紅黑牌) ---- */
+.deckrow{display:flex;align-items:center;gap:12px;margin:9px 0;flex-wrap:wrap}
+.rowlab{font-size:13px;color:var(--ink-2);min-width:88px;flex:none}
+.cards{display:flex;gap:4px;flex-wrap:wrap}
+.pc{
+  width:26px;height:36px;border-radius:3px;cursor:pointer;
+  border:1px solid rgba(0,0,0,.18);transition:.14s;
+}
+.pc.red{background:var(--crimson)}
+.pc.blk{background:var(--black-card)}
+.pc:hover{transform:translateY(-3px)}
+.pc.sel{outline:2px solid var(--orange);outline-offset:2px;transform:translateY(-4px)}
+.tally{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;
+}
+.stat{
+  flex:1;min-width:132px;border:1px solid var(--edge-soft);border-radius:4px;
+  padding:10px 14px;background:var(--paper);
+}
+.stat .k{font-size:12.5px;color:var(--ink-3)}
+.stat .n{font-family:var(--math);font-size:27px;font-variant-numeric:tabular-nums;line-height:1.3}
+.stat.locked{border-color:var(--green);background:var(--green-soft)}
+.stat.locked .n{color:var(--green)}
+.stat.locked .k{color:var(--green)}
+
+
+/* ---- 按鈕與切換 ---- */
+.btn{
+  font-family:var(--sans);font-size:13.5px;padding:5px 11px;border-radius:5px;
+  border:1px solid var(--edge);background:var(--card);color:var(--ink-2);cursor:pointer;
+}
+.btn:hover{border-color:var(--orange);color:var(--orange)}
+.segwrap{display:inline-flex;flex-wrap:wrap;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--edge)}
+.seg{
+  font-family:var(--sans);font-size:13px;padding:6px 12px;border:none;
+  background:var(--card);color:var(--ink-3);cursor:pointer;border-right:1px solid var(--edge-soft);
+}
+.seg:last-child{border-right:none}
+.seg.on,.seg.on:hover{background:var(--indigo);color:#fff}
+
+.row label{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--ink-2)}
+.row input[type=range]{width:min(230px,58vw);max-width:100%}
+.row input[type=number]{
+  font-family:var(--math);font-size:16px;width:92px;padding:3px 7px;
+  border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink);
+}
+
+/* ---- 圖 ---- */
+.figsvg{width:100%;max-width:640px;display:block;margin:10px auto;height:auto}
+.figsvg.wide{max-width:100%}
+.statrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0 2px}
+.statbox{
+  border:1px solid var(--edge-soft);background:var(--card);border-radius:6px;
+  padding:6px 14px;text-align:center;min-width:104px;
+}
+.statbox .k{font-size:11.5px;color:var(--ink-3)}
+.statbox .v{font-family:var(--math);font-size:19px;font-variant-numeric:tabular-nums}
+.statbox.hot{border-color:var(--orange)}
+.statbox.hot .v{color:var(--orange)}
+.statbox.cool{border-color:var(--green)}
+.statbox.cool .v{color:var(--green)}
+.statbox.blue{border-color:var(--indigo)}
+.statbox.blue .v{color:var(--indigo)}
+
+/* ---- 兩欄 ---- */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+@media(max-width:700px){.twocol{grid-template-columns:1fr}}
+.pane{border:1px solid var(--edge);border-radius:8px;background:var(--card);padding:12px 14px}
+.pane h4{margin:0 0 8px;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--ink-2)}
+
+/* ---- 機器示意 ---- */
+.machine{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:14px 0 6px}
+.mbox{
+  border:1px solid var(--edge);border-radius:8px;background:var(--card);
+  padding:8px 16px;text-align:center;min-width:120px;
+}
+.mbox .k{font-size:11.5px;color:var(--ink-3)}
+.mbox .v{font-family:var(--math);font-size:24px;line-height:1.3;font-variant-numeric:tabular-nums}
+.mbox.in{border-color:var(--indigo)}
+.mbox.in .v{color:var(--indigo)}
+.mbox.mid{background:var(--indigo-soft)}
+.mbox.out{border-color:var(--orange)}
+.mbox.out .v{color:var(--orange)}
+.mbox.out.bad{border-color:var(--crimson)}
+.mbox.out.bad .v{color:var(--crimson);font-size:17px}
+.marrow{font-size:22px;color:var(--ink-3)}
+
+/* ---- 箭頭格 ---- */
+.arrowgrid{
+  display:grid;grid-template-columns:auto repeat(3,1fr);gap:4px;
+  max-width:360px;margin:12px auto 4px;
+}
+.arrowgrid .hd{
+  font-family:var(--math);font-size:15px;color:var(--ink-3);
+  display:flex;align-items:center;justify-content:center;
+}
+.cellbtn{
+  border:1px solid var(--edge);border-radius:6px;background:var(--card);
+  height:38px;cursor:pointer;font-family:var(--math);font-size:15px;color:var(--ink-3);
+}
+.cellbtn.on{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.cellbtn:hover{border-color:var(--orange)}
+
+/* ---- 判定 ---- */
+.verdict{
+  border-left:3px solid var(--edge);background:var(--card);border-radius:0 6px 6px 0;
+  padding:10px 14px;margin:10px 0 2px;font-size:14.5px;line-height:1.75;color:var(--ink-2);
+}
+.verdict b{display:inline}
+.verdict > b:first-child{display:block;margin-bottom:2px;font-size:15.5px}
+.verdict.ok{border-left-color:var(--green)}
+.verdict.ok > b:first-child{color:var(--green)}
+.verdict.bad{border-left-color:var(--orange)}
+.verdict.bad > b:first-child{color:var(--orange)}
+
+/* ---- 猜測紀錄 ---- */
+.log{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0 2px;min-height:26px;
+}
+.log .g{
+  font-family:var(--math);font-size:14px;padding:3px 10px;border-radius:14px;
+  border:1px solid var(--edge-soft);background:var(--card);color:var(--ink-2);
+}
+.log .g.hi{border-color:var(--orange);color:var(--orange)}
+.log .g.lo{border-color:var(--indigo);color:var(--indigo)}
+.log .g.win{border-color:var(--green);color:var(--green);font-weight:700}
+
+/* ---- SVG 文字一律從 CSS 繼承字體（presentation attribute 吃不到 CSS 變數） ---- */
+.figsvg text{font-family:var(--math);font-size:12px;fill:var(--ink-3)}
+.figsvg text.cn{font-family:var(--sans);font-size:11.5px}
+.figsvg text.big{font-size:14px}
+
+/* ---- 通用 ---- */
+.figsvg .drag{cursor:grab;touch-action:none}
+.figsvg .drag:active{cursor:grabbing}
+.figsvg{touch-action:pan-y}
+.hint{font-size:12.5px;color:var(--ink-3);text-align:center;margin:2px 0 0}
+.row .btn{margin-right:6px}
+.formula{
+  font-family:var(--math);font-size:18px;text-align:center;margin:8px 0 2px;color:var(--ink-2);
+  font-variant-numeric:tabular-nums;
+}
+.formula .hi{color:var(--orange);font-weight:600}
+.formula .in{color:var(--indigo);font-weight:600}
+.statbox.grn{border-color:var(--green)}
+.statbox.grn .v{color:var(--green)}
+
+/* ---- 七下1 專用 ---- */
+.verdict b{display:inline}
+.verdict > b:first-child{display:block}
+.verdict.bad{border-color:var(--orange);background:var(--orange-soft)}
+.verdict.bad b{color:var(--orange)}
+.eqrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:var(--math);font-size:18px;margin:6px 0}
+.eqrow input[type=number]{width:64px}
+.eqrow .v{font-style:italic}
+.sysbox{border-left:3px solid var(--indigo);padding:2px 0 2px 12px;margin:8px 0;font-family:var(--math);font-size:19px;line-height:1.7}
+.sysbox i{font-style:italic}
+.elim{border-collapse:collapse;margin:10px auto;font-family:var(--math);font-size:17px}
+.elim td,.elim th{border:1px solid var(--edge);padding:6px 12px;text-align:center;min-width:64px;font-variant-numeric:tabular-nums}
+.elim th{background:var(--indigo);color:#fff;font-family:var(--sans);font-size:13px;font-weight:600}
+.elim td.rl{font-family:var(--sans);font-size:13px;color:var(--ink-2);text-align:left}
+.elim tr.sum td{border-top:2.5px solid var(--ink);font-weight:700}
+.elim td.zero{background:var(--green-soft);color:var(--green)}
+.chk{border-collapse:collapse;margin:10px auto;font-family:var(--math);font-size:15px}
+.chk td,.chk th{border:1px solid var(--edge);padding:5px 9px;text-align:center;min-width:40px;font-variant-numeric:tabular-nums}
+.chk th{background:var(--indigo-soft);color:var(--indigo);font-family:var(--sans);font-size:12.5px}
+.chk tr.hit td{background:var(--green-soft);color:var(--green);font-weight:700}
+.chk tr.near td{background:var(--orange-soft)}
+.solist{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0;font-family:var(--math);font-size:16px}
+.solist span{border:1px solid var(--green);color:var(--green);border-radius:5px;padding:3px 9px;background:var(--card)}
+.figsvg text{font-family:var(--math);font-size:13px;fill:var(--ink-3)}
+.deriv{font-family:var(--math);font-size:18px;line-height:1.9;margin:10px 0;padding:8px 14px;background:var(--card);border:1px solid var(--edge-soft);border-radius:6px;overflow-x:auto}
+.deriv:empty{display:none}
+.deriv .k{font-family:var(--sans);font-size:12.5px;color:var(--ink-3);display:inline-block;min-width:118px}
+.deriv .hi{color:var(--orange);font-weight:600}
+.deriv .ok{color:var(--green);font-weight:600}
+
+/* ---- 第 23 組 ---- */
+.figsvg text{font-family:var(--sans);font-size:13px;fill:var(--ink-2)}
+.figsvg text.tk{font-size:12px;fill:var(--ink-3)}
+.figsvg text.ax{font-family:var(--math);font-style:italic;font-size:17px;fill:var(--indigo)}
+.figsvg text.lb{font-size:13.5px;font-weight:600}
+.figsvg text.big{font-family:var(--math);font-style:italic;font-size:22px;font-weight:600}
+#l2svg,#l3svg{touch-action:none}
+.row input[type=text]{
+  font-family:var(--math);font-size:16px;padding:3px 7px;
+  border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink);
+}
+.btn.on{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+
+/* ---- 第 24 組 ---- */
+.bars{margin:10px 0 4px}
+.bars .br{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:8px;margin:4px 0}
+.bars .nm{font-size:13.5px;color:var(--ink-2);font-weight:600}
+.bars .tr{position:relative;height:18px}
+.bars .fill{height:100%;border-radius:0 3px 3px 0;transition:width .35s}
+.bars .val{position:absolute;top:0;font-family:var(--math);font-size:13px;line-height:18px;color:var(--ink-2);white-space:nowrap;transition:left .35s}
+.legend{display:flex;gap:14px;justify-content:center;font-size:12.5px;color:var(--ink-3);margin:4px 0}
+.legend i.sw{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.propin{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;font-family:var(--math);font-size:20px;margin:8px 0}
+.propin input{width:74px;font-family:var(--math);font-size:18px;padding:3px 6px;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink);text-align:center}
+.propin input.x{border-color:var(--orange)}
+.mtab{border-collapse:collapse;margin:8px auto;font-family:var(--math);font-size:15px}
+.mtab td,.mtab th{border:1px solid var(--edge);padding:5px 10px;text-align:center;min-width:48px;font-variant-numeric:tabular-nums}
+.mtab th{background:var(--indigo-soft);color:var(--indigo);font-family:var(--sans);font-size:12.5px;font-weight:600}
+.mtab td.hl{color:var(--orange);font-weight:700}
+.mtab td.ok{color:var(--green);font-weight:700}
+.tablewrap{overflow-x:auto}
+
+/* ---- 七下5 ---- */
+.catin{display:flex;flex-wrap:wrap;gap:8px 14px;margin:8px 0}
+.catin label{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-2)}
+.catin input{font-family:var(--math);font-size:16px;width:70px;padding:3px 7px;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink)}
+.listin{font-family:var(--math);font-size:16px;width:100%;max-width:560px;padding:5px 9px;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink)}
+.mtab td.hi{color:var(--orange);font-weight:600}
+.figsvg .lbl{font-family:var(--sans);font-size:11.5px}
+
+</style>
+<!--hand-theme--><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet"><link href="https://huangisright.github.io/fonts/isright-hand.css" rel="stylesheet"><style id="hand-theme">
+:root{
+  --paper:#fdfcf8; --grid:transparent; --card:#fffefa;
+  --edge:#b9b5aa; --edge-soft:#dedad0; --ink:#1b1b1b; --ink-2:#4a4844; --ink-3:#77756f;
+  --indigo:#24489a; --indigo-soft:#e8edf8; --orange:#d4472b; --orange-soft:#fde9e3;
+  --green:#2f7a3a; --green-soft:#e6f2e4; --crimson:#c8321e; --black-card:#1b1b1b;
+  --shadow:none; --shadow-lift:none;
+  --mute:#77756f; --line:#d9d6cc; --blue:#24489a; --sand:#efe9d8;
+  --cardline:#1b1b1b; --tint:#fde9e3; --tint2:#e8edf8;
+  --hl:#fff2a8;
+  --serif:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif; --sans:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif; --wob:255px 14px 225px 14px/14px 225px 14px 255px; --wob2:14px 255px 14px 225px/225px 14px 255px 14px;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1c1d1f; --grid:transparent; --card:#222326;
+  --edge:#5e5f62; --edge-soft:#3a3b3e; --ink:#ecebe6; --ink-2:#c4c2bb; --ink-3:#9c9a93;
+  --indigo:#8fb0f0; --indigo-soft:#1f2a40; --orange:#ff7a5c; --orange-soft:#3d221b;
+  --green:#7cc98a; --green-soft:#1d3122; --crimson:#ff6b55; --black-card:#0d0d0e;
+  --shadow:none; --shadow-lift:none;
+  --mute:#9c9a93; --line:#3a3b3e; --blue:#8fb0f0; --sand:#33302a;
+  --cardline:#ecebe6; --tint:#3d221b; --tint2:#1f2a40;
+  --hl:#4a4320;
+}}
+:root[data-theme="dark"]{
+  --paper:#1c1d1f; --grid:transparent; --card:#222326;
+  --edge:#5e5f62; --edge-soft:#3a3b3e; --ink:#ecebe6; --ink-2:#c4c2bb; --ink-3:#9c9a93;
+  --indigo:#8fb0f0; --indigo-soft:#1f2a40; --orange:#ff7a5c; --orange-soft:#3d221b;
+  --green:#7cc98a; --green-soft:#1d3122; --crimson:#ff6b55; --black-card:#0d0d0e;
+  --shadow:none; --shadow-lift:none;
+  --mute:#9c9a93; --line:#3a3b3e; --blue:#8fb0f0; --sand:#33302a;
+  --cardline:#ecebe6; --tint:#3d221b; --tint2:#1f2a40;
+  --hl:#4a4320;
+}
+body{background:var(--paper)!important;background-image:none!important;font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;font-size:17px}
+button,input,select,textarea,label{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif}
+input[type=number],.row input[type=number]{font-family:var(--math,serif)}
+h1,h2,h3,.lab-title{font-family:"IsRight Hand","LXGW WenKai TC","Kaiti TC","KaiTi",serif;font-weight:700;letter-spacing:.02em}
+.lab-title{font-size:22px!important}
+h1{text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:3px;text-underline-offset:10px}
+.eyebrow{color:var(--orange)}
+.thesis{border-left:none!important;padding-left:0!important;background:linear-gradient(transparent 62%,var(--hl) 62%);display:inline}
+nav{background:var(--paper)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:1.5px dashed var(--edge-soft)!important}
+nav a{border-radius:var(--wob)!important}
+nav a:hover,nav a:focus-visible{border:1.5px solid var(--ink)!important;background:transparent!important;color:var(--ink)!important}
+
+.lab{border:2.5px solid var(--ink)!important;border-radius:var(--wob)!important;box-shadow:none!important;overflow:visible!important}
+.lab:nth-of-type(even){border-radius:var(--wob2)!important}
+.lab-head{border-bottom:1.5px dashed var(--edge-soft)!important}
+.lab-no{background:transparent!important;color:var(--ink)!important;border:2px solid var(--ink);border-radius:52% 48% 50% 46%/48% 54% 46% 52%!important;font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;width:28px!important;height:28px!important}
+.lab-foot{background:var(--hl)!important;border:none!important;margin:6px 10px 10px;border-radius:var(--wob2)}
+.lab-foot b{color:var(--ink)!important}
+
+button,.btn{border:2px solid var(--ink)!important;border-radius:var(--wob)!important;background:transparent!important;color:var(--ink)!important;box-shadow:none!important}
+button:nth-of-type(even),.btn:nth-of-type(even){border-radius:var(--wob2)!important}
+button:hover:not(:disabled),.btn:hover{background:var(--hl)!important;color:var(--ink)!important}
+button.primary,.seg.on,.seg.on:hover{background:var(--ink)!important;color:var(--paper)!important}
+button.warn{border-color:var(--orange)!important;color:var(--orange)!important}
+.chip button{border:none!important;background:none!important}
+.segwrap{border:2px solid var(--ink)!important;border-radius:var(--wob)!important}
+.seg{border:none!important;border-right:1.5px dashed var(--edge-soft)!important;border-radius:0!important}
+input[type=number],input[type=text],select,textarea{border:2px solid var(--ink)!important;border-radius:var(--wob2)!important;background:transparent!important}
+input:focus-visible,select:focus-visible{outline:none!important;background:var(--hl)!important}
+input[type=range]{accent-color:var(--ink)}
+
+.msg,.verdict,.fate,.stat,.statbox,.chip,.tape,.pan,.thumb,.idcell{border-width:1.5px!important;border-radius:var(--wob)!important;box-shadow:none!important}
+.card,.box,.panel,.callout,.note,.tip{box-shadow:none!important}
+.dot{border-radius:48% 52% 46% 54%!important}
+::selection{background:var(--hl)}
+
+.bk-top{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;font-size:15px!important}
+.bk-top a{color:var(--ink,#1b1b1b)!important;text-decoration:underline dotted!important}
+.bk-fab{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;background:var(--paper,#fdfcf8)!important;color:var(--ink,#1b1b1b)!important;
+  border:2px solid var(--ink,#1b1b1b)!important;border-radius:255px 14px 225px 14px/14px 225px 14px 255px!important;box-shadow:none!important}
+.bk-fab:hover{background:var(--hl,#fff2a8)!important}
+@media print{.lab{border-width:1.5px!important}}
+</style><!--/hand-theme--></head>
+<body>
+
+<style id="backnav">
+.bk-top{
+  max-width:1080px; margin:0 auto; padding:14px 20px 0;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif; font-size:14px;
+}
+.bk-top a{color:#2E5A88; text-decoration:none; font-weight:600}
+.bk-top a:hover{text-decoration:underline}
+.bk-top .bk-sep{color:#B8AE9C; margin:0 10px}
+.bk-fab{
+  position:fixed; right:16px; bottom:16px; z-index:9999;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 15px; border-radius:24px;
+  background:#FFFDF8; border:1px solid #DFD6C4; color:#2E5A88;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  font-size:14px; font-weight:600; text-decoration:none;
+  box-shadow:0 2px 4px rgba(72,60,40,.10), 0 10px 26px rgba(72,60,40,.16);
+}
+.bk-fab:hover{border-color:#2E5A88}
+.bk-fab:focus-visible{outline:2px solid #2E5A88; outline-offset:2px}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .bk-top a{color:#82ADDC}
+  :root:not([data-theme="light"]) .bk-fab{
+    background:#1F252B; border-color:#333C45; color:#82ADDC;
+    box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+  }
+  :root:not([data-theme="light"]) .bk-fab:hover{border-color:#82ADDC}
+}
+:root[data-theme="dark"] .bk-top a{color:#82ADDC}
+:root[data-theme="dark"] .bk-fab{
+  background:#1F252B; border-color:#333C45; color:#82ADDC;
+  box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+}
+@media print{ .bk-top, .bk-fab{display:none !important} }
+@media (max-width:520px){ .bk-fab{right:12px; bottom:12px; padding:8px 13px; font-size:13px} }
+</style>
+<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">七年級　資料與不確定性　學習單　·　互動探索站</div>
+  <h1>誰能代表大家</h1>
+  <p class="sub">統計圖表與資料分析　·　從平均月薪的爭議到平均數、中位數與眾數</p>
+  <p class="thesis">沒有一個數字代表得了所有人。先問你想回答什麼問題，再決定用誰來代表大家。</p>
+</header>
+
+<nav>
+  <a href="#p1">① 部分與全部</a>
+  <a href="#p2">② 橫軸是數線</a>
+  <a href="#p3">③ 三種代表</a>
+  <a href="#lab1">圓形圖產生器</a>
+  <a href="#lab2">立體圓形圖</a>
+  <a href="#lab3">換一個組距</a>
+  <a href="#lab4">長條圖與直方圖</a>
+  <a href="#lab5">三種代表</a>
+  <a href="#lab6">拉走平均數</a>
+  <a href="#lab7">站牌要設在哪裡</a>
+</nav>
+
+<section id="p1">
+  <div class="pillar-tag" style="color:var(--indigo)"><span class="dot" style="background:var(--indigo)"></span>支點一　部分與全部</div>
+  <h2>圓形圖畫的是「占全部的幾分之幾」</h2>
+  <p class="lede">把全部當成一整個圓（360°、100％），每一類切多大的扇形：圓心角 ＝ 360° × 這一類占全部的比。所以各部分加起來一定剛好是全部，一個人只能算在一塊裡。</p>
+</section>
+
+<div class="lab" id="lab1">
+  <div class="lab-head">
+    <span class="lab-no">1</span>
+    <div>
+      <p class="lab-title">圓形圖產生器</p>
+      <p class="lab-why">輸入各類的數量和「全部」有多少，看圓形圖怎麼切。加起來和全部對不上的時候，圓形圖就畫不出來。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <span class="segwrap"><button class="seg on" id="l1p1">上學方式（30 人）</button><button class="seg" id="l1p2">會考主題前五名</button><button class="seg" id="l1p3">喜歡的運動（可複選）</button></span>
+    </div>
+    <div class="catin" id="l1in"></div>
+    <div class="row"><label>全部（人數或題數；會考那一組用 9 年最多 270 題） <input type="number" id="l1tot" value="30" min="1"></label></div>
+    <div class="twocol">
+      <div id="l1fig"></div>
+      <div class="tablewrap" id="l1tab"></div>
+    </div>
+    <div id="l1msg"></div>
+  </div>
+  <div class="lab-foot">會考那一組：會考數學每年不到 30 題，9 年加起來不到 270 題；16 個主題的題數加起來卻有 302 題——一題被算進好幾個主題，所以不能畫成圓形圖。</div>
+</div>
+
+<div class="lab" id="lab2">
+  <div class="lab-head">
+    <span class="lab-no">2</span>
+    <div>
+      <p class="lab-title">立體圓形圖</p>
+      <p class="lab-why">老師簡報裡那張圖：<i>A</i> 500、<i>B</i> 300、<i>C</i> 490、<i>D</i> 350。把圓盤往後倒、加上厚度、轉一轉，看每一塊「看起來」占了畫面多少。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label>傾斜 <input type="range" id="l2t" min="0" max="75" value="60"> <span id="l2tv"></span></label>
+      <label>厚度 <input type="range" id="l2h" min="0" max="60" value="36"> <span id="l2hv"></span></label>
+      <label>轉動 <input type="range" id="l2r" min="0" max="359" value="0"> <span id="l2rv"></span></label>
+    </div>
+    <div class="row"><button class="btn" id="l2flat">平面、不轉</button><button class="btn" id="l2orig">老師簡報的樣子</button></div>
+    <div id="l2fig"></div>
+    <div class="tablewrap" id="l2tab"></div>
+    <div id="l2msg"></div>
+  </div>
+  <div class="lab-foot">只有傾斜、沒有厚度的時候，四塊頂面在畫面上的比例其實沒變（整個圓一起被壓扁）；真正騙人的是<b>前面多出來的側面</b>，而轉到前面的那幾塊才有側面。</div>
+</div>
+
+<section id="p2">
+  <div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>支點二　橫軸是數線</div>
+  <h2>分組會丟掉什麼；直方圖為什麼要黏在一起</h2>
+  <p class="lede">次數分配表把資料分成等寬的區間，丟掉每個人確切的值，留下每一段有幾人。直方圖的橫軸是一條數線，區間一段接一段，長條一定要黏在一起；長條圖的橫軸只是幾個類別。</p>
+</section>
+
+<div class="lab" id="lab3">
+  <div class="lab-head">
+    <span class="lab-no">3</span>
+    <div>
+      <p class="lab-title">換一個組距</p>
+      <p class="lab-why">學習單核心二那 30 位同學的身高。改組距、改第一組的起點，看直方圖的形狀什麼時候看得最清楚。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label>組距 <input type="range" id="l3w" min="1" max="15" value="5"> <span id="l3wv"></span></label>
+      <label>起點 <input type="range" id="l3s" min="140" max="147" value="145"> <span id="l3sv"></span></label>
+      <label><input type="checkbox" id="l3p" checked> 次數分配折線圖</label>
+      <label><input type="checkbox" id="l3d"> 顯示每個人</label>
+    </div>
+    <div id="l3fig"></div>
+    <div class="tablewrap" id="l3tab"></div>
+    <div id="l3msg"></div>
+  </div>
+  <div class="lab-foot">每一組都是「下限以上、未滿上限」：155.0 算在 155～160，160.0 算在 160～165。每個人都被數到、而且只被數一次。</div>
+</div>
+
+<div class="lab" id="lab4">
+  <div class="lab-head">
+    <span class="lab-no">4</span>
+    <div>
+      <p class="lab-title">長條圖與直方圖</p>
+      <p class="lab-why">三張圖切換著看：長條可不可以對調？中間能不能留空隙？組距不一樣寬時，高度該畫什麼？</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <span class="segwrap"><button class="seg on" id="l4m1">長條圖：上學方式</button><button class="seg" id="l4m2">直方圖：身高</button><button class="seg" id="l4m3">組距不一樣寬</button></span>
+    </div>
+    <div class="row" id="l4ctl"></div>
+    <div id="l4fig"></div>
+    <div id="l4msg"></div>
+  </div>
+  <div class="lab-foot">不等寬的時候，高度改畫「人數 ÷ 組距」，每根長條的<b>面積</b>才剛好等於人數。課本一律用等寬的組，就是為了讓高度直接等於人數。</div>
+</div>
+
+<section id="p3">
+  <div class="pillar-tag" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>支點三　三種代表</div>
+  <h2>平均是平分、中位數是中間的人、眾數是最多人的那格</h2>
+  <p class="lede">平均數是蹺蹺板的支點：每個數與平均的差加起來一定是 0，所以一個人坐得很遠，支點就被拉過去。中位數只看排在中間的是誰；眾數只看哪一格最多人。三個回答三個不同的問題。</p>
+</section>
+
+<div class="lab" id="lab5">
+  <div class="lab-head">
+    <span class="lab-no">5</span>
+    <div>
+      <p class="lab-title">三種代表</p>
+      <p class="lab-why">輸入一串數字（用空白或逗號隔開），看平均數、中位數、眾數各在哪裡，以及「每個數減平均」加起來是多少。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <span class="segwrap"><button class="seg on" id="l5p1">閱讀時數</button><button class="seg" id="l5p2">把 16 改成 7</button><button class="seg" id="l5p3">鞋號</button><button class="seg" id="l5p4">村子的年齡</button><button class="seg" id="l5p5">段考成績</button></span>
+    </div>
+    <div class="row"><input class="listin" id="l5in" value="4 5 5 6 6 6 7 8 16"></div>
+    <div id="l5fig"></div>
+    <div class="statrow">
+      <div class="statbox hot"><div class="k">平均數</div><div class="v" id="l5mean"></div></div>
+      <div class="statbox cool"><div class="k">中位數</div><div class="v" id="l5med"></div></div>
+      <div class="statbox blue"><div class="k">眾數</div><div class="v" id="l5mode"></div></div>
+      <div class="statbox"><div class="k">每個數減平均的總和</div><div class="v" id="l5dev"></div></div>
+    </div>
+    <div id="l5msg"></div>
+  </div>
+  <div class="lab-foot">試試「村子的年齡」：平均數落在 13 到 65 歲之間那一大段沒有人的地方。只給一個數，就把「分成兩群」的樣子丟掉了。</div>
+</div>
+
+<div class="lab" id="lab6">
+  <div class="lab-head">
+    <span class="lab-no">6</span>
+    <div>
+      <p class="lab-title">拉走平均數</p>
+      <p class="lab-why">島上咖啡店 10 個人的月薪（千元）。拖曳任何一個點（老闆是橘色那個），看平均數、中位數、眾數誰會跟著動。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <button class="btn" id="l6r">回到原本</button><button class="btn" id="l6a">每人加 2 千</button><button class="btn" id="l6m">每人加一成</button><button class="btn" id="l6b">老闆變 500</button>
+    </div>
+    <div id="l6fig"></div>
+    <div class="statrow">
+      <div class="statbox hot"><div class="k">平均數</div><div class="v" id="l6mean"></div></div>
+      <div class="statbox cool"><div class="k">中位數</div><div class="v" id="l6med"></div></div>
+      <div class="statbox blue"><div class="k">眾數</div><div class="v" id="l6mode"></div></div>
+      <div class="statbox"><div class="k">比平均低的人</div><div class="v" id="l6below"></div></div>
+    </div>
+    <div id="l6msg"></div>
+  </div>
+  <div class="lab-foot">全國 113 年全年總薪資：平均 73.2 萬元、中位數 54.6 萬元，68.75％ 的人領不到平均（行政院主計總處，2025 年 11 月公布）。和這家咖啡店是同一件事，只是放大了。</div>
+</div>
+
+<div class="lab" id="lab7">
+  <div class="lab-head">
+    <span class="lab-no">7</span>
+    <div>
+      <p class="lab-title">站牌要設在哪裡</p>
+      <p class="lab-why">一條直路上住著幾戶人家（單位：百公尺）。拖曳房子或站牌，讓所有人走到站牌的距離加起來最短。下面的折線是「站牌放在每個位置時，距離和是多少」。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <button class="btn" id="l7r">五戶（學習單）</button><button class="btn" id="l7far">戊搬到最遠</button><button class="btn" id="l7add">加一戶</button><button class="btn" id="l7del">減一戶</button><button class="btn" id="l7best">幫我找最好的位置</button>
+    </div>
+    <div id="l7fig"></div>
+    <div class="statrow">
+      <div class="statbox hot"><div class="k">站牌位置</div><div class="v" id="l7pos"></div></div>
+      <div class="statbox"><div class="k">距離和</div><div class="v" id="l7sum"></div></div>
+      <div class="statbox cool"><div class="k">中位數</div><div class="v" id="l7med"></div></div>
+      <div class="statbox blue"><div class="k">平均數</div><div class="v" id="l7mean"></div></div>
+    </div>
+    <div id="l7msg"></div>
+  </div>
+  <div class="lab-foot">站牌往右移 1：左邊每戶多走 1、右邊每戶少走 1。只要左邊的戶數比右邊少，往右移就划算——所以最好的位置停在左右戶數一樣多的地方，也就是中位數。</div>
+</div>
+
+<section id="end">
+  <div class="pillar-tag" style="color:var(--indigo)"><span class="dot" style="background:var(--indigo)"></span>統整</div>
+  <h2>誰能代表大家</h2>
+  <p class="lede">圓形圖丟掉實際數量、留下占全部的比；次數分配表丟掉確切的值、留下每一段有幾人；一個代表數丟掉整體的樣子。平均數回答「平分之後每人多少」，中位數回答「站在中間的人」，眾數回答「最多人在哪裡」。</p>
+  <p>接下來：八上用「累積」把中位數讀得更準；九下用四分位數與盒狀圖描述資料散得多開，再用機率描述「從一部分推測全部」會猜錯的可能。</p>
+</section>
+
+</div>
+
+<script>
+/* ================================================================
+   七下5 統計圖表與資料分析　互動探索站《誰能代表大家》
+================================================================ */
+const $ = id => document.getElementById(id);
+const CIN = "var(--indigo)", CORG = "var(--orange)", CGRN = "var(--green)", CRED = "var(--crimson)",
+      CMUT = "var(--ink-3)", CINK = "var(--ink)", CSOFT = "var(--edge-soft)", CEDGE = "var(--edge)";
+const PAL = ["#4F7FB3", "#D0763C", "#9A9A9A", "#D8B23A", "#5E9A6E"];
+const verdict = (cls, head, body) => '<div class="verdict ' + cls + '"><b>' + head + '</b>' + body + '</div>';
+function seg(ids, on) { ids.forEach(i => $(i).classList.toggle("on", i === on)); }
+const r1 = v => Math.round(v * 10) / 10;
+const r2 = v => Math.round(v * 100) / 100;
+const fmt = v => {
+  const s = String(r2(v));
+  return s.replace(/-/g, "−");
+};
+const svgWrap = (w, h, inner, cls) => '<svg class="figsvg ' + (cls || "") + '" viewBox="0 0 ' + w + ' ' + h + '" role="img">' + inner + '</svg>';
+const T = (x, y, s, o) => { o = o || {}; return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="' + (o.a || "middle") + '"' +
+  (o.cls ? ' class="' + o.cls + '"' : '') + (o.c ? ' style="fill:' + o.c + (o.w ? ';font-weight:' + o.w : '') + '"' : '') + '>' + s + '</text>'; };
+const L = (x1, y1, x2, y2, c, w, dash) => '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) +
+  '" style="stroke:' + c + ';stroke-width:' + (w || 1) + (dash ? ';stroke-dasharray:' + dash : '') + '"/>';
+const R = (x, y, w, h, fill, stroke) => '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + Math.max(0, w).toFixed(1) + '" height="' + Math.max(0, h).toFixed(1) +
+  '" style="fill:' + fill + ';stroke:' + (stroke || "none") + ';stroke-width:1"/>';
+
+/* ---------- 統計 ---------- */
+const sum = a => a.reduce((s, v) => s + v, 0);
+const mean = a => sum(a) / a.length;
+function median(a) { const s = [...a].sort((x, y) => x - y), n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; }
+function modes(a) {
+  const m = new Map(); a.forEach(v => m.set(v, (m.get(v) || 0) + 1));
+  const top = Math.max(...m.values());
+  if (top === 1) return { list: [], top };
+  return { list: [...m.entries()].filter(e => e[1] === top).map(e => e[0]).sort((x, y) => x - y), top };
+}
+
+/* ================================================================
+   LAB 1　圓形圖產生器
+================================================================ */
+const L1P = {
+  l1p1: { cats: [["走路", 6], ["腳踏車", 3], ["家長接送", 15], ["公車", 6]], tot: 30, unit: "人" },
+  l1p2: { cats: [["簡單幾何", 51], ["方程式", 34], ["統計與機率", 26], ["幾何證明", 23], ["因數倍數分數", 23], ["其他 11 個主題", 145]], tot: 270, unit: "題" },
+  l1p3: { cats: [["籃球", 14], ["羽球", 11], ["游泳", 9], ["跑步", 7]], tot: 30, unit: "人" },
+};
+let l1cur = "l1p1";
+function l1load(k) {
+  l1cur = k; seg(Object.keys(L1P), k);
+  const p = L1P[k];
+  $("l1in").innerHTML = p.cats.map((c, i) => '<label>' + c[0] + ' <input type="number" min="0" id="l1c' + i + '" value="' + c[1] + '"></label>').join("");
+  $("l1tot").value = p.tot;
+  p.cats.forEach((c, i) => $("l1c" + i).addEventListener("input", l1draw));
+  l1draw();
+}
+function l1draw() {
+  const p = L1P[l1cur];
+  const vals = p.cats.map((c, i) => Math.max(0, parseFloat($("l1c" + i).value) || 0));
+  const tot = Math.max(1, parseFloat($("l1tot").value) || 1);
+  const S = sum(vals);
+  const W = 300, H = 300, cx = 150, cy = 150, r = 120;
+  let g = '';
+  if (S <= tot + 1e-9 && S > 0) {
+    let a = -Math.PI / 2;
+    const parts = vals.map(v => v / tot);
+    if (S < tot) parts.push((tot - S) / tot);
+    parts.forEach((f, i) => {
+      if (f <= 0) return;
+      const b = a + f * 2 * Math.PI;
+      const col = i < vals.length ? PAL[i % PAL.length] : "var(--edge-soft)";
+      if (f >= 0.9999) g += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" style="fill:' + col + ';stroke:var(--card);stroke-width:2"/>';
+      else g += '<path d="M' + cx + ',' + cy + ' L' + (cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1) +
+        ' A' + r + ',' + r + ' 0 ' + (f > 0.5 ? 1 : 0) + ' 1 ' + (cx + r * Math.cos(b)).toFixed(1) + ',' + (cy + r * Math.sin(b)).toFixed(1) +
+        ' Z" style="fill:' + col + ';stroke:var(--card);stroke-width:2"/>';
+      const m = (a + b) / 2;
+      if (f > 0.05) g += T(cx + 0.62 * r * Math.cos(m), cy + 0.62 * r * Math.sin(m) + 4, r1(f * 360) + "°", { c: "#fff", w: 600 });
+      a = b;
+    });
+    $("l1fig").innerHTML = svgWrap(W, H, g);
+  } else {
+    // 畫不出來：把每一塊照 tot 的比例排在圓上，超過一圈的部分用紅色弧線表示
+    g += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" style="fill:none;stroke:var(--edge);stroke-width:2;stroke-dasharray:6 5"/>';
+    const turns = S / tot;
+    g += T(cx, cy - 6, "加起來是全部的", { cls: "lbl" }) + T(cx, cy + 16, r1(turns * 100) + "％", { cls: "big", c: CRED, w: 700 });
+    g += T(cx, cy + 36, "多出 " + r1((turns - 1) * 360) + "°，一圈放不下", { cls: "lbl", c: CRED });
+    $("l1fig").innerHTML = svgWrap(W, H, g);
+  }
+  let t = '<table class="mtab"><tr><th>類別</th><th>數量</th><th>占全部</th><th>圓心角</th></tr>';
+  p.cats.forEach((c, i) => {
+    t += '<tr><td style="font-family:var(--sans)"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:' + PAL[i % PAL.length] + ';margin-right:6px"></span>' + c[0] + '</td><td>' + vals[i] +
+      '</td><td>' + r1(vals[i] / tot * 100) + '％</td><td>' + r1(vals[i] / tot * 360) + '°</td></tr>';
+  });
+  t += '<tr><th>合計</th><td class="' + (Math.abs(S - tot) > 1e-9 ? "hi" : "") + '">' + S + '</td><td class="' + (S > tot ? "hi" : "") + '">' + r1(S / tot * 100) + '％</td><td class="' + (S > tot ? "hi" : "") + '">' + r1(S / tot * 360) + '°</td></tr></table>';
+  $("l1tab").innerHTML = t;
+  let msg;
+  if (Math.abs(S - tot) < 1e-9) msg = verdict("ok", "剛好一整圈。", "各部分加起來 ＝ 全部，一個" + p.unit + "只在一塊裡，可以畫圓形圖。");
+  else if (S < tot) msg = verdict("", "還缺 " + r2(tot - S) + " " + p.unit + "。", "圓上留下一塊灰色，那是「沒有被分到任何一類」的部分。要畫圓形圖，得補一類「其他」。");
+  else msg = verdict("bad", "加起來超過全部，畫不成圓形圖。", "有些" + p.unit + "被算了不只一次（" + (l1cur === "l1p2" ? "一題同時屬於好幾個主題" : "複選題，一個人勾了好幾項") + "）。這種資料用長條圖。");
+  $("l1msg").innerHTML = msg;
+}
+["l1p1", "l1p2", "l1p3"].forEach(k => $(k).addEventListener("click", () => l1load(k)));
+$("l1tot").addEventListener("input", l1draw);
+l1load("l1p1");
+
+/* ================================================================
+   LAB 2　立體圓形圖
+================================================================ */
+const L2V = [["A", 500], ["B", 300], ["C", 490], ["D", 350]];
+const L2C = ["#4472C4", "#ED7D31", "#A5A5A5", "#FFC000"];
+function l2draw() {
+  const tilt = +$("l2t").value, depth = +$("l2h").value, rot = +$("l2r").value;
+  $("l2tv").textContent = tilt + "°"; $("l2hv").textContent = depth; $("l2rv").textContent = rot + "°";
+  const W = 560, cx = 280, R0 = 200;
+  const ry = R0 * Math.cos(tilt * Math.PI / 180);
+  const dep = depth * Math.sin(tilt * Math.PI / 180) * 1.6;
+  const cy = ry + 14, H = 2 * ry + dep + 28;
+  const tot = sum(L2V.map(v => v[1]));
+  // 角度：從正上方（12 點鐘，t = -90°）順時針
+  let a = (-90 + rot) * Math.PI / 180;
+  const sl = L2V.map((v, i) => { const b = a + v[1] / tot * 2 * Math.PI; const o = { n: v[0], v: v[1], a, b, c: L2C[i] }; a = b; return o; });
+  const P = t => [cx + R0 * Math.cos(t), cy + ry * Math.sin(t)];
+  // 每一塊：頂面面積（橢圓扇形）＋可見側面面積（sin t > 0 的那一段）
+  const N = 720;
+  sl.forEach(s => {
+    s.top = 0.5 * R0 * ry * (s.b - s.a);
+    let side = 0;
+    for (let k = 0; k < N; k++) {
+      const t0 = s.a + (s.b - s.a) * k / N, t1 = s.a + (s.b - s.a) * (k + 1) / N, tm = (t0 + t1) / 2;
+      if (Math.sin(tm) > 0) side += dep * Math.abs(R0 * (Math.cos(t1) - Math.cos(t0)));
+    }
+    s.side = side; s.vis = s.top + side;
+  });
+  const visTot = sum(sl.map(s => s.vis));
+  // 畫：先畫側面（依 y 由後往前），再畫頂面
+  let g = '';
+  const sidePieces = [];
+  sl.forEach(s => {
+    const M = 90;
+    for (let k = 0; k < M; k++) {
+      const t0 = s.a + (s.b - s.a) * k / M, t1 = s.a + (s.b - s.a) * (k + 1) / M, tm = (t0 + t1) / 2;
+      if (Math.sin(tm) <= 0 || dep <= 0) continue;
+      const p0 = P(t0), p1 = P(t1);
+      sidePieces.push({ y: Math.sin(tm), d: 'M' + p0[0].toFixed(1) + ',' + p0[1].toFixed(1) + ' L' + p1[0].toFixed(1) + ',' + p1[1].toFixed(1) +
+        ' L' + p1[0].toFixed(1) + ',' + (p1[1] + dep).toFixed(1) + ' L' + p0[0].toFixed(1) + ',' + (p0[1] + dep).toFixed(1) + ' Z', c: s.c });
+    }
+  });
+  sidePieces.sort((p, q) => p.y - q.y).forEach(p => g += '<path d="' + p.d + '" style="fill:' + p.c + ';filter:brightness(0.62);stroke:' + p.c + ';stroke-width:0.6;stroke-opacity:0.35"/>');
+  sl.forEach(s => {
+    let d = 'M' + cx + ',' + cy;
+    const M = 90;
+    for (let k = 0; k <= M; k++) { const p = P(s.a + (s.b - s.a) * k / M); d += ' L' + p[0].toFixed(1) + ',' + p[1].toFixed(1); }
+    g += '<path d="' + d + ' Z" style="fill:' + s.c + ';stroke:#fff;stroke-width:1.5"/>';
+    const m = (s.a + s.b) / 2, lp = [cx + 0.6 * R0 * Math.cos(m), cy + 0.6 * ry * Math.sin(m)];
+    g += T(lp[0], lp[1] + 5, s.n, { c: "#fff", w: 700, cls: "big" });
+  });
+  $("l2fig").innerHTML = svgWrap(W, H, g);
+  let t = '<table class="mtab"><tr><th></th><th>數量</th><th>真正占全部</th><th>看起來占畫面</th><th>差</th></tr>';
+  sl.forEach(s => {
+    const tr = s.v / tot * 100, ap = s.vis / visTot * 100, df = ap - tr;
+    t += '<tr><th>' + s.n + '</th><td>' + s.v + '</td><td>' + r1(tr) + '％</td><td class="' + (Math.abs(df) > 2 ? "hi" : "") + '">' + r1(ap) + '％</td><td>' + (df >= 0 ? "＋" : "−") + r1(Math.abs(df)) + '</td></tr>';
+  });
+  $("l2tab").innerHTML = t + '</table>';
+  const big = [...sl].sort((p, q) => q.vis - p.vis)[0];
+  if (dep < 0.5) $("l2msg").innerHTML = verdict("ok", "沒有厚度：畫面比例 ＝ 真正的比例。", "整個圓被一起壓扁，四塊縮成一樣的倍數，所以誰大誰小不變。最大的是 <i>A</i>（30.5％）。");
+  else $("l2msg").innerHTML = verdict(big.n === "A" ? "" : "bad", "現在畫面上最「大」的是 " + big.n + "。", "真正最大的是 <i>A</i>（500，30.5％）。轉到前面的塊多了一圈側面，看起來就變大；轉到後面的塊只剩被壓扁的頂面。");
+}
+["l2t", "l2h", "l2r"].forEach(k => $(k).addEventListener("input", l2draw));
+$("l2flat").addEventListener("click", () => { $("l2t").value = 0; $("l2h").value = 0; $("l2r").value = 0; l2draw(); });
+$("l2orig").addEventListener("click", () => { $("l2t").value = 60; $("l2h").value = 36; $("l2r").value = 0; l2draw(); });
+l2draw();
+
+/* ================================================================
+   LAB 3　換一個組距
+================================================================ */
+const HT = [158.2, 150.8, 165.3, 157.1, 147.2, 161.2, 155.0, 163.7, 152.3, 170.2,
+  156.3, 160.0, 154.4, 166.1, 158.8, 149.5, 162.4, 157.9, 172.6, 155.8,
+  160.5, 153.9, 159.6, 164.9, 156.7, 168.5, 151.6, 161.8, 167.8, 163.0];
+function groupsOf(data, w, s) {
+  const lo = s, hi0 = Math.max(...data);
+  const k = Math.floor((hi0 - s) / w) + 1;
+  const cnt = Array(k).fill(0);
+  data.forEach(x => { const i = Math.floor((x - s) / w + 1e-9); cnt[i]++; });
+  return cnt.map((c, i) => ({ a: lo + i * w, b: lo + (i + 1) * w, c }));
+}
+function l3draw() {
+  const w = +$("l3w").value, s = +$("l3s").value;
+  $("l3wv").textContent = w + " 公分"; $("l3sv").textContent = s;
+  const G = groupsOf(HT, w, s);
+  const W = 620, H = 300, ox = 44, oy = 256, x0 = 135, x1 = 190;
+  const X = v => ox + (v - x0) / (x1 - x0) * (W - ox - 14);
+  const mx = Math.max(...G.map(g => g.c));
+  const top = Math.max(4, Math.ceil(mx / 2) * 2 + 2);
+  const Y = v => oy - v / top * 216;
+  let g = '';
+  const st = top <= 12 ? 2 : top <= 24 ? 4 : 5;
+  for (let v = 0; v <= top; v += st) g += L(ox, Y(v), W - 10, Y(v), CSOFT, 1) + T(ox - 6, Y(v) + 4, v, { a: "end" });
+  G.forEach(q => g += R(X(q.a), Y(q.c), X(q.b) - X(q.a), oy - Y(q.c), "var(--indigo-soft)", CIN) + (q.c ? T((X(q.a) + X(q.b)) / 2, Y(q.c) - 5, q.c) : ""));
+  if ($("l3p").checked) {
+    const pts = [[X(G[0].a - w / 2), oy]].concat(G.map(q => [X((q.a + q.b) / 2), Y(q.c)])).concat([[X(G[G.length - 1].b + w / 2), oy]]);
+    g += '<polyline points="' + pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(" ") + '" style="fill:none;stroke:' + CORG + ';stroke-width:2"/>';
+    pts.forEach(p => g += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3" style="fill:' + CORG + '"/>');
+  }
+  if ($("l3d").checked) {
+    const lv = {};
+    [...HT].sort((a, b) => a - b).forEach(x => { const k = Math.round(X(x) / 5); lv[k] = (lv[k] || 0) + 1; g += '<circle cx="' + X(x).toFixed(1) + '" cy="' + (oy + 12 + 5 * (lv[k] - 1)).toFixed(1) + '" r="2.2" style="fill:' + CGRN + '"/>'; });
+  }
+  g += L(ox, oy, W - 10, oy, CINK, 1.5);
+  for (let v = 135; v <= 190; v += 5) g += L(X(v), oy, X(v), oy + 4, CINK, 1) + ($("l3d").checked ? "" : T(X(v), oy + 17, v));
+  g += T(W - 12, oy - 6, "公分", { a: "end", cls: "lbl" }) + T(ox, 16, "人數", { a: "start", cls: "lbl" });
+  $("l3fig").innerHTML = svgWrap(W, H + ($("l3d").checked ? 30 : 0), g, "wide");
+  let t = '<table class="mtab"><tr><th>組別</th>' + G.map(q => '<th>' + q.a + '～' + q.b + '</th>').join("") + '</tr><tr><th>次數</th>' + G.map(q => '<td>' + q.c + '</td>').join("") + '</tr></table>';
+  $("l3tab").innerHTML = t;
+  const k = G.length, nonzero = G.filter(q => q.c > 0).length, ones = G.filter(q => q.c <= 1).length;
+  let msg;
+  if (k <= 3) msg = verdict("bad", "只剩 " + k + " 組：太粗。", "每一組都塞了很多人，只看得出「中間比較多」，看不出往哪一邊偏、峰在哪裡。");
+  else if (ones >= k / 2) msg = verdict("bad", k + " 組，有 " + ones + " 組只有 0 或 1 人：太細。", "長條高高低低像鋸齒，看不出形狀。30 筆資料切這麼細，每一組都分不到幾個人。");
+  else msg = verdict("ok", k + " 組，形狀看得出來。", "中間最多、往兩邊慢慢變少。組距 5、從 145 開始時，155～160 最多（9 人）。");
+  $("l3msg").innerHTML = msg;
+}
+["l3w", "l3s"].forEach(k => $(k).addEventListener("input", l3draw));
+["l3p", "l3d"].forEach(k => $(k).addEventListener("change", l3draw));
+l3draw();
+
+/* ================================================================
+   LAB 4　長條圖與直方圖
+================================================================ */
+let l4mode = "l4m1", l4order = [0, 1, 2, 3], l4gap = true, l4dens = false, l4wide = false;
+const L4C = [["走路", 6], ["腳踏車", 3], ["家長接送", 15], ["公車", 6]];
+function l4ctl() {
+  let h = '';
+  if (l4mode === "l4m1") h = '<button class="btn" id="l4sh">打亂順序</button><button class="btn" id="l4so">由多到少排</button><label><input type="checkbox" id="l4w" ' + (l4wide ? "checked" : "") + '> 長條畫寬一點</label>';
+  if (l4mode === "l4m2") h = '<label><input type="checkbox" id="l4g" ' + (l4gap ? "checked" : "") + '> 長條之間留空隙</label><button class="btn" id="l4sh2">試著對調兩根</button>';
+  if (l4mode === "l4m3") h = '<span class="segwrap"><button class="seg ' + (l4dens ? "" : "on") + '" id="l4d0">高度 ＝ 人數</button><button class="seg ' + (l4dens ? "on" : "") + '" id="l4d1">高度 ＝ 人數 ÷ 組距</button></span>';
+  $("l4ctl").innerHTML = h;
+  if ($("l4sh")) $("l4sh").onclick = () => { for (let i = 3; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [l4order[i], l4order[j]] = [l4order[j], l4order[i]]; } l4draw(); };
+  if ($("l4so")) $("l4so").onclick = () => { l4order = [2, 0, 3, 1]; l4draw(); };
+  if ($("l4w")) $("l4w").onchange = e => { l4wide = e.target.checked; l4draw(); };
+  if ($("l4g")) { $("l4g").onchange = e => { l4gap = e.target.checked; l4draw(); }; }
+  if ($("l4sh2")) $("l4sh2").onclick = () => { l4swap = !l4swap; l4draw(); };
+  if ($("l4d0")) { $("l4d0").onclick = () => { l4dens = false; l4ctl(); l4draw(); }; $("l4d1").onclick = () => { l4dens = true; l4ctl(); l4draw(); }; }
+}
+let l4swap = false;
+function l4draw() {
+  const W = 600, H = 290, ox = 50, oy = 246, top = 220;
+  let g = '', msg = '';
+  if (l4mode === "l4m1") {
+    const mx = 16, Y = v => oy - v / mx * top;
+    for (let v = 0; v <= mx; v += 4) g += L(ox, Y(v), W - 10, Y(v), CSOFT, 1) + T(ox - 6, Y(v) + 4, v, { a: "end" });
+    const slot = (W - ox - 20) / 4, bw = l4wide ? slot * 0.85 : slot * 0.5;
+    l4order.forEach((ci, i) => {
+      const x = ox + 10 + i * slot + (slot - bw) / 2, c = L4C[ci];
+      g += R(x, Y(c[1]), bw, oy - Y(c[1]), "var(--orange-soft)", CORG) + T(x + bw / 2, Y(c[1]) - 5, c[1]) + T(x + bw / 2, oy + 18, c[0], { cls: "lbl" });
+    });
+    g += L(ox, oy, W - 10, oy, CINK, 1.5) + T(ox, 16, "人數", { a: "start", cls: "lbl" });
+    msg = verdict("ok", "長條圖：只有高度有意思。", "類別之間沒有大小、沒有順序，怎麼排、畫多寬，說的都是同一件事：家長接送 15 人最多。");
+  } else if (l4mode === "l4m2") {
+    const G = groupsOf(HT, 5, 145), mx = 10, Y = v => oy - v / mx * top;
+    const X = v => ox + (v - 140) / 40 * (W - ox - 20);
+    for (let v = 0; v <= mx; v += 2) g += L(ox, Y(v), W - 10, Y(v), CSOFT, 1) + T(ox - 6, Y(v) + 4, v, { a: "end" });
+    const order = G.map((q, i) => i);
+    if (l4swap) [order[1], order[4]] = [order[4], order[1]];
+    order.forEach((gi, i) => {
+      const q = G[gi], a = 145 + 5 * i, gp = l4gap ? 7 : 0;
+      g += R(X(a) + gp, Y(q.c), X(a + 5) - X(a) - 2 * gp, oy - Y(q.c), "var(--indigo-soft)", CIN) + T((X(a) + X(a + 5)) / 2, Y(q.c) - 5, q.c);
+      if (l4swap) g += T((X(a) + X(a + 5)) / 2, oy + 32, q.a + "～" + q.b, { cls: "lbl", c: gi !== i ? CRED : CMUT });
+    });
+    g += L(ox, oy, W - 10, oy, CINK, 1.5);
+    for (let v = 140; v <= 180; v += 5) g += L(X(v), oy, X(v), oy + 4, CINK, 1) + T(X(v), oy + 17, v);
+    g += T(W - 12, oy - 6, "公分", { a: "end", cls: "lbl" }) + T(ox, 16, "人數", { a: "start", cls: "lbl" });
+    if (l4swap) msg = verdict("bad", "對調之後，橫軸的數字對不上了。", "150～155 的 5 人被畫到了 165～170 的位置。直方圖的橫軸是數線，每一根的位置就是它的值，不能搬。");
+    else if (l4gap) msg = verdict("bad", "留了空隙，好像在說「154.9 到 155.1 之間沒有人」。", "可是 155.0 就有一個人。區間一段接一段，長條就一定要黏在一起。");
+    else msg = verdict("ok", "直方圖：長條黏在一起，寬就是組距。", "橫軸是一條數線，每一根占住一整段區間，中間沒有縫。");
+  } else {
+    const D = [[0, 10, 12], [10, 20, 9], [20, 40, 8], [40, 60, 1]];
+    const X = v => ox + v / 60 * (W - ox - 20);
+    const mx = l4dens ? 1.4 : 14, st = l4dens ? 0.2 : 2, Y = v => oy - v / mx * top;
+    for (let v = 0; v <= mx + 1e-9; v += st) g += L(ox, Y(v), W - 10, Y(v), CSOFT, 1) + T(ox - 6, Y(v) + 4, l4dens ? v.toFixed(1) : v, { a: "end" });
+    D.forEach(d => {
+      const h = l4dens ? d[2] / (d[1] - d[0]) : d[2];
+      g += R(X(d[0]), Y(h), X(d[1]) - X(d[0]), oy - Y(h), l4dens ? "var(--green-soft)" : "var(--orange-soft)", l4dens ? CGRN : CORG);
+      g += T((X(d[0]) + X(d[1])) / 2, Y(h) - 6, l4dens ? r2(h) + "（面積 " + d[2] + "）" : d[2] + " 人", { cls: "lbl" });
+    });
+    g += L(ox, oy, W - 10, oy, CINK, 1.5);
+    [0, 10, 20, 40, 60].forEach(v => g += L(X(v), oy, X(v), oy + 4, CINK, 1) + T(X(v), oy + 17, v));
+    g += T(W - 12, oy - 6, "分鐘", { a: "end", cls: "lbl" }) + T(ox, 16, l4dens ? "每 1 分鐘的人數" : "人數", { a: "start", cls: "lbl" });
+    msg = l4dens ? verdict("ok", "面積 ＝ 高 × 寬 ＝ 人數。", "20～40 那根變矮了：它有 8 人，可是攤在 20 分鐘上，每 1 分鐘只有 0.4 人。現在眼睛看到的面積就是人數。")
+      : verdict("bad", "20～40 看起來和 10～20 差不多大。", "它寬了一倍，眼睛看到的是面積：8 × 20 比 9 × 10 還大。其實它每 1 分鐘只有 0.4 人，是 10～20 的一半不到。");
+  }
+  $("l4fig").innerHTML = svgWrap(W, H, g, "wide");
+  $("l4msg").innerHTML = msg;
+}
+["l4m1", "l4m2", "l4m3"].forEach(k => $(k).addEventListener("click", () => { l4mode = k; seg(["l4m1", "l4m2", "l4m3"], k); l4swap = false; l4ctl(); l4draw(); }));
+l4ctl(); l4draw();
+
+/* ================================================================
+   LAB 5　三種代表
+================================================================ */
+const L5P = {
+  l5p1: "4 5 5 6 6 6 7 8 16",
+  l5p2: "4 5 5 6 6 6 7 8 7",
+  l5p3: "23 24 24 24.5 25 25 25 25 25.5 26 26 27 28",
+  l5p4: "6 8 9 9 10 11 12 12 66 68 70 71 72 74 75 76 78 79 81 83",
+  l5p5: "35 42 58 63 88 90 91 93 94 95",
+};
+function l5parse() {
+  return $("l5in").value.split(/[\s,，、]+/).map(parseFloat).filter(v => !isNaN(v) && isFinite(v)).slice(0, 80);
+}
+function l5draw() {
+  const a = l5parse();
+  if (a.length === 0) { $("l5fig").innerHTML = ""; $("l5msg").innerHTML = verdict("bad", "還沒有數字。", "請輸入至少一個數。"); ["l5mean", "l5med", "l5mode", "l5dev"].forEach(k => $(k).textContent = "—"); return; }
+  const mu = mean(a), md = median(a), mo = modes(a);
+  let lo = Math.min(...a), hi = Math.max(...a);
+  if (hi - lo < 1e-9) { lo -= 1; hi += 1; }
+  const span = hi - lo, pad = span * 0.08;
+  const W = 620, H = 190, ox = 30, oy = 130;
+  const X = v => ox + (v - lo + pad) / (span + 2 * pad) * (W - 2 * ox);
+  let g = L(ox, oy, W - ox, oy, CINK, 1.5);
+  const step = [0.5, 1, 2, 5, 10, 20, 25, 50, 100].find(s => span / s <= 12) || 200;
+  for (let v = Math.ceil((lo - pad) / step) * step; v <= hi + pad; v += step) g += L(X(v), oy, X(v), oy + 4, CINK, 1) + T(X(v), oy + 17, r2(v));
+  const lv = {};
+  [...a].sort((x, y) => x - y).forEach(v => { const k = Math.round(X(v) / 9); lv[k] = (lv[k] || 0) + 1; g += '<circle cx="' + X(v).toFixed(1) + '" cy="' + (oy - 8 - 9 * (lv[k] - 1)).toFixed(1) + '" r="4" style="fill:' + CIN + '"/>'; });
+  // 支點三角形
+  g += '<path d="M' + X(mu).toFixed(1) + ',' + (oy + 2) + ' l-9,16 l18,0 Z" style="fill:' + CORG + '"/>';
+  g += L(X(mu), 22, X(mu), oy, CORG, 1.5, "5 4") + T(X(mu), 16, "平均 " + fmt(mu), { c: CORG, cls: "lbl" });
+  g += L(X(md), 40, X(md), oy, CGRN, 1.5, "2 3") + T(X(md), 34, "中位數 " + fmt(md), { c: CGRN, cls: "lbl", a: Math.abs(X(md) - X(mu)) < 70 ? (md < mu ? "end" : "start") : "middle" });
+  $("l5fig").innerHTML = svgWrap(W, H, g, "wide");
+  $("l5mean").textContent = fmt(mu); $("l5med").textContent = fmt(md);
+  $("l5mode").textContent = mo.list.length ? mo.list.map(fmt).join("、") + "（" + mo.top + " 次）" : "沒有";
+  const dev = sum(a.map(v => v - mu));
+  $("l5dev").textContent = fmt(Math.abs(dev) < 1e-9 ? 0 : dev);
+  const gapMax = (() => { const s = [...a].sort((x, y) => x - y); let m = 0, at = 0; for (let i = 1; i < s.length; i++) if (s[i] - s[i - 1] > m) { m = s[i] - s[i - 1]; at = i; } return { m, lo: s[at - 1], hi: s[at] }; })();
+  let msg;
+  if (gapMax.m > span * 0.4 && mu > gapMax.lo && mu < gapMax.hi) msg = verdict("bad", "平均數落在沒有人的地方。", fmt(gapMax.lo) + " 到 " + fmt(gapMax.hi) + " 之間一個數都沒有，平均 " + fmt(mu) + " 卻剛好在那裡。資料分成兩群，一個數代表不了。");
+  else if (Math.abs(mu - md) > span * 0.12) msg = verdict("bad", "平均數被拉走了。", "平均 " + fmt(mu) + " 和中位數 " + fmt(md) + " 差了 " + fmt(Math.abs(mu - md)) + "：有數離得很遠，把「平分」的結果往那一邊拉。中位數只看中間的人，不受影響。");
+  else msg = verdict("ok", "三個代表數差不多。", "資料集中、沒有特別遠的數時，平分之後的每一份、正中間的人、最多人的那格，會落在差不多的地方。");
+  $("l5msg").innerHTML = msg;
+}
+Object.keys(L5P).forEach(k => $(k).addEventListener("click", () => { seg(Object.keys(L5P), k); $("l5in").value = L5P[k]; l5draw(); }));
+$("l5in").addEventListener("input", () => { seg(Object.keys(L5P), null); l5draw(); });
+l5draw();
+
+/* ================================================================
+   LAB 6　拉走平均數（咖啡店，可拖曳）
+================================================================ */
+const L6O = [28, 30, 30, 30, 32, 34, 35, 38, 43, 250];
+let l6 = L6O.slice();
+const L6G = { W: 640, H: 210, ox: 26, oy: 150, x0: 0, x1: 520 };
+const l6X = v => L6G.ox + (v - L6G.x0) / (L6G.x1 - L6G.x0) * (L6G.W - 2 * L6G.ox);
+const l6V = X => L6G.x0 + (X - L6G.ox) / (L6G.W - 2 * L6G.ox) * (L6G.x1 - L6G.x0);
+function l6draw() {
+  const mu = mean(l6), md = median(l6), mo = modes(l6);
+  let g = L(L6G.ox, L6G.oy, L6G.W - L6G.ox, L6G.oy, CINK, 1.5);
+  for (let v = 0; v <= 520; v += 40) g += L(l6X(v), L6G.oy, l6X(v), L6G.oy + 4, CINK, 1) + T(l6X(v), L6G.oy + 17, v);
+  g += T(L6G.W - L6G.ox, L6G.oy + 34, "千元", { a: "end", cls: "lbl" });
+  g += '<path d="M' + l6X(mu).toFixed(1) + ',' + (L6G.oy + 2) + ' l-9,16 l18,0 Z" style="fill:' + CORG + '"/>';
+  g += L(l6X(mu), 26, l6X(mu), L6G.oy, CORG, 1.5, "5 4") + T(l6X(mu), 20, "平均 " + fmt(mu), { c: CORG, cls: "lbl", a: "start" });
+  g += L(l6X(md), 44, l6X(md), L6G.oy, CGRN, 1.5, "2 3") + T(l6X(md) - 4, 38, "中位數 " + fmt(md), { c: CGRN, cls: "lbl", a: "end" });
+  const idx = l6.map((v, i) => i).sort((i, j) => l6[i] - l6[j]);
+  const lv = {};
+  idx.forEach(i => {
+    const k = Math.round(l6X(l6[i]) / 12); lv[k] = (lv[k] || 0) + 1;
+    const y = L6G.oy - 10 - 13 * (lv[k] - 1), c = i === 9 ? CORG : CIN;
+    g += '<circle class="drag" data-i="' + i + '" cx="' + l6X(l6[i]).toFixed(1) + '" cy="' + y.toFixed(1) + '" r="11" style="fill:' + c + ';fill-opacity:0.14"/>';
+    g += '<circle class="drag" data-i="' + i + '" cx="' + l6X(l6[i]).toFixed(1) + '" cy="' + y.toFixed(1) + '" r="5.5" style="fill:' + c + '"/>';
+  });
+  $("l6fig").innerHTML = svgWrap(L6G.W, L6G.H, g, "wide");
+  $("l6mean").textContent = fmt(mu); $("l6med").textContent = fmt(md);
+  $("l6mode").textContent = mo.list.length ? mo.list.map(fmt).join("、") : "沒有";
+  const below = l6.filter(v => v < mu - 1e-9).length;
+  $("l6below").textContent = below + " / 10";
+  $("l6msg").innerHTML = below >= 7
+    ? verdict("bad", "10 個人裡有 " + below + " 個人領不到平均。", "「平均月薪 " + fmt(mu) + " 千元」沒有算錯，但它回答的是「錢平分之後每人多少」。來應徵的人想知道的是一般員工領多少：看中位數 " + fmt(md) + "。")
+    : verdict("ok", "平均和中位數靠近了。", "沒有特別遠的人時，平分的結果和站在中間的人差不多。");
+}
+(function () {
+  const host = $("l6fig"); let key = null;
+  host.addEventListener("pointerdown", e => {
+    const t = e.target.closest ? e.target.closest("[data-i]") : null; if (!t) return;
+    key = +t.getAttribute("data-i"); try { host.setPointerCapture(e.pointerId); } catch (err) { /* 忽略 */ } e.preventDefault();
+  });
+  host.addEventListener("pointermove", e => {
+    if (key === null) return;
+    const svg = host.querySelector("svg"); if (!svg) return;
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const m = svg.getScreenCTM(); if (!m) return;
+    const loc = pt.matrixTransform(m.inverse());
+    l6[key] = Math.max(0, Math.min(520, Math.round(l6V(loc.x))));
+    l6draw();
+  });
+  const end = e => { key = null; try { host.releasePointerCapture(e.pointerId); } catch (err) { /* 忽略 */ } };
+  host.addEventListener("pointerup", end); host.addEventListener("pointercancel", end);
+})();
+$("l6r").onclick = () => { l6 = L6O.slice(); l6draw(); };
+$("l6a").onclick = () => { l6 = l6.map(v => Math.min(520, v + 2)); l6draw(); };
+$("l6m").onclick = () => { l6 = l6.map(v => Math.min(520, Math.round(v * 1.1 * 10) / 10)); l6draw(); };
+$("l6b").onclick = () => { l6 = L6O.slice(); l6[9] = 500; l6draw(); };
+l6draw();
+
+/* ================================================================
+   LAB 7　站牌要設在哪裡
+================================================================ */
+const L7O = [0, 2, 3, 7, 18];
+const L7N = "甲乙丙丁戊己庚辛壬癸";
+let l7h = L7O.slice(), l7s = 6;
+const L7G = { W: 640, H: 320, ox: 34, oy: 96, x0: 0, x1: 30 };
+const l7X = v => L7G.ox + (v - L7G.x0) / (L7G.x1 - L7G.x0) * (L7G.W - 2 * L7G.ox);
+const l7V = X => L7G.x0 + (X - L7G.ox) / (L7G.W - 2 * L7G.ox) * (L7G.x1 - L7G.x0);
+const l7cost = p => sum(l7h.map(h => Math.abs(h - p)));
+function l7draw() {
+  let g = L(L7G.ox, L7G.oy, L7G.W - L7G.ox, L7G.oy, CINK, 1.5);
+  for (let v = 0; v <= 30; v += 2) g += L(l7X(v), L7G.oy, l7X(v), L7G.oy + 4, CINK, 1) + T(l7X(v), L7G.oy + 17, v);
+  // 距離和折線
+  const gy0 = 304, gh = 138;
+  const cmax = Math.max(...[0, 30].map(l7cost));
+  const Yc = c => gy0 - c / cmax * gh;
+  let pl = [];
+  for (let k = 0; k <= 300; k++) { const p = k / 10; pl.push(l7X(p).toFixed(1) + ',' + Yc(l7cost(p)).toFixed(1)); }
+  g += L(L7G.ox, gy0, L7G.W - L7G.ox, gy0, CSOFT, 1) + T(L7G.ox, gy0 - gh - 6, "距離和", { a: "start", cls: "lbl" });
+  g += '<polyline points="' + pl.join(" ") + '" style="fill:none;stroke:' + CGRN + ';stroke-width:2"/>';
+  g += '<circle cx="' + l7X(l7s).toFixed(1) + '" cy="' + Yc(l7cost(l7s)).toFixed(1) + '" r="5" style="fill:' + CORG + '"/>';
+  // 房子
+  const lv = {};
+  l7h.forEach((h, i) => {
+    const k = Math.round(h * 2); lv[k] = (lv[k] || 0) + 1;
+    const x = l7X(h), y = L7G.oy - 12 - 26 * (lv[k] - 1);
+    g += '<path class="drag" data-k="h' + i + '" d="M' + (x - 9) + ',' + y + ' l0,-12 l9,-8 l9,8 l0,12 Z" style="fill:var(--indigo-soft);stroke:' + CIN + ';stroke-width:1.2"/>';
+    g += T(x, y - 24, L7N[i], { c: CIN, cls: "lbl" });
+  });
+  // 站牌
+  const sx = l7X(l7s);
+  g += '<g class="drag" data-k="s"><rect x="' + (sx - 12) + '" y="' + (L7G.oy + 24) + '" width="24" height="18" rx="3" style="fill:' + CORG + '"/>' +
+    L(sx, L7G.oy + 2, sx, L7G.oy + 24, CORG, 2) + T(sx, L7G.oy + 37, "站", { c: "#fff", cls: "lbl" }) + '</g>';
+  $("l7fig").innerHTML = svgWrap(L7G.W, L7G.H, g, "wide");
+  const md = median(l7h), mu = mean(l7h), c = l7cost(l7s);
+  const s = [...l7h].sort((a, b) => a - b), n = s.length;
+  const best = l7cost(md);
+  $("l7pos").textContent = fmt(l7s); $("l7sum").textContent = fmt(c); $("l7med").textContent = fmt(md); $("l7mean").textContent = fmt(mu);
+  const left = l7h.filter(h => h < l7s - 1e-9).length, right = l7h.filter(h => h > l7s + 1e-9).length;
+  let msg;
+  if (Math.abs(c - best) < 1e-9) msg = verdict("ok", "距離和 " + fmt(c) + "，已經是最短。", n % 2 ? "站牌在正中間那一戶門口，也就是中位數 " + fmt(md) + "。" : "戶數是偶數：站在中間兩戶 " + fmt(s[n / 2 - 1]) + " 和 " + fmt(s[n / 2]) + " 之間的任何地方，距離和都一樣。");
+  else msg = verdict("bad", "左邊 " + left + " 戶、右邊 " + right + " 戶。", "往" + (left < right ? "右" : "左") + "移 1，" + (left < right ? "左" : "右") + "邊 " + Math.min(left, right) + " 戶各多走 1，另一邊 " + Math.max(left, right) + " 戶各少走 1——划算。最短是 " + fmt(best) + "。");
+  $("l7msg").innerHTML = msg;
+}
+(function () {
+  const host = $("l7fig"); let key = null;
+  host.addEventListener("pointerdown", e => {
+    const t = e.target.closest ? e.target.closest("[data-k]") : null; if (!t) return;
+    key = t.getAttribute("data-k"); try { host.setPointerCapture(e.pointerId); } catch (err) { /* 忽略 */ } e.preventDefault();
+  });
+  host.addEventListener("pointermove", e => {
+    if (!key) return;
+    const svg = host.querySelector("svg"); if (!svg) return;
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const m = svg.getScreenCTM(); if (!m) return;
+    const v = Math.max(0, Math.min(30, Math.round(l7V(pt.matrixTransform(m.inverse()).x) * 2) / 2));
+    if (key === "s") l7s = v; else l7h[+key.slice(1)] = v;
+    l7draw();
+  });
+  const end = e => { key = null; try { host.releasePointerCapture(e.pointerId); } catch (err) { /* 忽略 */ } };
+  host.addEventListener("pointerup", end); host.addEventListener("pointercancel", end);
+})();
+$("l7r").onclick = () => { l7h = L7O.slice(); l7s = 6; l7draw(); };
+$("l7far").onclick = () => { const i = l7h.indexOf(Math.max(...l7h)); l7h[i] = 30; l7draw(); };
+$("l7add").onclick = () => { if (l7h.length < 10) { l7h.push(10); l7draw(); } };
+$("l7del").onclick = () => { if (l7h.length > 1) { l7h.pop(); l7draw(); } };
+$("l7best").onclick = () => { l7s = median(l7h); l7draw(); };
+l7draw();
+
+</script>
+<a class="bk-fab" href="passport.html" aria-label="回到探索紀錄本">← 紀錄本</a>
+<style id="island">
+/* ===== 探索島：預測／紀錄／判斷題／單元章 ===== */
+.isl-box{margin:0;padding:16px 22px;border-bottom:1px solid var(--edge-soft);background:var(--indigo-soft)}
+.isl-box .isl-k{font-size:12.5px;letter-spacing:.14em;font-weight:700;color:var(--indigo);margin-bottom:6px}
+.isl-box .isl-q{font-size:15.5px;color:var(--ink);margin:0 0 10px;max-width:none}
+.isl-obs{background:var(--orange-soft);border-top:1px solid var(--edge-soft);border-bottom:0}
+.isl-obs .isl-k{color:var(--orange)}
+.isl-opts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.isl-opts label{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;
+  padding:5px 12px;border:1px solid var(--edge);border-radius:999px;background:var(--card);cursor:pointer}
+.isl-opts label:has(input:checked){border-color:var(--indigo);color:var(--indigo);font-weight:600}
+.isl-opts input{accent-color:var(--indigo);margin:0}
+.isl-ta{width:100%;min-height:62px;resize:vertical;font:inherit;font-size:15px;line-height:1.6;
+  padding:9px 12px;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink)}
+.isl-ta:focus{outline:2px solid var(--indigo);outline-offset:1px}
+.isl-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.isl-btn{font:inherit;font-size:14.5px;font-weight:600;padding:7px 16px;border-radius:5px;cursor:pointer;
+  border:1px solid var(--indigo);background:var(--indigo);color:var(--card)}
+.isl-btn:disabled{opacity:.4;cursor:not-allowed}
+.isl-btn.ghost{background:var(--card);color:var(--indigo)}
+.isl-hint{font-size:13px;color:var(--ink-3)}
+.isl-mine{font-size:14.5px;color:var(--ink-2);margin:0;max-width:none}
+.isl-mine b{color:var(--indigo)}
+.isl-wait{padding:26px 22px;text-align:center;color:var(--ink-3);font-size:14.5px;
+  background:repeating-linear-gradient(45deg,transparent 0 10px,var(--edge-soft) 10px 11px)}
+.isl-done-tag{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--green);letter-spacing:.08em}
+.lab-foot.isl-reveal::before{content:"對照看看";display:block;font-size:12px;letter-spacing:.14em;
+  font-weight:700;color:var(--green);margin-bottom:2px}
+.isl-gate{margin:20px 0;padding:14px 18px;border:1px dashed var(--edge);border-radius:5px;
+  color:var(--ink-3);font-size:14px;text-align:center}
+
+/* 進度列 */
+.isl-prog{margin:0 0 6px;padding:12px 16px;border:1px solid var(--edge);border-radius:5px;background:var(--card);
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:14px}
+.isl-prog .t{font-weight:700;color:var(--ink-2);letter-spacing:.06em}
+.isl-dots{display:flex;gap:6px;flex-wrap:wrap}
+.isl-dots a{width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;
+  font-size:12.5px;font-weight:700;text-decoration:none;border:1.5px solid var(--edge);color:var(--ink-3);background:var(--paper)}
+.isl-dots a.half{border-color:var(--indigo);color:var(--indigo)}
+.isl-dots a.ok{border-color:var(--green);background:var(--green);color:var(--card)}
+.isl-prog .q{color:var(--ink-3)}
+.isl-prog .q.ok{color:var(--green);font-weight:700}
+
+/* 判斷題 */
+#isl-quiz{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-qcard{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);
+  padding:18px 22px;margin:16px 0}
+.isl-qcard .isl-qn{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--orange)}
+.isl-qcard p.isl-qt{font-size:16px;margin:4px 0 12px;max-width:none}
+.isl-choice{display:block;width:100%;text-align:left;font:inherit;font-size:15px;line-height:1.55;
+  padding:9px 14px;margin:0 0 8px;border:1px solid var(--edge);border-radius:5px;background:var(--paper);
+  color:var(--ink);cursor:pointer}
+.isl-choice:hover:not(:disabled){border-color:var(--indigo)}
+.isl-choice.no{border-color:var(--orange);background:var(--orange-soft);color:var(--ink-2);text-decoration:line-through}
+.isl-choice.yes{border-color:var(--green);background:var(--green-soft);font-weight:600}
+.isl-choice:disabled{cursor:default}
+.isl-fb{margin-top:6px;padding:10px 14px;border-radius:4px;font-size:14.5px;border:1px solid var(--edge)}
+.isl-fb.bad{border-color:var(--orange);background:var(--orange-soft)}
+.isl-fb.good{border-color:var(--green);background:var(--green-soft)}
+
+/* 紀錄與章 */
+#isl-record{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-sheet{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);padding:22px 24px}
+.isl-sheet-head{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--edge-soft);padding-bottom:14px;margin-bottom:6px}
+.isl-sheet-head h3{margin:0;font-size:22px}
+.isl-sheet-head .isl-sub{font-size:13.5px;color:var(--ink-3)}
+.isl-name{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.isl-name input{font:inherit;font-size:15px;padding:5px 10px;width:10em;border:1px solid var(--edge);
+  border-radius:5px;background:var(--paper);color:var(--ink)}
+.isl-tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
+.isl-tbl th,.isl-tbl td{border-bottom:1px solid var(--edge-soft);padding:9px 8px;vertical-align:top;text-align:left}
+.isl-tbl th{font-size:12.5px;letter-spacing:.1em;color:var(--ink-3);font-weight:700}
+.isl-tbl td.n{white-space:nowrap;font-weight:600;color:var(--ink-2);width:9.5em}
+.isl-tbl td .empty{color:var(--ink-3)}
+.isl-stamp-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:18px}
+.isl-stamp{width:150px;height:150px;flex:none}
+.isl-stamp.off{opacity:.18;filter:grayscale(1)}
+.isl-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.isl-clear{font-size:13px;color:var(--ink-3);background:none;border:0;text-decoration:underline;cursor:pointer;font:inherit}
+@media (max-width:600px){
+  .isl-tbl, .isl-tbl tbody, .isl-tbl tr, .isl-tbl td{display:block;width:auto}
+  .isl-tbl thead{display:none}
+  .isl-tbl td{border:0;padding:3px 0}
+  .isl-tbl tr{border-bottom:1px solid var(--edge-soft);padding:10px 0}
+  .isl-tbl td[data-h]::before{content:attr(data-h)"　";font-size:12px;color:var(--ink-3);font-weight:700}
+}
+@media print{
+  body.isl-print .wrap > *:not(#isl-record), body.isl-print .bk-top, body.isl-print .bk-fab,
+  body.isl-print .isl-tools, body.isl-print nav, body.isl-print #isl-record > .isl-hint{display:none !important}
+  body.isl-print{background:#fff}
+  body.isl-print .isl-sheet{box-shadow:none;border:1px solid #999}
+  body.isl-print .isl-name input{border:0;border-bottom:1px solid #999;border-radius:0}
+}
+/* 單元頁的手繪主題對所有 button 用了 !important，這裡要用更高的權重蓋回來 */
+button.isl-choice{background:var(--paper)!important;color:var(--ink)!important;opacity:1}
+button.isl-choice:disabled{color:var(--ink-2)!important}
+button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--green)!important;color:var(--ink)!important}
+button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
+button.isl-btn:disabled{opacity:.35}
+button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
+</style>
+<script>window.ISLAND={"slug": "g7b-ch5-statistics", "chap": "七下5", "title": "誰能代表大家", "topic": "統計圖表與資料分析", "plain": "這座島上，要選一個數代表一群人：平均、中間的那個、最多人的那個，各回答不同的問題。", "stations": {"lab1": {"mode": "predict", "q": "「喜歡的運動」可以複選，這種資料能畫成圓形圖嗎？", "opts": ["可以", "不行"], "multi": false, "obs": "各類加起來和全部對不上時，發生什麼事？"}, "lab2": {"mode": "predict", "q": "立體圓形圖裡，轉到前面的那一塊，看起來會比實際的比例大還是小？", "opts": ["看起來比較大", "看起來比較小", "一樣"], "multi": false, "obs": "傾斜、加厚度、轉動，哪一個動作真正在騙人？"}, "lab3": {"mode": "predict", "q": "30 位同學的身高，組距要怎麼選，直方圖的形狀才看得最清楚？", "opts": ["越小越清楚", "越大越清楚", "太小、太大都看不清楚"], "multi": false, "obs": "剛好 160.0 公分的人算在哪一組？每個人都只被數到一次嗎？"}, "lab4": {"mode": "predict", "q": "直方圖的長條中間可以留空隙嗎？長條圖的長條可以對調順序嗎？", "obs": "組距不一樣寬的時候，長條的高度該畫什麼？"}, "lab5": {"mode": "predict", "q": "每個數都減掉平均數，全部加起來會是多少？", "obs": "看「村子的年齡」：平均數落在哪裡？那裡有人嗎？"}, "lab6": {"mode": "predict", "q": "咖啡店老闆的月薪變成 500 千元，平均數、中位數、眾數，哪幾個會跟著動？", "opts": ["平均數", "中位數", "眾數"], "multi": true, "obs": "「每人加 2 千」和「每人加一成」，三個數各怎麼變？"}, "lab7": {"mode": "predict", "q": "一條直路上住著五戶人家，站牌設在哪裡，大家走到站牌的距離加起來最短？", "opts": ["五戶位置的平均數", "排在正中間的那一戶", "這條路的正中央"], "multi": false, "obs": "站牌往右移一步，誰多走、誰少走？什麼時候移動就不划算了？"}}, "gates": [{"sel": "#p1", "after": "lab1"}, {"sel": "#p2", "after": "lab4"}, {"sel": "#p3", "after": "lab5"}, {"sel": "#end", "after": "ALL"}], "quiz": [{"q": "3、5、5、7、20 這五個數，平均數和中位數各是多少？", "opts": ["平均 8、中位數 5", "平均 5、中位數 8", "平均 8、中位數 7", "平均 7、中位數 5"], "ans": 0, "why": ["", "兩個讀反了。平均是加起來除以 5。", "中位數是排在中間的那一個，第 3 個是 5。", "平均是 40 ÷ 5。"], "exp": "總和 40，平均 8；排好之後第 3 個是 5，中位數 5。20 一個人就把平均拉高了。"}, {"q": "圓形圖裡，某一類佔全部的 25％，它的圓心角是幾度？", "opts": ["25°", "45°", "90°", "100°"], "ans": 2, "why": ["25 是百分比，圓心角要乘上 360°。", "45° 是 12.5％。", "", "100° 不是 360° 的四分之一。"], "exp": "圓心角 ＝ 360° × 0.25 ＝ 90°，剛好四分之一個圓。"}, {"q": "每個人的分數都加 2 分，平均數會怎樣？", "opts": ["也加 2 分", "不變", "加 2 × 人數", "看情況"], "ans": 0, "why": ["", "每個人都變多了，平分之後每人也會多。", "總分加了 2 × 人數，但平均還要再除以人數。", "每個人都加一樣的數，結果是固定的。"], "exp": "總分多了 2 × 人數，除以人數之後，平均剛好多 2 分。中位數、眾數也都多 2。"}]};</script>
+<script>
+/* ===== 探索島：預測／紀錄／判斷題／單元章 =====
+   沒登入：紀錄只存在這台裝置的瀏覽器（localStorage）。
+   登入且在名單上：island-cloud.js 透過 window.ISLAND_API 接手，另存一份到雲端。 */
+(function () {
+  const C = window.ISLAND;
+  let KEY = "isl:" + C.slug;
+  let NAMEKEY = "isl:name";
+  let nameLocked = false;
+  const mem = {};
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return mem[k] ?? null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } },
+  };
+  let S;
+  try { S = JSON.parse(store.get(KEY)) || {}; } catch (e) { S = {}; }
+  S.st = S.st || {}; S.quiz = S.quiz || {};
+  const save = () => {
+    S.updated = new Date().toISOString();
+    S.n = ids.length; S.nd = ids.filter(id => S.st[id] && S.st[id].done).length;
+    S.q = C.quiz.length; S.qd = C.quiz.filter((_, i) => S.quiz[i] && S.quiz[i].ok).length;
+    store.set(KEY, JSON.stringify(S));
+    if (API.onSave) API.onSave(S);
+  };
+  const API = window.ISLAND_API = window.ISLAND_API || {};
+
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const ids = Object.keys(C.stations);
+  const MIN_OBS = 4;
+
+  const st = id => (S.st[id] = S.st[id] || { opts: [], pred: "", locked: false, obs: "", done: false });
+  const predText = (cfg, s) => {
+    const parts = [];
+    if (cfg.opts && s.opts.length) parts.push(s.opts.map(i => cfg.opts[i]).join("、"));
+    else if (cfg.opts && cfg.multi) parts.push("一個都沒選");
+    if (s.pred.trim()) parts.push(s.pred.trim());
+    return parts.join("；");
+  };
+  const stationDone = id => !!st(id).done;
+  const quizDone = i => !!(S.quiz[i] && S.quiz[i].ok);
+  const allStations = () => ids.every(stationDone);
+  const allQuiz = () => C.quiz.every((_, i) => quizDone(i));
+
+  /* ---------- 每一站 ---------- */
+  ids.forEach(id => {
+    const cfg = C.stations[id];
+    const lab = document.getElementById(id);
+    if (!lab) return;
+    let s = st(id);
+    const head = lab.querySelector(".lab-head");
+    const body = lab.querySelector(".lab-body");
+    const foot = lab.querySelector(".lab-foot");
+    const no = lab.querySelector(".lab-no").textContent.trim();
+    if (cfg.why) lab.querySelector(".lab-why").innerHTML = esc(cfg.why);
+    const tag = el("span", "isl-done-tag", "");
+    head.appendChild(tag);
+
+    /* 預測 */
+    let pbox = null, wait = null;
+    if (cfg.mode === "predict") {
+      pbox = el("div", "isl-box");
+      head.after(pbox);
+      wait = el("div", "isl-wait", "先寫下你的預測，這一站才會打開。");
+      body.before(wait);
+    }
+    const renderPred = () => {
+      if (!pbox) return;
+      if (s.locked) {
+        pbox.innerHTML = '<div class="isl-k">我的預測</div><p class="isl-mine">' + esc(cfg.q) + "<br><b>" + esc(predText(cfg, s)) + "</b></p>";
+        return;
+      }
+      const type = cfg.multi ? "checkbox" : "radio";
+      let h = '<div class="isl-k">先預測，再動手</div><p class="isl-q">' + esc(cfg.q) + "</p>";
+      if (cfg.opts) {
+        h += '<div class="isl-opts">' + cfg.opts.map((o, i) =>
+          '<label><input type="' + type + '" name="o-' + id + '" value="' + i + '"' + (s.opts.includes(i) ? " checked" : "") + "> " + esc(o) + "</label>").join("") + "</div>";
+      }
+      h += '<textarea class="isl-ta" placeholder="' + (cfg.opts ? "為什麼這樣猜？（寫一句就好）" : "寫下你的答案和理由") + '">' + esc(s.pred) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn primary">預測寫好了，開始操作</button><span class="isl-hint">送出後就不能改，猜錯沒關係，等一下對照才有東西看。</span></div>';
+      pbox.innerHTML = h;
+      const ta = pbox.querySelector("textarea"), btn = pbox.querySelector("button");
+      const ok = () => {
+        s.opts = [...pbox.querySelectorAll("input:checked")].map(x => +x.value);
+        s.pred = ta.value;
+        const hasOpt = !cfg.opts || s.opts.length > 0 || !cfg.multi;
+        btn.disabled = !(s.pred.trim().length >= 2 && (cfg.opts ? s.opts.length > 0 || cfg.multi : true));
+        return hasOpt;
+      };
+      pbox.addEventListener("input", () => { ok(); save(); });
+      pbox.addEventListener("change", () => { ok(); save(); });
+      ok();
+      btn.addEventListener("click", () => {
+        ok();
+        if (btn.disabled) return;
+        s.locked = true; s.lockedAt = new Date().toISOString(); save();
+        renderAll(); body.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    /* 觀察紀錄 */
+    const obox = el("div", "isl-box isl-obs");
+    body.after(obox);
+    const renderObs = () => {
+      let h = '<div class="isl-k">我看到的</div><p class="isl-q">' + esc(cfg.obs) + "</p>";
+      h += '<textarea class="isl-ta" placeholder="把你看到的寫下來">' + esc(s.obs) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn' + (s.done ? "" : " primary") + '">' + (s.done ? "更新紀錄" : "記下來，看對照") + '</button><span class="isl-hint"></span></div>';
+      obox.innerHTML = h;
+      const ta = obox.querySelector("textarea"), btn = obox.querySelector("button"), hint = obox.querySelector(".isl-hint");
+      const chk = () => { btn.disabled = ta.value.trim().length < MIN_OBS; };
+      ta.addEventListener("input", () => { s.obs = ta.value; save(); chk(); hint.textContent = s.done ? "已自動儲存" : ""; });
+      chk();
+      btn.addEventListener("click", () => {
+        s.obs = ta.value; if (s.obs.trim().length < MIN_OBS) return;
+        const first = !s.done;
+        s.done = true; s.doneAt = s.doneAt || new Date().toISOString(); save();
+        renderAll();
+        if (first && foot) foot.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    lab._islRender = () => {
+      s = st(id);
+      const open = cfg.mode !== "predict" || s.locked;
+      renderPred();
+      if (wait) wait.hidden = open;
+      body.hidden = !open;
+      obox.hidden = !open;
+      if (open) renderObs();
+      if (foot) { foot.hidden = !s.done; foot.classList.add("isl-reveal"); }
+      tag.textContent = s.done ? "✓ 已記錄" : "";
+    };
+  });
+
+  /* ---------- 會先講出答案的段落 ---------- */
+  const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
+    const sec = document.querySelector(g.sel);
+    if (!sec) return null;
+    const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
+    sec.appendChild(note);
+    return { g, kids, note };
+  }).filter(Boolean);
+
+  /* ---------- 進度列 ---------- */
+  const prog = el("div", "isl-prog");
+  document.querySelector("header").after(prog);
+
+  /* ---------- 判斷題 ---------- */
+  const quiz = el("section", "", "");
+  quiz.id = "isl-quiz";
+  const endSec = document.getElementById("end");
+  (endSec || document.querySelector(".wrap").lastElementChild).before(quiz);
+  const renderQuiz = () => {
+    let h = '<div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>過關前的 ' + C.quiz.length + ' 題</div>' +
+      "<h2>選一個，答錯可以再選</h2>";
+    quiz.innerHTML = h;
+    C.quiz.forEach((q, i) => {
+      const r = S.quiz[i] = S.quiz[i] || { tried: [], ok: false };
+      const card = el("div", "isl-qcard");
+      card.innerHTML = '<div class="isl-qn">第 ' + (i + 1) + " 題</div><p class=\"isl-qt\">" + esc(q.q) + "</p>";
+      q.opts.forEach((o, j) => {
+        const b = el("button", "isl-choice", esc(o));
+        if (r.tried.includes(j)) b.classList.add(j === q.ans ? "yes" : "no");
+        if (r.ok || r.tried.includes(j)) b.disabled = true;
+        b.addEventListener("click", () => {
+          r.tried.push(j);
+          if (j === q.ans) { r.ok = true; r.okAt = new Date().toISOString(); }
+          save(); renderAll();
+        });
+        card.appendChild(b);
+      });
+      const last = r.tried[r.tried.length - 1];
+      if (r.ok) card.appendChild(el("div", "isl-fb good", "<b>對。</b>" + esc(q.exp)));
+      else if (last != null) card.appendChild(el("div", "isl-fb bad", "<b>再想想。</b>" + esc(q.why[last])));
+      quiz.appendChild(card);
+    });
+  };
+
+  /* ---------- 紀錄與章 ---------- */
+  const rec = el("section", "", "");
+  rec.id = "isl-record";
+  document.querySelector(".wrap").appendChild(rec);
+  const stamp = (on, date) => {
+    const d = date ? date.slice(0, 10).replace(/-/g, ".") : "";
+    return '<svg class="isl-stamp' + (on ? "" : " off") + '" viewBox="0 0 150 150" role="img" aria-label="單元章">' +
+      '<g transform="rotate(-8 75 75)" style="fill:none;stroke:var(--crimson)">' +
+      '<circle cx="75" cy="75" r="66" stroke-width="4"/><circle cx="75" cy="75" r="57" stroke-width="1.5"/>' +
+      '<text x="75" y="52" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 13px var(--sans);letter-spacing:2px">' + esc(C.chap) + "　探索完成</text>" +
+      '<text x="75" y="84" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 21px var(--serif)">' + esc(C.title) + "</text>" +
+      '<line x1="34" y1="96" x2="116" y2="96" stroke-width="1.2"/>' +
+      '<text x="75" y="114" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:600 12px var(--sans)">' + (d || "　") + "</text></g></svg>";
+  };
+  let clearArmed = false;
+  const renderRecord = () => {
+    const done = allStations() && allQuiz();
+    const firstOK = C.quiz.filter((q, i) => S.quiz[i] && S.quiz[i].tried[0] === q.ans).length;
+    let h = '<div class="pillar-tag" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>我的探索紀錄</div>';
+    h += '<div class="isl-sheet"><div class="isl-sheet-head"><div><h3>' + esc(C.chap) + "　" + esc(C.title) + '</h3><div class="isl-sub">' + esc(C.topic) + '</div></div>' +
+      '<label class="isl-name">姓名 <input type="text" maxlength="20" value="' + esc(store.get(NAMEKEY) || "") + '"' + (nameLocked ? " readonly" : "") + '></label></div>';
+    h += '<table class="isl-tbl"><thead><tr><th>站</th><th>我的預測</th><th>我看到的</th></tr></thead><tbody>';
+    ids.forEach(id => {
+      const cfg = C.stations[id], s = st(id);
+      const lab = document.getElementById(id);
+      const name = lab ? lab.querySelector(".lab-no").textContent.trim() + "　" + lab.querySelector(".lab-title").textContent.trim() : id;
+      const p = cfg.mode === "predict" ? (s.locked ? esc(predText(cfg, s)) : '<span class="empty">還沒寫</span>') : '<span class="empty">（這站直接操作）</span>';
+      const o = s.done ? esc(s.obs.trim()) : '<span class="empty">還沒寫</span>';
+      h += '<tr><td class="n">' + esc(name) + '</td><td data-h="預測">' + p + '</td><td data-h="看到">' + o + "</td></tr>";
+    });
+    h += "</tbody></table>";
+    h += '<div class="isl-stamp-wrap">' + stamp(done, S.stampAt) + "<div>" +
+      (done ? "<b>這一章探索完成。</b><br>判斷題第一次就答對 " + firstOK + " ／ " + C.quiz.length + " 題。"
+            : "全部 " + ids.length + " 站都記錄完、" + C.quiz.length + " 題判斷題都答對，就會蓋上這個章。<br>目前：" +
+              ids.filter(stationDone).length + " ／ " + ids.length + " 站，" +
+              C.quiz.filter((_, i) => quizDone(i)).length + " ／ " + C.quiz.length + " 題。") +
+      "</div></div></div>";
+    h += '<div class="isl-tools"><button class="isl-btn primary" data-a="print">列印這份紀錄</button>' +
+      '<a class="isl-btn ghost" style="text-decoration:none" href="passport.html">看我的探索紀錄本</a>' +
+      '<button class="isl-clear" data-a="clear">' + (clearArmed ? "確定要清掉？再按一次" : "清除這一章的紀錄") + "</button></div>";
+    h += '<p class="isl-hint" style="margin-top:10px">沒登入時，紀錄只存在這台電腦的瀏覽器裡；登入名單上的帳號，紀錄會存到雲端。在共用電腦上用完記得登出。</p>';
+    rec.innerHTML = h;
+    rec.querySelector(".isl-name input").addEventListener("input", e => store.set(NAMEKEY, e.target.value));
+    rec.querySelector('[data-a="print"]').addEventListener("click", () => {
+      document.body.classList.add("isl-print"); window.print();
+      setTimeout(() => document.body.classList.remove("isl-print"), 500);
+    });
+    rec.querySelector('[data-a="clear"]').addEventListener("click", () => {
+      if (!clearArmed) { clearArmed = true; renderRecord(); setTimeout(() => { clearArmed = false; renderRecord(); }, 4000); return; }
+      if (API.onClear) { API.onClear(); return; }
+      store.del(KEY); location.reload();
+    });
+  };
+
+  function renderAll() {
+    if (allStations() && allQuiz() && !S.stampAt) { S.stampAt = new Date().toISOString(); save(); }
+    ids.forEach(id => { const lab = document.getElementById(id); lab && lab._islRender && lab._islRender(); });
+    gates.forEach(({ g, kids, note }) => {
+      const open = g.after === "ALL" ? allStations() : stationDone(g.after);
+      kids.forEach(k => { if (k !== note) k.hidden = !open; });
+      note.hidden = open;
+    });
+    const nq = C.quiz.filter((_, i) => quizDone(i)).length;
+    prog.innerHTML = '<span class="t">探索紀錄</span><span class="isl-dots">' + ids.map(id => {
+      const s = st(id), cfg = C.stations[id];
+      const n = document.querySelector("#" + id + " .lab-no").textContent.trim();
+      const cls = s.done ? "ok" : (cfg.mode === "predict" && s.locked) ? "half" : "";
+      return '<a class="' + cls + '" href="#' + id + '" title="第 ' + n + ' 站">' + n + "</a>";
+    }).join("") + '</span><a class="q' + (nq === C.quiz.length ? " ok" : "") + '" href="#isl-quiz" style="text-decoration:none">判斷題 ' + nq + " ／ " + C.quiz.length + "</a>" +
+      '<a class="q' + (S.stampAt ? " ok" : "") + '" href="#isl-record" style="text-decoration:none">' + (S.stampAt ? "✓ 已蓋章" : "我的紀錄 →") + "</a>";
+    renderQuiz();
+    renderRecord();
+  }
+  /* 給雲端模組用：換一個人的紀錄、換姓名、整頁重畫 */
+  API.config = C;
+  API.store = store;
+  API.state = () => S;
+  API.adopt = (newKey, newS, opts) => {
+    KEY = newKey;
+    S = newS || {};
+    S.st = S.st || {}; S.quiz = S.quiz || {};
+    if (opts && opts.nameKey) NAMEKEY = opts.nameKey;
+    if (opts && "name" in opts) { store.set(NAMEKEY, opts.name || ""); }
+    nameLocked = !!(opts && opts.nameLocked);
+    clearArmed = false;
+    store.set(KEY, JSON.stringify(S));
+    renderAll();
+  };
+  API.progressBox = prog;
+  API.recordBox = rec;
+  renderAll();
+  if (API.onReady) API.onReady();
+})();
+</script>
+<script src="firebase-config.js"></script>
+<script type="module" src="island-cloud.js"></script>
+</body>
+</html>

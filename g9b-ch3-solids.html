@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>多出來的那個方向｜數學探索島</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Crimson+Text:ital,wght@0,600;1,400;1,600&display=swap">
+<style>
+
+:root{
+  --paper:#F5F2E8;
+  --grid:rgba(46,90,136,.075);
+  --card:#FFFDF8;
+  --edge:#DFD6C4;
+  --edge-soft:#EBE3D4;
+  --ink:#23282D;
+  --ink-2:#5C554A;
+  --ink-3:#847B6C;
+  --indigo:#2E5A88;
+  --indigo-soft:#E7EEF6;
+  --orange:#C1652F;
+  --orange-soft:#FBEEE1;
+  --green:#4A7C59;
+  --green-soft:#E7F0E9;
+  --crimson:#B23A3A;
+  --black-card:#2B2F35;
+  --shadow:0 1px 2px rgba(72,60,40,.06), 0 6px 18px rgba(72,60,40,.07);
+  --shadow-lift:0 2px 4px rgba(72,60,40,.08), 0 14px 34px rgba(72,60,40,.12);
+  --serif:"Noto Serif TC",'Songti TC','Times New Roman',serif;
+  --sans:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --math:"Crimson Text","Times New Roman",Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#161A1E;
+    --grid:rgba(127,169,214,.07);
+    --card:#1F252B;
+    --edge:#333C45;
+    --edge-soft:#2A323A;
+    --ink:#E7E2D6;
+    --ink-2:#B3AC9E;
+    --ink-3:#8B857A;
+    --indigo:#82ADDC;
+    --indigo-soft:#1E2C3B;
+    --orange:#E28B52;
+    --orange-soft:#3A2718;
+    --green:#82B893;
+    --green-soft:#1D2C22;
+    --crimson:#D66B6B;
+    --black-card:#0E1114;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+    --shadow-lift:0 2px 4px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#161A1E;
+  --grid:rgba(127,169,214,.07);
+  --card:#1F252B;
+  --edge:#333C45;
+  --edge-soft:#2A323A;
+  --ink:#E7E2D6;
+  --ink-2:#B3AC9E;
+  --ink-3:#8B857A;
+  --indigo:#82ADDC;
+  --indigo-soft:#1E2C3B;
+  --orange:#E28B52;
+  --orange-soft:#3A2718;
+  --green:#82B893;
+  --green-soft:#1D2C22;
+  --crimson:#D66B6B;
+  --black-card:#0E1114;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+  --shadow-lift:0 2px 4px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, var(--grid) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 26px);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px 100px}
+em,.v{font-family:var(--math);font-style:italic;font-size:1.08em;letter-spacing:.01em}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---- header ---- */
+header{padding:58px 0 34px}
+.eyebrow{
+  font-size:12.5px;letter-spacing:.22em;color:var(--orange);
+  font-weight:700;margin-bottom:16px;
+}
+h1{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(38px,7vw,62px);line-height:1.12;margin:0 0 14px;
+  letter-spacing:.02em;text-wrap:balance;
+}
+.sub{font-size:clamp(16px,2.4vw,19px);color:var(--ink-2);margin:0 0 26px}
+.thesis{
+  border-left:3px solid var(--orange);
+  padding:4px 0 4px 20px;margin:0;
+  font-family:var(--serif);font-size:clamp(16px,2.4vw,19px);
+  line-height:1.85;color:var(--ink);max-width:64ch;
+}
+
+/* ---- nav ---- */
+nav{
+  position:sticky;top:0;z-index:30;
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:11px 0;margin-bottom:8px;
+  background:color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--edge-soft);
+}
+nav a{
+  font-size:13.5px;text-decoration:none;color:var(--ink-2);
+  padding:5px 12px;border-radius:999px;border:1px solid transparent;
+  transition:.16s;
+}
+nav a:hover,nav a:focus-visible{color:var(--indigo);border-color:var(--edge);background:var(--card)}
+
+/* ---- sections ---- */
+section{padding:44px 0 8px;scroll-margin-top:64px}
+.pillar-tag{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:12.5px;letter-spacing:.16em;font-weight:700;
+  margin-bottom:12px;
+}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+h2{
+  font-family:var(--serif);font-weight:700;
+  font-size:clamp(25px,4.2vw,34px);line-height:1.3;margin:0 0 12px;
+  text-wrap:balance;
+}
+h3{font-family:var(--serif);font-size:19px;margin:30px 0 8px;font-weight:500}
+p{margin:0 0 15px;max-width:66ch}
+.lede{font-size:17.5px;color:var(--ink-2);max-width:64ch}
+
+/* ---- lab ---- */
+.lab{
+  background:var(--card);border:1px solid var(--edge);
+  border-radius:5px;box-shadow:var(--shadow);
+  margin:26px 0 30px;overflow:hidden;
+}
+.lab-head{
+  display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  padding:17px 22px 13px;border-bottom:1px solid var(--edge-soft);
+}
+.lab-no{
+  font-family:var(--math);font-size:13px;font-weight:600;font-style:normal;
+  color:var(--card);background:var(--indigo);
+  width:23px;height:23px;border-radius:50%;
+  display:grid;place-items:center;flex:none;align-self:center;
+}
+.lab-title{font-family:var(--serif);font-weight:700;font-size:18px;margin:0}
+.lab-why{font-size:13.5px;color:var(--ink-3);margin:0}
+.lab-body{padding:22px}
+.lab-foot{
+  padding:14px 22px;background:var(--green-soft);
+  border-top:1px solid var(--edge-soft);
+  font-size:14.5px;color:var(--ink);
+}
+.lab-foot b{color:var(--green)}
+
+/* ---- controls ---- */
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{
+  font-family:var(--sans);font-size:14px;
+  padding:7px 14px;border-radius:4px;
+  border:1px solid var(--edge);background:var(--paper);color:var(--ink);
+  cursor:pointer;transition:.14s;line-height:1.5;
+}
+button:hover:not(:disabled){border-color:var(--indigo);color:var(--indigo)}
+button:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.primary{background:var(--indigo);border-color:var(--indigo);color:#fff}
+button.primary:hover{filter:brightness(1.12);color:#fff}
+button.warn{border-color:var(--orange);color:var(--orange)}
+button.ghost{background:transparent}
+input[type=number],input[type=text]{
+  font-family:var(--math);font-size:16px;
+  width:66px;padding:6px 9px;border-radius:4px;
+  border:1px solid var(--edge);background:var(--paper);color:var(--ink);
+}
+input[type=text].wide{width:190px;letter-spacing:.09em;font-family:var(--sans);font-size:15px}
+input:focus-visible{outline:2px solid var(--indigo);outline-offset:1px}
+label{font-size:13.5px;color:var(--ink-2)}
+input[type=range]{accent-color:var(--indigo);width:160px}
+
+/* ---- balance ---- */
+.scale{padding:8px 0 4px}
+.beam-wrap{position:relative;height:150px;margin:0 auto;max-width:560px}
+.beam{
+  position:absolute;left:0;right:0;top:52px;height:5px;
+  background:var(--ink);border-radius:3px;
+  transform-origin:50% 50%;transition:transform .5s cubic-bezier(.34,1.3,.5,1);
+}
+.post{position:absolute;left:50%;top:52px;width:6px;height:78px;margin-left:-3px;background:var(--ink-3)}
+.base{position:absolute;left:50%;bottom:8px;width:90px;height:12px;margin-left:-45px;background:var(--ink-3);border-radius:2px}
+.string{position:absolute;top:57px;width:2px;height:22px;background:var(--ink-3)}
+.pan{
+  position:absolute;top:79px;width:170px;margin-left:-85px;
+  padding:11px 8px;border-radius:5px;text-align:center;
+  font-family:var(--math);font-size:24px;font-style:italic;
+  border:1px solid var(--edge);
+}
+.pan.l{background:var(--indigo-soft);color:var(--indigo);border-color:var(--indigo)}
+.pan.r{background:var(--orange-soft);color:var(--orange);border-color:var(--orange)}
+.crushed .beam,.crushed .pan{opacity:.4}
+.eq-now{
+  text-align:center;font-family:var(--math);font-size:27px;font-style:italic;
+  padding:12px 0 4px;letter-spacing:.02em;
+}
+.log{
+  margin-top:14px;border-top:1px dashed var(--edge);padding-top:12px;
+  font-family:var(--math);font-size:15.5px;max-height:190px;overflow-y:auto;
+}
+.log div{padding:3px 0;display:flex;gap:12px;align-items:baseline}
+.log span.op{font-family:var(--sans);font-style:normal;font-size:12.5px;color:var(--ink-3);min-width:112px;flex:none}
+.msg{
+  margin-top:12px;padding:10px 14px;border-radius:4px;font-size:14.5px;
+  border:1px solid var(--edge);background:var(--paper);
+}
+.msg.bad{border-color:var(--orange);background:var(--orange-soft);color:var(--orange)}
+.msg.good{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+
+/* ---- machine ---- */
+.steps{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--edge);background:var(--paper);
+  border-radius:999px;padding:4px 6px 4px 13px;font-size:14px;
+}
+.chip button{border:none;background:none;padding:0 6px;font-size:15px;color:var(--ink-3);line-height:1}
+.chip button:hover{color:var(--orange)}
+.tape{
+  border:1px solid var(--edge-soft);border-radius:4px;overflow:hidden;
+  margin-top:6px;
+}
+.tape div{
+  display:flex;gap:14px;align-items:baseline;
+  padding:7px 14px;border-bottom:1px solid var(--edge-soft);
+}
+.tape div:last-child{border-bottom:none}
+.tape div.zero{background:var(--green-soft)}
+.tape .lbl{font-size:12.5px;color:var(--ink-3);min-width:96px;flex:none}
+.tape .exp{font-family:var(--math);font-style:italic;font-size:19px}
+.verdict{
+  margin-top:16px;padding:15px 18px;border-radius:4px;border:1px solid;
+  font-size:15px;line-height:1.8;
+}
+.verdict.leak{border-color:var(--indigo);background:var(--indigo-soft)}
+.verdict.hide{border-color:var(--green);background:var(--green-soft)}
+.verdict b{font-family:var(--serif);font-size:17px;display:block;margin-bottom:4px}
+.verdict.leak b{color:var(--indigo)}
+.verdict.hide b{color:var(--green)}
+
+/* ---- id table ---- */
+.idgrid{display:flex;gap:3px;flex-wrap:wrap;margin:16px 0 10px}
+.idcell{
+  min-width:40px;flex:1;text-align:center;border:1px solid var(--edge-soft);
+  border-radius:3px;padding:6px 2px;background:var(--paper);
+}
+.idcell .ch{font-family:var(--math);font-size:19px;font-weight:600;font-style:normal}
+.idcell .wt{font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.idcell .pr{font-size:12.5px;color:var(--indigo);font-variant-numeric:tabular-nums}
+.idcell.unk{border-color:var(--orange);border-style:dashed;background:var(--orange-soft)}
+.idcell.unk .ch,.idcell.unk .pr{color:var(--orange)}
+
+/* ---- fates ---- */
+.numline{position:relative;height:62px;margin:16px 0 6px}
+.axis{position:absolute;left:0;right:0;top:30px;height:2px;background:var(--ink-3)}
+.axis.all{height:8px;top:27px;background:var(--green);border-radius:4px;opacity:.55}
+.tick{position:absolute;top:24px;width:1px;height:14px;background:var(--edge)}
+.tlab{position:absolute;top:40px;font-size:11px;color:var(--ink-3);transform:translateX(-50%);font-variant-numeric:tabular-nums}
+.sol{
+  position:absolute;top:22px;width:18px;height:18px;margin-left:-9px;
+  border-radius:50%;background:var(--indigo);border:3px solid var(--card);
+  box-shadow:0 0 0 2px var(--indigo);transition:left .3s;
+}
+.fate{
+  margin-top:8px;padding:13px 17px;border-radius:4px;border:1px solid;font-size:15px;
+}
+.fate.one{border-color:var(--indigo);background:var(--indigo-soft)}
+.fate.none{border-color:var(--orange);background:var(--orange-soft)}
+.fate.inf{border-color:var(--green);background:var(--green-soft)}
+.fate b{font-family:var(--serif);font-size:18px;margin-right:10px}
+.fate.one b{color:var(--indigo)} .fate.none b{color:var(--orange)} .fate.inf b{color:var(--green)}
+
+/* ---- cards (紅黑牌) ---- */
+.deckrow{display:flex;align-items:center;gap:12px;margin:9px 0;flex-wrap:wrap}
+.rowlab{font-size:13px;color:var(--ink-2);min-width:88px;flex:none}
+.cards{display:flex;gap:4px;flex-wrap:wrap}
+.pc{
+  width:26px;height:36px;border-radius:3px;cursor:pointer;
+  border:1px solid rgba(0,0,0,.18);transition:.14s;
+}
+.pc.red{background:var(--crimson)}
+.pc.blk{background:var(--black-card)}
+.pc:hover{transform:translateY(-3px)}
+.pc.sel{outline:2px solid var(--orange);outline-offset:2px;transform:translateY(-4px)}
+.tally{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;
+}
+.stat{
+  flex:1;min-width:132px;border:1px solid var(--edge-soft);border-radius:4px;
+  padding:10px 14px;background:var(--paper);
+}
+.stat .k{font-size:12.5px;color:var(--ink-3)}
+.stat .n{font-family:var(--math);font-size:27px;font-variant-numeric:tabular-nums;line-height:1.3}
+.stat.locked{border-color:var(--green);background:var(--green-soft)}
+.stat.locked .n{color:var(--green)}
+.stat.locked .k{color:var(--green)}
+
+
+/* ---- 按鈕與切換 ---- */
+.btn{
+  font-family:var(--sans);font-size:13.5px;padding:5px 11px;border-radius:5px;
+  border:1px solid var(--edge);background:var(--card);color:var(--ink-2);cursor:pointer;
+}
+.btn:hover{border-color:var(--orange);color:var(--orange)}
+.segwrap{display:inline-flex;flex-wrap:wrap;gap:0;border-radius:6px;overflow:hidden;border:1px solid var(--edge)}
+.seg{
+  font-family:var(--sans);font-size:13px;padding:6px 12px;border:none;
+  background:var(--card);color:var(--ink-3);cursor:pointer;border-right:1px solid var(--edge-soft);
+}
+.seg:last-child{border-right:none}
+.seg.on,.seg.on:hover{background:var(--indigo);color:#fff}
+
+.row label{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--ink-2)}
+.row input[type=range]{width:min(230px,58vw);max-width:100%}
+.row input[type=number],.row select{
+  font-family:var(--math);font-size:16px;padding:3px 7px;
+  border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink);
+}
+.row input[type=number]{width:78px}
+.row select{font-size:14px;max-width:150px}
+
+/* ---- 圖 ---- */
+.figsvg{width:100%;max-width:640px;display:block;margin:10px auto;height:auto}
+.figsvg.wide{max-width:100%}
+.statrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0 2px}
+.statbox{
+  border:1px solid var(--edge-soft);background:var(--card);border-radius:6px;
+  padding:6px 14px;text-align:center;min-width:104px;
+}
+.statbox .k{font-size:11.5px;color:var(--ink-3)}
+.statbox .v{font-family:var(--math);font-size:19px;font-variant-numeric:tabular-nums}
+.statbox.hot{border-color:var(--orange)}
+.statbox.hot .v{color:var(--orange)}
+.statbox.cool{border-color:var(--green)}
+.statbox.cool .v{color:var(--green)}
+.statbox.blue{border-color:var(--indigo)}
+.statbox.blue .v{color:var(--indigo)}
+
+.mini{font-size:13px;color:var(--ink-3);margin:12px 0 6px;max-width:none}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.thumb{border:1px solid var(--edge-soft);border-radius:5px;background:var(--paper);padding:3px;line-height:0}
+.thumb.got{border-color:var(--green);background:var(--green-soft)}
+.thumb svg{width:84px;height:auto}
+.cellr{cursor:pointer}
+select{max-width:100%}
+
+</style>
+<!--hand-theme--><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet"><link href="https://huangisright.github.io/fonts/isright-hand.css" rel="stylesheet"><style id="hand-theme">
+:root{
+  --paper:#fdfcf8; --grid:transparent; --card:#fffefa;
+  --edge:#b9b5aa; --edge-soft:#dedad0; --ink:#1b1b1b; --ink-2:#4a4844; --ink-3:#77756f;
+  --indigo:#24489a; --indigo-soft:#e8edf8; --orange:#d4472b; --orange-soft:#fde9e3;
+  --green:#2f7a3a; --green-soft:#e6f2e4; --crimson:#c8321e; --black-card:#1b1b1b;
+  --shadow:none; --shadow-lift:none;
+  --mute:#77756f; --line:#d9d6cc; --blue:#24489a; --sand:#efe9d8;
+  --cardline:#1b1b1b; --tint:#fde9e3; --tint2:#e8edf8;
+  --hl:#fff2a8;
+  --serif:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif; --sans:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif; --wob:255px 14px 225px 14px/14px 225px 14px 255px; --wob2:14px 255px 14px 225px/225px 14px 255px 14px;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1c1d1f; --grid:transparent; --card:#222326;
+  --edge:#5e5f62; --edge-soft:#3a3b3e; --ink:#ecebe6; --ink-2:#c4c2bb; --ink-3:#9c9a93;
+  --indigo:#8fb0f0; --indigo-soft:#1f2a40; --orange:#ff7a5c; --orange-soft:#3d221b;
+  --green:#7cc98a; --green-soft:#1d3122; --crimson:#ff6b55; --black-card:#0d0d0e;
+  --shadow:none; --shadow-lift:none;
+  --mute:#9c9a93; --line:#3a3b3e; --blue:#8fb0f0; --sand:#33302a;
+  --cardline:#ecebe6; --tint:#3d221b; --tint2:#1f2a40;
+  --hl:#4a4320;
+}}
+:root[data-theme="dark"]{
+  --paper:#1c1d1f; --grid:transparent; --card:#222326;
+  --edge:#5e5f62; --edge-soft:#3a3b3e; --ink:#ecebe6; --ink-2:#c4c2bb; --ink-3:#9c9a93;
+  --indigo:#8fb0f0; --indigo-soft:#1f2a40; --orange:#ff7a5c; --orange-soft:#3d221b;
+  --green:#7cc98a; --green-soft:#1d3122; --crimson:#ff6b55; --black-card:#0d0d0e;
+  --shadow:none; --shadow-lift:none;
+  --mute:#9c9a93; --line:#3a3b3e; --blue:#8fb0f0; --sand:#33302a;
+  --cardline:#ecebe6; --tint:#3d221b; --tint2:#1f2a40;
+  --hl:#4a4320;
+}
+body{background:var(--paper)!important;background-image:none!important;font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;font-size:17px}
+button,input,select,textarea,label{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif}
+input[type=number],.row input[type=number]{font-family:var(--math,serif)}
+h1,h2,h3,.lab-title{font-family:"IsRight Hand","LXGW WenKai TC","Kaiti TC","KaiTi",serif;font-weight:700;letter-spacing:.02em}
+.lab-title{font-size:22px!important}
+h1{text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:3px;text-underline-offset:10px}
+.eyebrow{color:var(--orange)}
+.thesis{border-left:none!important;padding-left:0!important;background:linear-gradient(transparent 62%,var(--hl) 62%);display:inline}
+nav{background:var(--paper)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:1.5px dashed var(--edge-soft)!important}
+nav a{border-radius:var(--wob)!important}
+nav a:hover,nav a:focus-visible{border:1.5px solid var(--ink)!important;background:transparent!important;color:var(--ink)!important}
+
+.lab{border:2.5px solid var(--ink)!important;border-radius:var(--wob)!important;box-shadow:none!important;overflow:visible!important}
+.lab:nth-of-type(even){border-radius:var(--wob2)!important}
+.lab-head{border-bottom:1.5px dashed var(--edge-soft)!important}
+.lab-no{background:transparent!important;color:var(--ink)!important;border:2px solid var(--ink);border-radius:52% 48% 50% 46%/48% 54% 46% 52%!important;font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;width:28px!important;height:28px!important}
+.lab-foot{background:var(--hl)!important;border:none!important;margin:6px 10px 10px;border-radius:var(--wob2)}
+.lab-foot b{color:var(--ink)!important}
+
+button,.btn{border:2px solid var(--ink)!important;border-radius:var(--wob)!important;background:transparent!important;color:var(--ink)!important;box-shadow:none!important}
+button:nth-of-type(even),.btn:nth-of-type(even){border-radius:var(--wob2)!important}
+button:hover:not(:disabled),.btn:hover{background:var(--hl)!important;color:var(--ink)!important}
+button.primary,.seg.on,.seg.on:hover{background:var(--ink)!important;color:var(--paper)!important}
+button.warn{border-color:var(--orange)!important;color:var(--orange)!important}
+.chip button{border:none!important;background:none!important}
+.segwrap{border:2px solid var(--ink)!important;border-radius:var(--wob)!important}
+.seg{border:none!important;border-right:1.5px dashed var(--edge-soft)!important;border-radius:0!important}
+input[type=number],input[type=text],select,textarea{border:2px solid var(--ink)!important;border-radius:var(--wob2)!important;background:transparent!important}
+input:focus-visible,select:focus-visible{outline:none!important;background:var(--hl)!important}
+input[type=range]{accent-color:var(--ink)}
+
+.msg,.verdict,.fate,.stat,.statbox,.chip,.tape,.pan,.thumb,.idcell{border-width:1.5px!important;border-radius:var(--wob)!important;box-shadow:none!important}
+.card,.box,.panel,.callout,.note,.tip{box-shadow:none!important}
+.dot{border-radius:48% 52% 46% 54%!important}
+::selection{background:var(--hl)}
+
+.bk-top{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;font-size:15px!important}
+.bk-top a{color:var(--ink,#1b1b1b)!important;text-decoration:underline dotted!important}
+.bk-fab{font-family:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif!important;background:var(--paper,#fdfcf8)!important;color:var(--ink,#1b1b1b)!important;
+  border:2px solid var(--ink,#1b1b1b)!important;border-radius:255px 14px 225px 14px/14px 225px 14px 255px!important;box-shadow:none!important}
+.bk-fab:hover{background:var(--hl,#fff2a8)!important}
+@media print{.lab{border-width:1.5px!important}}
+</style><!--/hand-theme--></head>
+<body>
+
+<style id="backnav">
+.bk-top{
+  max-width:1080px; margin:0 auto; padding:14px 20px 0;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif; font-size:14px;
+}
+.bk-top a{color:#2E5A88; text-decoration:none; font-weight:600}
+.bk-top a:hover{text-decoration:underline}
+.bk-top .bk-sep{color:#B8AE9C; margin:0 10px}
+.bk-fab{
+  position:fixed; right:16px; bottom:16px; z-index:9999;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 15px; border-radius:24px;
+  background:#FFFDF8; border:1px solid #DFD6C4; color:#2E5A88;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  font-size:14px; font-weight:600; text-decoration:none;
+  box-shadow:0 2px 4px rgba(72,60,40,.10), 0 10px 26px rgba(72,60,40,.16);
+}
+.bk-fab:hover{border-color:#2E5A88}
+.bk-fab:focus-visible{outline:2px solid #2E5A88; outline-offset:2px}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .bk-top a{color:#82ADDC}
+  :root:not([data-theme="light"]) .bk-fab{
+    background:#1F252B; border-color:#333C45; color:#82ADDC;
+    box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+  }
+  :root:not([data-theme="light"]) .bk-fab:hover{border-color:#82ADDC}
+}
+:root[data-theme="dark"] .bk-top a{color:#82ADDC}
+:root[data-theme="dark"] .bk-fab{
+  background:#1F252B; border-color:#333C45; color:#82ADDC;
+  box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+}
+@media print{ .bk-top, .bk-fab{display:none !important} }
+@media (max-width:520px){ .bk-fab{right:12px; bottom:12px; padding:8px 13px; font-size:13px} }
+</style>
+<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">九年級　空間與形狀　學習單　·　互動探索站</div>
+  <h1>多出來的那個方向</h1>
+  <p class="sub">立體圖形　·　歪斜線、展開圖、柱體與錐體的體積</p>
+  <p class="thesis">立體圖形多了一個方向。處理這個方向只有兩招：把它攤平（算面積），或一層一層疊它（算體積）。</p>
+</header>
+
+<nav>
+  <a href="#p0">開場</a>
+  <a href="#p1">① 空間</a>
+  <a href="#p2">② 攤平</a>
+  <a href="#p3">③ 一層一層疊</a>
+  <a href="#lab1">同一張紙</a>
+  <a href="#lab2">兩條線</a>
+  <a href="#lab3">展開圖</a>
+  <a href="#lab4">圓錐與扇形</a>
+  <a href="#lab5">斜柱書堆</a>
+  <a href="#lab6">夾出 1/3</a>
+  <a href="#lab7">錐形杯</a>
+  <a href="#lab8">半球截面</a>
+</nav>
+
+<section id="p0">
+  <div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>開場</div>
+  <h2>同一張紙，兩種捲法</h2>
+  <p class="lede">側面積一樣，體積卻不一樣。先用這一站換紙張的長寬，看誰比較大、大多少。</p>
+</section>
+
+<div class="lab" id="lab1">
+  <div class="lab-head">
+    <span class="lab-no">1</span>
+    <div>
+      <p class="lab-title">同一張紙的兩種捲法</p>
+      <p class="lab-why">甲：長邊當圓周，短邊當高。乙：短邊當圓周，長邊當高。拉動紙張的長寬，比較兩個圓筒的體積。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <span class="segwrap" id="l1pre">
+        <button class="seg on" data-a="29.7" data-b="21">A4（29.7 × 21）</button>
+        <button class="seg" data-a="20" data-b="20">正方形</button>
+        <button class="seg" data-a="30" data-b="10">細長（30 × 10）</button>
+      </span>
+    </div>
+    <div class="row">
+      <label>長邊 ＝ <input type="range" id="l1a" min="10" max="40" step="0.1" value="29.7"> <span id="l1av"></span> 公分</label>
+      <label>短邊 ＝ <input type="range" id="l1b" min="5" max="40" step="0.1" value="21"> <span id="l1bv"></span> 公分</label>
+    </div>
+    <div id="l1fig"></div>
+    <div class="statrow">
+      <div class="statbox"><div class="k">側面積（兩個一樣）</div><div class="v" id="l1s"></div></div>
+      <div class="statbox blue"><div class="k">甲的體積</div><div class="v" id="l1v1"></div></div>
+      <div class="statbox hot"><div class="k">乙的體積</div><div class="v" id="l1v2"></div></div>
+      <div class="statbox cool"><div class="k">甲 ÷ 乙</div><div class="v" id="l1r"></div></div>
+    </div>
+    <div id="l1msg"></div>
+  </div>
+  <div class="lab-foot">圓柱的體積 <i>V</i> ＝ <i>C</i>² <i>h</i> ÷ 4π（<i>C</i> 是圓周）。側面積 <i>C</i> × <i>h</i> 固定時，<i>V</i> 和圓周成正比。<b>A4 的長寬比是 √2，所以甲是乙的 √2 倍。</b></div>
+</div>
+
+<section id="p1">
+  <div class="pillar-tag" style="color:var(--indigo)"><span class="dot" style="background:var(--indigo)"></span>支點一　空間</div>
+  <h2>兩條線，多出第三種關係</h2>
+  <p class="lede">平面上兩條線不是相交就是平行；到了空間，多了「歪斜」。選兩條線，看它們的關係與夾角。</p>
+</section>
+
+<div class="lab" id="lab2">
+  <div class="lab-head">
+    <span class="lab-no">2</span>
+    <div>
+      <p class="lab-title">空間中的兩條線</p>
+      <p class="lab-why">在圖上點一條稜，再點第二條；也可以用下拉選單選面對角線。拉動滑桿轉動立體。歪斜的兩條線，按「平移」看夾角怎麼量。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <span class="segwrap" id="l2mode">
+        <button class="seg on" data-m="box">長方體 4 × 3 × 12</button>
+        <button class="seg" data-m="cube">正方體</button>
+      </span>
+      <button class="btn" id="l2d1">示範：AB 與 CG</button>
+      <button class="btn" id="l2d2">示範：AF 與 BG</button>
+    </div>
+    <div class="row">
+      <label>線 1 <select id="l2s1"></select></label>
+      <label>線 2 <select id="l2s2"></select></label>
+      <button class="btn" id="l2t">平移線 2 到線 1</button>
+    </div>
+    <div class="row">
+      <label>轉動 <input type="range" id="l2yaw" min="0" max="360" step="1" value="32"></label>
+      <label>俯仰 <input type="range" id="l2pit" min="0" max="80" step="1" value="26"></label>
+    </div>
+    <div id="l2fig"></div>
+    <div class="statrow">
+      <div class="statbox blue"><div class="k">線 1 長</div><div class="v" id="l2len1"></div></div>
+      <div class="statbox hot"><div class="k">線 2 長</div><div class="v" id="l2len2"></div></div>
+      <div class="statbox"><div class="k">關係</div><div class="v" id="l2rel"></div></div>
+      <div class="statbox cool"><div class="k">夾角</div><div class="v" id="l2ang"></div></div>
+    </div>
+    <div id="l2msg"></div>
+  </div>
+  <div class="lab-foot">歪斜＝不相交，而且不平行。<b>歪斜的夾角：把其中一條平移到和另一條相交，再量。</b>平移不改變方向，所以夾角不變。</div>
+</div>
+
+<section id="p2">
+  <div class="pillar-tag" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>支點二　攤平</div>
+  <h2>曲面攤回平面，面積就是展開圖的面積</h2>
+  <p class="lede">正方體的表面有六個正方形，排成哪幾種形狀才折得起來？圓錐的側面攤開是扇形，半徑、圓心角和底圓怎麼連起來？</p>
+</section>
+
+<div class="lab" id="lab3">
+  <div class="lab-head">
+    <span class="lab-no">3</span>
+    <div>
+      <p class="lab-title">正方體展開圖判斷</p>
+      <p class="lab-why">在方格上點選 6 格排成一個形狀。電腦會把正方體沿著它滾一遍，標出每一格會變成正方體的哪一面；有兩格疊在同一面，就折不起來。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <button class="btn" id="l3clr">清除</button>
+      <button class="btn" id="l3ok">給我一個能折的（還沒找到的）</button>
+      <button class="btn" id="l3no">給我一個不能折的</button>
+    </div>
+    <div id="l3fig"></div>
+    <div id="l3msg"></div>
+    <p class="mini" id="l3cnt"></p>
+    <div id="l3list" class="thumbs"></div>
+  </div>
+  <div class="lab-foot">六個正方形連成一片的形狀共有 35 種，其中能折成正方體的只有 <b>11 種</b>。「一排五個」和「2 × 2」都不行。</div>
+</div>
+
+<div class="lab" id="lab4">
+  <div class="lab-head">
+    <span class="lab-no">4</span>
+    <div>
+      <p class="lab-title">圓錐展開成扇形</p>
+      <p class="lab-why">改變底面半徑 <i>r</i> 和高 <i>h</i>，看母線 <i>L</i>、扇形的圓心角，以及側面積怎麼跟著變。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label><i>r</i> ＝ <input type="range" id="l4r" min="1" max="10" step="0.01" value="3"> <span id="l4rv"></span></label>
+      <label><i>h</i> ＝ <input type="range" id="l4h" min="1" max="12" step="0.01" value="4"> <span id="l4hv"></span></label>
+    </div>
+    <div class="row">
+      <button class="btn" id="l4p1">3、4、5</button>
+      <button class="btn" id="l4p2">生日帽（半圓：<i>L</i> ＝ 2<i>r</i>）</button>
+      <button class="btn" id="l4p3">圓心角 120°（<i>L</i> ＝ 3<i>r</i>）</button>
+    </div>
+    <div id="l4fig"></div>
+    <div class="statrow">
+      <div class="statbox"><div class="k">母線 <i>L</i></div><div class="v" id="l4L"></div></div>
+      <div class="statbox hot"><div class="k">圓心角 θ</div><div class="v" id="l4th"></div></div>
+      <div class="statbox blue"><div class="k">弧長 ＝ 底圓周長</div><div class="v" id="l4arc"></div></div>
+      <div class="statbox"><div class="k">側面積 π<i>rL</i></div><div class="v" id="l4lat"></div></div>
+      <div class="statbox"><div class="k">表面積</div><div class="v" id="l4sa"></div></div>
+    </div>
+    <div id="l4msg"></div>
+  </div>
+  <div class="lab-foot">扇形的弧長就是底圓的周長 2π<i>r</i>，它是整個圓（半徑 <i>L</i>）周長的 <i>r</i> ÷ <i>L</i>；面積也是整個圓的 <i>r</i> ÷ <i>L</i>，所以側面積 ＝ (<i>r</i> ÷ <i>L</i>) × π<i>L</i>² ＝ <b>π<i>rL</i></b>。</div>
+</div>
+
+<section id="p3">
+  <div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>支點三　一層一層疊</div>
+  <h2>體積是每一層的面積加起來</h2>
+  <p class="lede">柱體每一層一樣大；錐體越往頂端每一層越小。下面四站，從斜柱一路走到半球。</p>
+</section>
+
+<div class="lab" id="lab5">
+  <div class="lab-head">
+    <span class="lab-no">5</span>
+    <div>
+      <p class="lab-title">斜柱書堆</p>
+      <p class="lab-why">把一疊書推斜。每一層（一本書）的大小沒變，高度也沒變，看看體積和側稜長誰在變。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label>推斜 ＝ <input type="range" id="l5s" min="0" max="8" step="0.1" value="3"> <span id="l5sv"></span></label>
+      <label>層數 ＝ <input type="range" id="l5n" min="2" max="40" step="1" value="8"> <span id="l5nv"></span></label>
+    </div>
+    <div id="l5fig"></div>
+    <div class="statrow">
+      <div class="statbox"><div class="k">每層面積</div><div class="v" id="l5a"></div></div>
+      <div class="statbox blue"><div class="k">高（兩底面的距離）</div><div class="v" id="l5h"></div></div>
+      <div class="statbox hot"><div class="k">側稜長</div><div class="v" id="l5l"></div></div>
+      <div class="statbox cool"><div class="k">體積 ＝ 底面積 × 高</div><div class="v" id="l5v"></div></div>
+    </div>
+    <div id="l5msg"></div>
+  </div>
+  <div class="lab-foot">每一個高度切出來的截面都一樣大（12），高度都是 4，體積就是 48。<b>體積要用「高」，不是側稜長。</b>這就是祖暅原理。</div>
+</div>
+
+<div class="lab" id="lab6">
+  <div class="lab-head">
+    <span class="lab-no">6</span>
+    <div>
+      <p class="lab-title">錐體一層一層夾出 1/3</p>
+      <p class="lab-why">底邊 <i>n</i>、高 <i>n</i> 的四角錐，分成 <i>n</i> 層。橘色是外接（每層用下緣當底，比真的大），藍色是內接（用上緣當底，比真的小）。拉大 <i>n</i>，看兩邊怎麼靠近。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label><i>n</i> ＝ <input type="range" id="l6n" min="1" max="60" step="1" value="5"> <span id="l6nv"></span> 層</label>
+    </div>
+    <div id="l6fig"></div>
+    <div id="l6chart"></div>
+    <div class="statrow">
+      <div class="statbox hot"><div class="k">外接 ÷ <i>n</i>³</div><div class="v" id="l6o"></div></div>
+      <div class="statbox blue"><div class="k">內接 ÷ <i>n</i>³</div><div class="v" id="l6i"></div></div>
+      <div class="statbox"><div class="k">差 ＝ 1 ÷ <i>n</i></div><div class="v" id="l6d"></div></div>
+      <div class="statbox cool"><div class="k">真實 ÷ <i>n</i>³</div><div class="v" id="l6t"></div></div>
+    </div>
+    <div id="l6msg"></div>
+  </div>
+  <div class="lab-foot">外接 ＝ 1² ＋ 2² ＋ … ＋ <i>n</i>² ＝ <i>n</i>(<i>n</i>＋1)(2<i>n</i>＋1) ÷ 6，內接 ＝ 外接 − <i>n</i>²。層數越多，外接與內接的差越小，兩邊都靠近 1/3：<b>錐體 ＝ 同底同高柱體的 1/3。</b></div>
+</div>
+
+<div class="lab" id="lab7">
+  <div class="lab-head">
+    <span class="lab-no">7</span>
+    <div>
+      <p class="lab-title">錐形杯的水位</p>
+      <p class="lab-why">杯子尖端朝下，拉動水深。水深是杯深的 <i>x</i> 倍，水量是滿杯的幾倍？</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label>水深 ＝ <input type="range" id="l7x" min="0" max="100" step="0.01" value="50"> <span id="l7xv"></span>% 杯深</label>
+      <label>杯深 <input type="number" id="l7H" min="1" max="30" step="0.5" value="4"> 公分</label>
+    </div>
+    <div class="row">
+      <button class="btn" id="l7a">水深 1/2</button>
+      <button class="btn" id="l7b">水深 2/3</button>
+      <button class="btn" id="l7c">水深 1/3</button>
+      <button class="btn" id="l7d">剛好半杯水</button>
+    </div>
+    <div id="l7fig"></div>
+    <div id="l7chart"></div>
+    <div class="statrow">
+      <div class="statbox blue"><div class="k">水面半徑 ÷ 杯口半徑</div><div class="v" id="l7r"></div></div>
+      <div class="statbox hot"><div class="k">水量 ÷ 滿杯（<i>x</i>³）</div><div class="v" id="l7v"></div></div>
+      <div class="statbox"><div class="k">水深</div><div class="v" id="l7d2"></div></div>
+    </div>
+    <div id="l7msg"></div>
+  </div>
+  <div class="lab-foot">水面的圓和杯口的圓相似，相似比是 <i>x</i>，體積比是 <i>x</i>³。<b>水深一半，水只有 1/8；要剛好半杯，水深要到杯深的 0.794 倍。</b>虛線是直覺以為的「水深 ＝ 水量」。</div>
+</div>
+
+<div class="lab" id="lab8">
+  <div class="lab-head">
+    <span class="lab-no">8</span>
+    <div>
+      <p class="lab-title">半球截面</p>
+      <p class="lab-why">三個立體半徑都是 3（圓錐、圓柱的高也是 3）。在離底面 <i>t</i> 的地方切一刀，比較截面的面積。</p>
+    </div>
+  </div>
+  <div class="lab-body">
+    <div class="row">
+      <label><i>t</i> ＝ <input type="range" id="l8t" min="0" max="3" step="0.05" value="1"> <span id="l8tv"></span></label>
+      <button class="btn" id="l8a"><i>t</i> ＝ 1</button>
+      <button class="btn" id="l8b"><i>t</i> ＝ 2</button>
+    </div>
+    <div id="l8fig"></div>
+    <div class="statrow">
+      <div class="statbox"><div class="k">圓柱截面</div><div class="v" id="l8c"></div></div>
+      <div class="statbox hot"><div class="k">圓錐截面 π<i>t</i>²</div><div class="v" id="l8k"></div></div>
+      <div class="statbox blue"><div class="k">圓柱 − 圓錐（圓環）</div><div class="v" id="l8r"></div></div>
+      <div class="statbox cool"><div class="k">半球截面</div><div class="v" id="l8h"></div></div>
+    </div>
+    <div id="l8msg"></div>
+  </div>
+  <div class="lab-foot">每一個高度，圓環和半球的截面積都是 π(<i>r</i>² − <i>t</i>²)。由祖暅原理，半球 ＝ 圓柱 − 圓錐 ＝ 27π − 9π ＝ 18π，<b>圓錐 ∶ 半球 ∶ 圓柱 ＝ 1 ∶ 2 ∶ 3。</b></div>
+</div>
+
+<section id="end">
+  <div class="pillar-tag" style="color:var(--indigo)"><span class="dot" style="background:var(--indigo)"></span>統整</div>
+  <h2>多出來的那個方向</h2>
+  <p class="lede">攤平：表面積是展開圖的面積。一層一層疊：體積是每一層的面積加起來，錐體每一層都在縮小，只有同底同高柱體的 1/3。</p>
+  <p>接下來：高一《平面向量》會把「平移」和「方向」變成系統的工具；高二《空間向量》會回到歪斜線的夾角、線與面垂直，以及球的體積。</p>
+</section>
+
+</div>
+
+<script>
+/* ================================================================
+   九下3 立體圖形　互動探索站《多出來的那個方向》
+================================================================ */
+const $ = id => document.getElementById(id);
+const CIN = "var(--indigo)", CORG = "var(--orange)", CGRN = "var(--green)", CRED = "var(--crimson)",
+      CMUT = "var(--ink-3)", CINK = "var(--ink)", CSOFT = "var(--edge-soft)", CEDGE = "var(--edge)";
+const verdict = (cls, head, body) => '<div class="verdict ' + cls + '"><b>' + head + '</b>' + body + '</div>';
+function seg(ids, on) { ids.forEach(i => $(i).classList.toggle("on", i === on)); }
+const r1 = v => Math.round(v * 10) / 10;
+const r2 = v => Math.round(v * 100) / 100;
+const fmt = v => String(r2(v)).replace(/-/g, "−");
+const svgWrap = (w, h, inner, id, cls) => '<svg class="figsvg ' + (cls || "") + '"' + (id ? ' id="' + id + '"' : '') + ' viewBox="0 0 ' + w + ' ' + h + '" role="img">' + inner + '</svg>';
+const T = (x, y, s, o) => { o = o || {}; return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="' + (o.a || "middle") + '"' +
+  ' style="font-size:' + (o.size || 14) + 'px;fill:' + (o.c || CINK) + (o.w ? ';font-weight:' + o.w : '') + (o.i ? ';font-style:italic' : '') + '">' + s + '</text>'; };
+const L = (x1, y1, x2, y2, c, w, dash) => '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) +
+  '" style="stroke:' + c + ';stroke-width:' + (w || 1) + (dash ? ';stroke-dasharray:' + dash : '') + '"/>';
+const C = (x, y, r, fill, stroke, extra) => '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r + '" style="fill:' + fill + ';stroke:' + (stroke || "none") + ';stroke-width:2"' + (extra || "") + '/>';
+const PG = (pts, fill, stroke, w, dash, op) => '<polygon points="' + pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ') +
+  '" style="fill:' + fill + ';stroke:' + stroke + ';stroke-width:' + (w || 1.5) + (dash ? ';stroke-dasharray:' + dash : '') + (op !== undefined ? ';fill-opacity:' + op : '') + '"/>';
+const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const deg = r => r * 180 / Math.PI, rad = d => d * Math.PI / 180;
+
+/* 通用拖曳：handles 的 data-k 對應 onMove(k, x, y) */
+function draggable(svgId, onMove) {
+  const svg = $(svgId); if (!svg) return;
+  let k = null;
+  const pt = e => { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; const q = p.matrixTransform(svg.getScreenCTM().inverse()); return [q.x, q.y]; };
+  svg.querySelectorAll("[data-k]").forEach(h => h.addEventListener("pointerdown", e => { k = h.dataset.k; e.preventDefault(); try { svg.setPointerCapture(e.pointerId); } catch (_) {} }));
+  svg.addEventListener("pointermove", e => { if (k === null) return; const [x, y] = pt(e); onMove(k, x, y); });
+  const up = () => { k = null; };
+  svg.addEventListener("pointerup", up); svg.addEventListener("pointercancel", up);
+  svg._drag = { get k() { return k; }, set k(v) { k = v; } };
+}
+/* 重畫後保留拖曳狀態 */
+function redrawKeep(svgId, fn) {
+  const old = $(svgId); const k = old && old._drag ? old._drag.k : null;
+  fn();
+  const nw = $(svgId); if (nw && nw._drag && k !== null) nw._drag.k = k;
+}
+
+
+
+/* ---------- 小工具 ---------- */
+const PI = Math.PI;
+const f1 = v => (Math.round(v * 10) / 10).toString().replace(/-/g, "−");
+const f2 = v => (Math.round(v * 100) / 100).toString().replace(/-/g, "−");
+const f3 = v => (Math.round(v * 1000) / 1000).toString().replace(/-/g, "−");
+const piS = v => f2(v) + "π";
+const rnd = n => Math.floor(Math.random() * n);
+const COLA = "var(--orange)", COLB = "var(--indigo)";
+const path = (d, fill, stroke, w, op, dash) => '<path d="' + d + '" style="fill:' + fill + ';stroke:' + stroke + ';stroke-width:' + (w || 1.6) +
+  (op !== undefined ? ';fill-opacity:' + op : '') + (dash ? ';stroke-dasharray:' + dash : '') + '"/>';
+const ELL = (cx, cy, rx, ry, fill, stroke, w, op, dash) => '<ellipse cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" rx="' + rx.toFixed(1) + '" ry="' + ry.toFixed(1) +
+  '" style="fill:' + fill + ';stroke:' + stroke + ';stroke-width:' + (w || 1.6) + (op !== undefined ? ';fill-opacity:' + op : '') + (dash ? ';stroke-dasharray:' + dash : '') + '"/>';
+const RECT = (x, y, w, h, fill, stroke, sw, op) => '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + h.toFixed(1) +
+  '" style="fill:' + fill + ';stroke:' + stroke + ';stroke-width:' + (sw || 1) + (op !== undefined ? ';fill-opacity:' + op : '') + '"/>';
+
+/* 折線圖 */
+function lineChart(o) {
+  const W = 640, H = o.H || 230, ml = 46, mr = 16, mt = 14, mb = 34;
+  const X = x => ml + (x - o.x0) / (o.x1 - o.x0) * (W - ml - mr), Y = y => mt + (o.y1 - y) / (o.y1 - o.y0) * (H - mt - mb);
+  let s = '<rect x="' + ml + '" y="' + mt + '" width="' + (W - ml - mr) + '" height="' + (H - mt - mb) + '" style="fill:var(--card);stroke:' + CEDGE + '"/>';
+  o.yt.forEach(v => { s += L(ml, Y(v), W - mr, Y(v), CSOFT, 1) + T(ml - 6, Y(v) + 4, o.yf ? o.yf(v) : v, { size: 11, c: CMUT, a: "end" }); });
+  o.xt.forEach(v => { s += L(X(v), mt, X(v), H - mb, CSOFT, 1) + T(X(v), H - mb + 16, o.xf ? o.xf(v) : v, { size: 11, c: CMUT }); });
+  (o.hl || []).forEach(l => { s += L(ml, Y(l.y), W - mr, Y(l.y), l.c, 1.6, "6 5") + T(W - mr - 4, Y(l.y) - 5, l.t, { size: 12, c: l.c, a: "end", w: 700 }); });
+  (o.curves || []).forEach(cv => {
+    s += '<polyline points="' + cv.pts.map(p => X(p[0]).toFixed(1) + "," + Y(Math.max(o.y0, Math.min(o.y1, p[1]))).toFixed(1)).join(" ") +
+      '" style="fill:none;stroke:' + cv.c + ';stroke-width:' + (cv.w || 2.2) + (cv.dash ? ';stroke-dasharray:' + cv.dash : '') + '"/>';
+    if (cv.label) s += T(X(cv.lx), Y(cv.ly), cv.label, { size: 12, c: cv.c, w: 700, a: cv.la || "start" });
+  });
+  (o.markers || []).forEach(m => { s += C(X(m[0]), Y(m[1]), 6, m[3] || CORG, "var(--card)") + (m[2] ? T(X(m[0]) + 10, Y(m[1]) - 8, m[2], { size: 13, c: m[3] || CORG, a: "start", w: 700 }) : ""); });
+  s += T(W / 2, H - 4, o.xl || "", { size: 12, c: CMUT });
+  return svgWrap(W, H, s, o.id, "");
+}
+
+/* ================= LAB 1 同一張紙的兩種捲法 ================= */
+function l1cyl(cx, Cc, h, s, col, name, V) {
+  const r = Cc / (2 * PI), rx = r * s, ry = Math.max(6, rx * 0.3), hh = h * s, y0 = 256;
+  let g = path("M" + (cx - rx).toFixed(1) + " " + (y0 - hh).toFixed(1) + " L" + (cx - rx).toFixed(1) + " " + y0 + " A" + rx.toFixed(1) + " " + ry.toFixed(1) + " 0 0 0 " + (cx + rx).toFixed(1) + " " + y0 +
+    " L" + (cx + rx).toFixed(1) + " " + (y0 - hh).toFixed(1), col, col, 2, 0.16);
+  g += ELL(cx, y0 - hh, rx, ry, col, col, 2, 0.32);
+  g += path("M" + (cx - rx).toFixed(1) + " " + y0 + " A" + rx.toFixed(1) + " " + ry.toFixed(1) + " 0 0 1 " + (cx + rx).toFixed(1) + " " + y0, "none", col, 1.2, undefined, "4 4");
+  g += T(cx, 20, name, { size: 16, c: col, w: 700 });
+  g += T(cx, 38, "圓周 " + f1(Cc) + "　高 " + f1(h), { size: 12.5, c: CMUT });
+  g += T(cx, 288, "半徑 " + f2(r) + "　體積 " + f1(V), { size: 12.5, c: col, w: 700 });
+  return g;
+}
+function l1draw() {
+  let a = +$("l1a").value, b = +$("l1b").value;
+  if (b > a) { b = a; $("l1b").value = b; }
+  $("l1av").textContent = f1(a); $("l1bv").textContent = f1(b);
+  const vol = (Cc, h) => Cc * Cc * h / (4 * PI);
+  const V1 = vol(a, b), V2 = vol(b, a), S = a * b;
+  const s = 190 / a;
+  $("l1fig").innerHTML = svgWrap(640, 300, l1cyl(170, a, b, s, CIN, "甲", V1) + l1cyl(470, b, a, s, CORG, "乙", V2), "l1svg", "");
+  $("l1s").textContent = f1(S); $("l1v1").textContent = f1(V1); $("l1v2").textContent = f1(V2); $("l1r").textContent = f2(a / b);
+  $("l1msg").innerHTML = Math.abs(a - b) < 0.05
+    ? verdict("hide", "紙是正方形，兩個一樣大", "長寬一樣時，甲和乙只是把同一個圓筒橫放、直放，體積當然一樣。")
+    : verdict("leak", "側面積都是 " + f1(S) + "，甲的體積是乙的 " + f2(a / b) + " 倍",
+      "V ＝ C × (C × h) ÷ 4π，側面積 C × h 固定，體積和圓周 C 成正比：甲 ÷ 乙 ＝ " + f1(a) + " ÷ " + f1(b) + " ＝ " + f2(a / b) + "。" +
+      (Math.abs(a / b - Math.SQRT2) < 0.02 ? "這個比就是 √2 ≈ 1.414，A4 紙長邊 ÷ 短邊。" : ""));
+}
+["l1a", "l1b"].forEach(i => $(i).addEventListener("input", () => { [...$("l1pre").children].forEach(x => x.classList.remove("on")); l1draw(); }));
+$("l1pre").addEventListener("click", e => {
+  const bt = e.target.closest("button"); if (!bt) return;
+  $("l1a").value = bt.dataset.a; $("l1b").value = bt.dataset.b;
+  [...$("l1pre").children].forEach(x => x.classList.toggle("on", x === bt)); l1draw();
+});
+l1draw();
+
+/* ================= LAB 2 空間中的兩條線 ================= */
+const EDGES2 = ["AB", "BC", "CD", "DA", "EF", "FG", "GH", "HE", "AE", "BF", "CG", "DH"];
+const FDIAG2 = ["AC", "BD", "EG", "FH", "AF", "BE", "DG", "CH", "AH", "DE", "BG", "CF"];
+const SDIAG2 = ["AG", "BH", "CE", "DF"];
+const UNITV = { A: [0, 0, 0], B: [1, 0, 0], C: [1, 1, 0], D: [0, 1, 0], E: [0, 0, 1], F: [1, 0, 1], G: [1, 1, 1], H: [0, 1, 1] };
+const L2S = { mode: "box", s1: "AB", s2: "CG", nx: 1, trans: false };
+const l2dims = () => L2S.mode === "box" ? [4, 3, 12] : [4, 4, 4];
+const l2pt = n => { const d = l2dims(), u = UNITV[n]; return [u[0] * d[0], u[1] * d[1], u[2] * d[2]]; };
+const v3sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const v3add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const v3dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const v3cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const v3len = a => Math.sqrt(v3dot(a, a));
+function l2proj(p, yaw, pit) {
+  const a = rad(yaw), b = rad(pit);
+  const x = p[0] * Math.cos(a) - p[1] * Math.sin(a), y = p[0] * Math.sin(a) + p[1] * Math.cos(a);
+  return [x, -(p[2] * Math.cos(b) + y * Math.sin(b))];
+}
+function l2fillSel() {
+  const names = L2S.mode === "box" ? EDGES2.concat(FDIAG2, SDIAG2) : EDGES2.concat(FDIAG2, SDIAG2);
+  const opt = (n, g) => '<option value="' + n + '">' + n + '</option>';
+  const html = '<optgroup label="稜">' + EDGES2.map(opt).join("") + '</optgroup><optgroup label="面對角線">' + FDIAG2.map(opt).join("") +
+    '</optgroup><optgroup label="空間（體）對角線">' + SDIAG2.map(opt).join("") + '</optgroup>';
+  $("l2s1").innerHTML = html; $("l2s2").innerHTML = html;
+}
+function l2analyze(n1, n2) {
+  const p1 = l2pt(n1[0]), q1 = l2pt(n1[1]), p2 = l2pt(n2[0]), q2 = l2pt(n2[1]);
+  const d1 = v3sub(q1, p1), d2 = v3sub(q2, p2), cr = v3cross(d1, d2), crl = v3len(cr);
+  const ang = deg(Math.acos(Math.min(1, Math.abs(v3dot(d1, d2)) / (v3len(d1) * v3len(d2)))));
+  let rel, outside = false;
+  if (crl < 1e-9) rel = "平行";
+  else {
+    const w = v3sub(p2, p1);
+    if (Math.abs(v3dot(w, cr)) < 1e-9) {
+      rel = "相交";
+      const t = v3dot(v3cross(w, d2), cr) / (crl * crl), s = v3dot(v3cross(w, d1), cr) / (crl * crl);
+      outside = t < -1e-9 || t > 1 + 1e-9 || s < -1e-9 || s > 1 + 1e-9;
+    } else rel = "歪斜";
+  }
+  return { p1, q1, p2, q2, d1, d2, rel, ang, len1: v3len(d1), len2: v3len(d2), outside };
+}
+function l2draw() {
+  const yaw = +$("l2yaw").value, pit = +$("l2pit").value;
+  $("l2s1").value = L2S.s1; $("l2s2").value = L2S.s2;
+  const W = 640, H = 330;
+  const vs = Object.keys(UNITV).map(n => l2proj(l2pt(n), yaw, pit));
+  const extra = [];
+  const res = L2S.s1 !== L2S.s2 ? l2analyze(L2S.s1, L2S.s2) : null;
+  if (res && L2S.trans && res.rel !== "平行") { extra.push(l2proj(v3add(res.p1, res.d2), yaw, pit)); }
+  const all = vs.concat(extra);
+  const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+  const bw = Math.max(...xs) - Math.min(...xs), bh = Math.max(...ys) - Math.min(...ys);
+  const sc = Math.min((W - 90) / bw, (H - 70) / bh);
+  const ox = W / 2 - (Math.max(...xs) + Math.min(...xs)) / 2 * sc, oy = H / 2 + 6 - (Math.max(...ys) + Math.min(...ys)) / 2 * sc;
+  const P = p => { const q = l2proj(p, yaw, pit); return [ox + q[0] * sc, oy + q[1] * sc]; };
+  let s = "";
+  EDGES2.forEach(e => { const a = P(l2pt(e[0])), b = P(l2pt(e[1])); s += L(a[0], a[1], b[0], b[1], CMUT, 1.4); });
+  const seg = (n, c, w) => { const a = P(l2pt(n[0])), b = P(l2pt(n[1])); return L(a[0], a[1], b[0], b[1], c, w); };
+  if (L2S.s1 !== L2S.s2) { s += seg(L2S.s2, CIN, 4.5); }
+  s += seg(L2S.s1, CORG, 4.5);
+  if (res && L2S.trans && res.rel !== "平行") {
+    const a = P(res.p1), b = P(v3add(res.p1, res.d2));
+    s += L(a[0], a[1], b[0], b[1], CGRN, 3, "7 5") + C(a[0], a[1], 4, CGRN, "var(--card)");
+    s += T((a[0] + b[0]) / 2 + 12, (a[1] + b[1]) / 2 - 6, "平移後", { size: 12, c: CGRN, w: 700, a: "start" });
+  }
+  Object.keys(UNITV).forEach(n => {
+    const a = P(l2pt(n)), u = UNITV[n];
+    s += C(a[0], a[1], 2.6, CINK) + T(a[0] + (u[0] ? 11 : -11), a[1] + (u[2] ? -8 : 15), n, { size: 14, c: CINK, w: 700 });
+  });
+  EDGES2.forEach(e => { const a = P(l2pt(e[0])), b = P(l2pt(e[1])); s += '<line data-e="' + e + '" class="cellr" x1="' + a[0].toFixed(1) + '" y1="' + a[1].toFixed(1) + '" x2="' + b[0].toFixed(1) + '" y2="' + b[1].toFixed(1) + '" style="stroke:transparent;stroke-width:16"/>'; });
+  $("l2fig").innerHTML = svgWrap(W, H, s, "l2svg", "");
+  $("l2svg").querySelectorAll("[data-e]").forEach(h => h.addEventListener("click", () => {
+    if (L2S.nx === 1) { L2S.s1 = h.dataset.e; L2S.nx = 2; } else { L2S.s2 = h.dataset.e; L2S.nx = 1; }
+    l2draw();
+  }));
+  const dimtxt = L2S.mode === "box" ? "AB ＝ 4，BC ＝ 3，CG ＝ 12" : "邊長 4";
+  if (!res) {
+    $("l2len1").textContent = f2(v3len(v3sub(l2pt(L2S.s1[1]), l2pt(L2S.s1[0])))); $("l2len2").textContent = "—"; $("l2rel").textContent = "—"; $("l2ang").textContent = "—";
+    $("l2msg").innerHTML = verdict("hide", "請選兩條不同的線", "線 1 和線 2 是同一條。（" + dimtxt + "）");
+    return;
+  }
+  $("l2len1").textContent = f2(res.len1); $("l2len2").textContent = f2(res.len2);
+  $("l2rel").textContent = res.rel;
+  $("l2ang").textContent = res.rel === "平行" ? "0°" : (Math.abs(res.ang - Math.round(res.ang)) < 0.005 ? Math.round(res.ang) : f1(res.ang)) + "°";
+  const a = f1(res.ang) + "°";
+  let body;
+  if (res.rel === "平行") body = "兩條線方向相同，在同一個平面上，不相交。";
+  else if (res.rel === "相交") body = "兩條線有一個交點，夾角 " + a + "。" + (res.outside ? "（交點在線段的延長線上，把線看成無限長的直線。）" : "");
+  else body = "兩條線不相交、也不平行，找不到一個平面同時放下它們。夾角要平移來量：把線 2 平移到和線 1 相交，再量，夾角是 " + a + "。" + (L2S.trans ? "" : "按「平移線 2 到線 1」看看。");
+  $("l2msg").innerHTML = verdict(res.rel === "歪斜" ? "leak" : "hide", L2S.s1 + " 與 " + L2S.s2 + "：" + res.rel, body + "（" + dimtxt + "）");
+}
+l2fillSel();
+$("l2s1").addEventListener("change", () => { L2S.s1 = $("l2s1").value; l2draw(); });
+$("l2s2").addEventListener("change", () => { L2S.s2 = $("l2s2").value; l2draw(); });
+["l2yaw", "l2pit"].forEach(i => $(i).addEventListener("input", l2draw));
+$("l2t").addEventListener("click", () => { L2S.trans = !L2S.trans; l2draw(); });
+$("l2mode").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  L2S.mode = b.dataset.m; [...$("l2mode").children].forEach(x => x.classList.toggle("on", x === b)); l2draw();
+});
+$("l2d1").addEventListener("click", () => { L2S.mode = "box"; L2S.s1 = "AB"; L2S.s2 = "CG"; L2S.trans = true; [...$("l2mode").children].forEach(x => x.classList.toggle("on", x.dataset.m === "box")); l2draw(); });
+$("l2d2").addEventListener("click", () => { L2S.mode = "cube"; L2S.s1 = "AF"; L2S.s2 = "BG"; L2S.trans = true; [...$("l2mode").children].forEach(x => x.classList.toggle("on", x.dataset.m === "cube")); l2draw(); });
+l2draw();
+
+/* ================= LAB 3 正方體展開圖 ================= */
+const GW3 = 9, GH3 = 6, CS3 = 40;
+const FN3 = ["底", "頂", "後", "前", "右", "左"];
+const DIR3 = { E: [1, 0], W: [-1, 0], N: [0, 1], S: [0, -1] };
+function roll3(st, d) {
+  const [bot, top, n, s, e, w] = st;
+  if (d === "E") return [e, w, n, s, top, bot];
+  if (d === "W") return [w, e, n, s, bot, top];
+  if (d === "N") return [n, s, top, bot, e, w];
+  return [s, n, bot, top, e, w];
+}
+function analyze3(cs) {
+  const key = c => c[0] + "," + c[1];
+  const set = new Set(cs.map(key));
+  if (cs.length !== 6) return { ok: false, msg: "再選 " + (6 - cs.length) + " 格（要剛好 6 格）。", face: {}, dup: new Set() };
+  const sorted = cs.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const st = {}; st[key(sorted[0])] = [0, 1, 2, 3, 4, 5];
+  const q = [sorted[0]]; let conflict = false;
+  while (q.length) {
+    const c = q.shift();
+    for (const d in DIR3) {
+      const nb = [c[0] + DIR3[d][0], c[1] + DIR3[d][1]], k = key(nb);
+      if (!set.has(k)) continue;
+      const ns = roll3(st[key(c)], d);
+      if (st[k]) { if (st[k].join() !== ns.join()) conflict = true; }
+      else { st[k] = ns; q.push(nb); }
+    }
+  }
+  const visited = Object.keys(st);
+  const face = {}; visited.forEach(k => { face[k] = st[k][0]; });
+  if (visited.length < 6) return { ok: false, msg: "六格沒有連成一片（格子要邊和邊相連）。", face, dup: new Set() };
+  const cnt = {}; visited.forEach(k => { (cnt[face[k]] = cnt[face[k]] || []).push(k); });
+  const dup = new Set(); Object.values(cnt).forEach(a => { if (a.length > 1) a.forEach(k => dup.add(k)); });
+  if (conflict) return { ok: false, msg: "折不起來：這幾格圍成一個圈（例如 2 × 2），一個頂點只能有 3 個面。", face, dup, conflict: true };
+  if (dup.size) return { ok: false, msg: "折起來會有兩格疊在同一個面（紅色的格子），另一個面就空著。", face, dup };
+  return { ok: true, msg: "可以折成正方體。標在格子上的，是那一格折起來以後變成的面（以橘色格子當底面）。", face, dup };
+}
+function norm3(cs) {
+  let best = null;
+  for (let rot = 0; rot < 4; rot++) for (const flip of [false, true]) {
+    let pts = cs.map(([x, y]) => { if (flip) x = -x; for (let i = 0; i < rot; i++) { const t = x; x = -y; y = t; } return [x, y]; });
+    const mx = Math.min(...pts.map(p => p[0])), my = Math.min(...pts.map(p => p[1]));
+    const k = pts.map(p => [p[0] - mx, p[1] - my]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(p => p.join(",")).join(";");
+    if (best === null || k < best) best = k;
+  }
+  return best;
+}
+const fromKey3 = k => k.split(";").map(s => s.split(",").map(Number));
+const HEX3 = (() => {
+  let polys = { "0,0": [[0, 0]] };
+  for (let n = 1; n < 6; n++) {
+    const out = {};
+    Object.values(polys).forEach(p => {
+      const has = new Set(p.map(c => c.join(",")));
+      p.forEach(c => { for (const d in DIR3) { const nb = [c[0] + DIR3[d][0], c[1] + DIR3[d][1]]; if (has.has(nb.join(","))) continue; const np = p.concat([nb]); out[norm3(np)] = fromKey3(norm3(np)); } });
+    });
+    polys = out;
+  }
+  return Object.values(polys);
+})();
+const NETS3 = HEX3.filter(p => analyze3(p).ok);
+const NETKEYS3 = NETS3.map(norm3);
+let cells3 = [], found3 = new Set();
+function l3draw() {
+  const an = analyze3(cells3);
+  const keyOf = c => c[0] + "," + c[1];
+  let s = "";
+  for (let x = 0; x < GW3; x++) for (let y = 0; y < GH3; y++) {
+    const on = cells3.some(c => c[0] === x && c[1] === y), k = x + "," + y;
+    const px = x * CS3, py = (GH3 - 1 - y) * CS3;
+    let fill = "var(--card)", stroke = CSOFT, op = 1;
+    if (on) {
+      const isDup = an.dup.has(k);
+      fill = isDup ? CRED : (an.ok ? CGRN : CORG); op = isDup ? 0.55 : 0.3; stroke = isDup ? CRED : (an.ok ? CGRN : CORG);
+    }
+    s += '<rect class="cellr" data-c="' + k + '" x="' + px + '" y="' + py + '" width="' + CS3 + '" height="' + CS3 + '" style="fill:' + fill + ';fill-opacity:' + op + ';stroke:' + (on ? stroke : CEDGE) + ';stroke-width:' + (on ? 2 : 1) + '"/>';
+    if (on && an.face[k] !== undefined && (cells3.length === 6)) s += T(px + CS3 / 2, py + CS3 / 2 + 6, FN3[an.face[k]], { size: 17, c: CINK, w: 700 });
+  }
+  $("l3fig").innerHTML = svgWrap(GW3 * CS3, GH3 * CS3, s, "l3svg", "");
+  $("l3svg").querySelectorAll("[data-c]").forEach(r => r.addEventListener("click", () => {
+    const [x, y] = r.dataset.c.split(",").map(Number);
+    const i = cells3.findIndex(c => c[0] === x && c[1] === y);
+    if (i >= 0) cells3.splice(i, 1); else if (cells3.length < 6) cells3.push([x, y]); else { $("l3msg").innerHTML = verdict("hide", "已經選了 6 格", "先點一個橘色的格子取消，再選別的。"); return; }
+    const a2 = analyze3(cells3);
+    if (a2.ok) found3.add(norm3(cells3));
+    l3draw();
+  }));
+  const cls = cells3.length < 6 ? "hide" : (an.ok ? "hide" : "leak");
+  $("l3msg").innerHTML = verdict(cls, cells3.length < 6 ? "已選 " + cells3.length + " 格" : (an.ok ? "能折成正方體" : "折不成正方體"), an.msg);
+  $("l3cnt").textContent = "已找到 " + found3.size + " ／ 11 種能折成正方體的展開圖（旋轉、翻面算同一種）。";
+  $("l3list").innerHTML = NETKEYS3.map((k, i) => {
+    const pts = NETS3[i], u = 9, mx = Math.max(...pts.map(p => p[0])) + 1, my = Math.max(...pts.map(p => p[1])) + 1;
+    const inner = pts.map(p => '<rect x="' + (p[0] * u + 2) + '" y="' + (p[1] * u + 2) + '" width="' + u + '" height="' + u + '" style="fill:' + (found3.has(k) ? CGRN : CSOFT) + ';fill-opacity:' + (found3.has(k) ? 0.45 : 1) + ';stroke:' + (found3.has(k) ? CGRN : CEDGE) + ';stroke-width:1"/>').join("");
+    return '<span class="thumb' + (found3.has(k) ? " got" : "") + '"><svg viewBox="0 0 ' + (6 * u + 4) + ' ' + (5 * u + 4) + '">' + inner + '</svg></span>';
+  }).join("");
+}
+function place3(pts) {
+  const mx = Math.max(...pts.map(p => p[0])), my = Math.max(...pts.map(p => p[1]));
+  const ox = Math.floor((GW3 - 1 - mx) / 2), oy = Math.floor((GH3 - 1 - my) / 2);
+  cells3 = pts.map(p => [p[0] + ox, p[1] + oy]);
+}
+$("l3clr").addEventListener("click", () => { cells3 = []; l3draw(); });
+$("l3ok").addEventListener("click", () => {
+  const rest = NETS3.filter(p => !found3.has(norm3(p))); const pool = rest.length ? rest : NETS3;
+  place3(pool[rnd(pool.length)]); found3.add(norm3(cells3.map(c => [c[0], c[1]]))); l3draw();
+});
+$("l3no").addEventListener("click", () => { const bad = HEX3.filter(p => !analyze3(p).ok); place3(bad[rnd(bad.length)]); l3draw(); });
+l3draw();
+
+/* ================= LAB 4 圓錐展開成扇形 ================= */
+function l4draw() {
+  const r = +$("l4r").value, h = +$("l4h").value;
+  $("l4rv").textContent = f2(r); $("l4hv").textContent = f2(h);
+  const Lg = Math.sqrt(r * r + h * h), th = 360 * r / Lg, arc = 2 * PI * r;
+  const s = 118 / Lg, W = 640, H = 290;
+  let g = "";
+  /* 左：圓錐 */
+  const cx = 150, rx = r * s, ry = Math.max(5, rx * 0.28), hh = h * s, by = (th > 180 ? 160 : 140) + hh / 2 + ry / 2;
+  g += path("M" + cx + " " + (by - hh).toFixed(1) + " L" + (cx - rx).toFixed(1) + " " + by + " A" + rx.toFixed(1) + " " + ry.toFixed(1) + " 0 0 0 " + (cx + rx).toFixed(1) + " " + by + " Z", CIN, CIN, 2, 0.14);
+  g += path("M" + (cx - rx).toFixed(1) + " " + by + " A" + rx.toFixed(1) + " " + ry.toFixed(1) + " 0 0 1 " + (cx + rx).toFixed(1) + " " + by, "none", CIN, 1.2, undefined, "4 4");
+  g += L(cx, by - hh, cx, by, CGRN, 1.5, "5 4") + L(cx, by, cx + rx, by, CGRN, 1.5, "5 4");
+  g += L(cx, by - hh, cx + rx, by, CORG, 3);
+  g += T(cx - rx / 2 - 8, by - hh / 2, "h ＝ " + f2(h), { a: "end", size: 12.5, c: CGRN });
+  g += T(cx + rx / 2, by + 19, "r ＝ " + f2(r), { size: 12.5, c: CGRN });
+  g += T(cx + rx / 2 + 12, by - hh / 2 - 4, "L ＝ " + f2(Lg), { a: "start", size: 12.5, c: CORG, w: 700 });
+  /* 右：扇形，頂點在 (ax, ay)，向下張開 */
+  const ax = 440, ay = th > 180 ? 140 : 40, R = 118;
+  const a0 = rad(90 - th / 2), a1 = rad(90 + th / 2);
+  const p0 = [ax + R * Math.cos(a0), ay + R * Math.sin(a0)], p1 = [ax + R * Math.cos(a1), ay + R * Math.sin(a1)];
+  g += path("M" + ax + " " + ay + " L" + p1[0].toFixed(1) + " " + p1[1].toFixed(1) + " A" + R + " " + R + " 0 " + (th > 180 ? 1 : 0) + " 0 " + p0[0].toFixed(1) + " " + p0[1].toFixed(1) + " Z", CORG, CORG, 2, 0.18);
+  g += L(ax, ay, p0[0], p0[1], CORG, 3) + L(ax, ay, p1[0], p1[1], CORG, 1.5, "5 4");
+  g += T(ax, ay - 8 - (th > 180 ? 0 : 0), "θ ＝ " + f1(th) + "°", { size: 14, c: CORG, w: 700 });
+  g += T(ax + R * 0.5 * Math.cos(a0) + 18, ay + R * 0.5 * Math.sin(a0) - 6, "L", { size: 14, c: CORG, w: 700 });
+  g += T(ax, ay + R + 22, "弧長 ＝ 2πr ＝ " + f2(arc), { size: 13, c: CIN, w: 700 });
+  $("l4fig").innerHTML = svgWrap(W, H + (th > 180 ? 40 : 0), g, "l4svg", "");
+  $("l4L").textContent = f2(Lg); $("l4th").textContent = f1(th) + "°"; $("l4arc").textContent = piS(2 * r);
+  $("l4lat").textContent = piS(r * Lg); $("l4sa").textContent = piS(r * r + r * Lg);
+  $("l4msg").innerHTML = verdict("leak", "θ ＝ 360° × r ÷ L ＝ " + f1(th) + "°，側面積 ＝ " + piS(r * Lg),
+    "扇形是整個圓（半徑 " + f2(Lg) + "）的 " + f2(r / Lg) + "；用 θ ÷ 360° × πL² ＝ " + f2(th / 360) + " × " + piS(Lg * Lg) + " ＝ " + piS(th / 360 * Lg * Lg) + "，和 πrL ＝ " + piS(r * Lg) + " 一樣。體積 ＝ 1/3 × πr²h ＝ " + piS(r * r * h / 3) + "。");
+}
+["l4r", "l4h"].forEach(i => $(i).addEventListener("input", l4draw));
+const l4set = (r, h) => { $("l4r").value = r; $("l4h").value = h; l4draw(); };
+$("l4p1").addEventListener("click", () => l4set(3, 4));
+$("l4p2").addEventListener("click", () => l4set(5, Math.round(5 * Math.sqrt(3) * 100) / 100));
+$("l4p3").addEventListener("click", () => l4set(3, Math.round(3 * Math.sqrt(8) * 100) / 100));
+l4draw();
+
+/* ================= LAB 5 斜柱書堆 ================= */
+function l5draw() {
+  const sh = +$("l5s").value, n = +$("l5n").value;
+  $("l5sv").textContent = f1(sh); $("l5nv").textContent = n;
+  const u = 34, bw = 4 * u, hh = 4 * u, x0 = 150, y0 = 250;
+  let g = "";
+  g += L(x0 - 20, y0, x0 + bw + sh * u + 140, y0, CMUT, 1.4);
+  const th = hh / n;
+  for (let i = 0; i < n; i++) {
+    const off = sh * u * i / n;
+    const y = y0 - (i + 1) * th;
+    g += RECT(x0 + off, y, bw, th, i % 2 ? CORG : CIN, n > 24 ? "none" : "var(--card)", 1, i % 2 ? 0.34 : 0.3);
+  }
+  const top = sh * u;
+  g += L(x0 + top + bw + 18, y0 - hh, x0 + top + bw + 18, y0, CGRN, 1.6, "5 4") + T(x0 + top + bw + 28, y0 - hh / 2, "高 4", { a: "start", size: 13, c: CGRN, w: 700 });
+  g += L(x0, y0, x0 + top, y0 - hh, CORG, 2.5, "7 4");
+  g += T(x0 - 14, y0 - hh / 2, "側稜", { a: "end", size: 12.5, c: CORG, w: 700 });
+  g += T(x0 + bw / 2, y0 + 22, "每層：底 4 × 3 ＝ 12", { size: 13, c: CMUT });
+  $("l5fig").innerHTML = svgWrap(640, 280, g, "l5svg", "");
+  const Ls = Math.sqrt(16 + sh * sh);
+  $("l5a").textContent = "12"; $("l5h").textContent = "4"; $("l5l").textContent = f2(Ls); $("l5v").textContent = "48";
+  $("l5msg").innerHTML = verdict(sh === 0 ? "hide" : "leak", sh === 0 ? "直柱：側稜長 ＝ 高 ＝ 4" : "推斜了：側稜長變成 " + f2(Ls) + "，高還是 4，體積還是 48",
+    "每一層（一本書）的大小不變，高度不變，所以體積 ＝ 12 × 4 ＝ 48。" + (sh === 0 ? "" : "如果誤用側稜長：12 × " + f2(Ls) + " ＝ " + f1(12 * Ls) + "，會算大。") + "層數越多（" + n + " 層），越看不出一層一層的痕跡，它就是一個光滑的斜柱。");
+}
+["l5s", "l5n"].forEach(i => $(i).addEventListener("input", l5draw));
+l5draw();
+
+/* ================= LAB 6 夾出 1/3 ================= */
+const sumsq = n => n * (n + 1) * (2 * n + 1) / 6;
+function l6draw() {
+  const n = +$("l6n").value; $("l6nv").textContent = n;
+  const outer = sumsq(n), inner = outer - n * n, tot = n * n * n;
+  const Wb = 230, Hb = 150, y0 = 170;
+  let g = "";
+  const panel = (cx, kind, col, title) => {
+    g += T(cx, 20, title, { size: 14, c: col, w: 700 });
+    const tw = Wb / n, th = Hb / n;
+    for (let k = 1; k <= n; k++) {
+      const w = kind === "o" ? k * tw : (k - 1) * tw;
+      if (w <= 0) continue;
+      g += RECT(cx - w / 2, y0 - (n - k + 1) * th, w, th, col, n > 20 ? "none" : "var(--card)", 1, 0.35);
+    }
+    g += path("M" + cx + " " + (y0 - Hb) + " L" + (cx - Wb / 2) + " " + y0 + " L" + (cx + Wb / 2) + " " + y0 + " Z", "none", CMUT, 1.4);
+    g += L(cx - Wb / 2 - 6, y0, cx + Wb / 2 + 6, y0, CMUT, 1.4);
+  };
+  panel(170, "o", CORG, "外接（比真的大）"); panel(470, "i", CIN, "內接（比真的小）");
+  $("l6fig").innerHTML = svgWrap(640, 196, g, "l6svg", "");
+  const oc = [], ic = [];
+  for (let k = 1; k <= 60; k++) { oc.push([k, sumsq(k) / (k * k * k)]); ic.push([k, (sumsq(k) - k * k) / (k * k * k)]); }
+  $("l6chart").innerHTML = lineChart({ id: "l6csvg", H: 230, x0: 0, x1: 60, y0: 0, y1: 1, yt: [0, 0.25, 0.5, 0.75, 1], xt: [0, 10, 20, 30, 40, 50, 60], xl: "層數 n",
+    hl: [{ y: 1 / 3, c: CGRN, t: "1/3" }],
+    curves: [{ pts: oc, c: CORG, label: "外接 ÷ n³", lx: 6, ly: 0.93, la: "start" }, { pts: ic, c: CIN, label: "內接 ÷ n³", lx: 6, ly: 0.05, la: "start" }],
+    markers: [[n, outer / tot, "", CORG], [n, inner / tot, "", CIN]] });
+  $("l6o").textContent = f3(outer / tot); $("l6i").textContent = f3(inner / tot); $("l6d").textContent = f3(1 / n); $("l6t").textContent = f3(1 / 3);
+  $("l6msg").innerHTML = verdict(n >= 30 ? "hide" : "leak", "n ＝ " + n + "：外接 " + outer + "，內接 " + inner + "，真實 " + f2(tot / 3),
+    "柱體是 n³ ＝ " + tot + "。外接是柱體的 " + f3(outer / tot) + "，內接是 " + f3(inner / tot) + "，真實的錐體夾在中間，差 1 ÷ n ＝ " + f3(1 / n) + "。" + (n >= 30 ? "兩邊已經很靠近 1/3 ≈ 0.333。" : "把 n 拉大，看兩條線怎麼收攏到 1/3。"));
+}
+$("l6n").addEventListener("input", l6draw);
+l6draw();
+
+/* ================= LAB 7 錐形杯 ================= */
+function l7draw() {
+  const p = +$("l7x").value, x = p / 100, Hc = +$("l7H").value || 4;
+  $("l7xv").textContent = f1(p);
+  const W = 640, Wt = 130, Ht = 170, cx = 240, yt = 40, yb = yt + Ht;
+  let g = "";
+  g += path("M" + (cx - Wt) + " " + yt + " L" + (cx + Wt) + " " + yt + " L" + cx + " " + yb + " Z", "none", CINK, 2.4);
+  if (x > 0) {
+    const wy = yb - x * Ht, ww = x * Wt;
+    g += path("M" + (cx - ww) + " " + wy + " L" + (cx + ww) + " " + wy + " L" + cx + " " + yb + " Z", CIN, CIN, 1.6, 0.35);
+    g += L(cx + Wt + 14, yb, cx + Wt + 14, wy, CORG, 2); g += T(cx + Wt + 22, (yb + wy) / 2 + 4, "水深 " + f2(x * Hc), { a: "start", size: 12.5, c: CORG, w: 700 });
+  }
+  g += L(cx - Wt - 14, yb, cx - Wt - 14, yt, CMUT, 1.4); g += T(cx - Wt - 22, (yb + yt) / 2 + 4, "杯深 " + f2(Hc), { a: "end", size: 12.5, c: CMUT });
+  /* 右：x³ 曲線 */
+  const pts = [], pl = []; for (let k = 0; k <= 100; k++) { pts.push([k / 100, Math.pow(k / 100, 3)]); pl.push([k / 100, k / 100]); }
+  $("l7fig").innerHTML = svgWrap(W, 236, g, "l7svg", "");
+  $("l7chart").innerHTML = lineChart({ id: "l7csvg", H: 260, x0: 0, x1: 1, y0: 0, y1: 1, yt: [0, 0.25, 0.5, 0.75, 1], xt: [0, 0.25, 0.5, 0.75, 1], xl: "水深 ÷ 杯深 ＝ x", yf: v => v === 0 ? "0" : v === 1 ? "1" : v,
+    curves: [{ pts: pl, c: CMUT, dash: "6 5", label: "直覺：水量 ＝ x", lx: 0.04, ly: 0.12, la: "start" }, { pts, c: CORG, label: "真實：水量 ＝ x³", lx: 0.96, ly: 0.05, la: "end", w: 2.8 }],
+    markers: [[x, Math.pow(x, 3), "", CORG]] });
+  $("l7r").textContent = f3(x); $("l7v").textContent = f3(Math.pow(x, 3)); $("l7d2").textContent = f2(x * Hc) + " 公分";
+  const fr = { 50: "1/8", 67: "", 33: "", 100: "1" };
+  $("l7msg").innerHTML = verdict(Math.pow(x, 3) > 0.49 && Math.pow(x, 3) < 0.51 ? "hide" : "leak",
+    "水深是杯深的 " + f3(x) + " 倍，水量是滿杯的 " + f3(Math.pow(x, 3)) + "（" + f1(100 * Math.pow(x, 3)) + "%）",
+    "水面的圓和杯口的圓相似，相似比 " + f3(x) + "，體積比 " + f3(x) + "³ ＝ " + f3(Math.pow(x, 3)) + "。" + (Math.abs(x - 0.5) < 0.005 ? "水深一半，水只有 1/8。" : "") + (Math.abs(Math.pow(x, 3) - 0.5) < 0.01 ? " 這就是剛好半杯水：水深大約是杯深的 0.794 倍。" : ""));
+}
+$("l7x").addEventListener("input", l7draw); $("l7H").addEventListener("input", l7draw);
+const l7set = v => { $("l7x").value = v; l7draw(); };
+$("l7a").addEventListener("click", () => l7set(50)); $("l7b").addEventListener("click", () => l7set(66.6667)); $("l7c").addEventListener("click", () => l7set(33.3333));
+$("l7d").addEventListener("click", () => l7set(79.37));
+l7draw();
+
+/* ================= LAB 8 半球截面 ================= */
+function l8draw() {
+  const t = +$("l8t").value; $("l8tv").textContent = f2(t);
+  const u = 30, r = 3, R = r * u, base = 130, cxs = [110, 320, 530];
+  let g = "";
+  const cut = base - t * u;
+  /* 圓柱（左） */
+  g += RECT(cxs[0] - R, base - R, 2 * R, R, CGRN, CGRN, 2, 0.14);
+  g += T(cxs[0], 22, "圓柱", { size: 14, c: CGRN, w: 700 });
+  /* 圓錐（中）尖端朝下 */
+  g += path("M" + (cxs[1] - R) + " " + (base - R) + " L" + (cxs[1] + R) + " " + (base - R) + " L" + cxs[1] + " " + base + " Z", CORG, CORG, 2, 0.14);
+  g += T(cxs[1], 22, "圓錐（尖端朝下）", { size: 14, c: CORG, w: 700 });
+  /* 半球（右） */
+  g += path("M" + (cxs[2] - R) + " " + base + " A" + R + " " + R + " 0 0 1 " + (cxs[2] + R) + " " + base + " Z", CIN, CIN, 2, 0.14);
+  g += T(cxs[2], 22, "半球", { size: 14, c: CIN, w: 700 });
+  cxs.forEach(cx => { g += L(cx - R - 8, cut, cx + R + 8, cut, CORG, 2.2, "6 4"); });
+  g += T(cxs[0] - R - 6, cut - 6, "t", { a: "end", size: 13, c: CORG, w: 700 });
+  /* 截面 */
+  const cy = 245, rr = R;
+  g += ELL(cxs[0], cy, rr, rr, CGRN, CGRN, 2, 0.3);
+  /* 圓柱 − 圓錐：外圓 r，內圓 t（挖空） */
+  g += '<path d="M' + (cxs[1] - rr) + " " + cy + " a" + rr + " " + rr + " 0 1 0 " + (2 * rr) + " 0 a" + rr + " " + rr + " 0 1 0 " + (-2 * rr) + " 0 Z M" + (cxs[1] - t * u) + " " + cy + " a" + (t * u) + " " + (t * u) + " 0 1 1 " + (2 * t * u) + " 0 a" + (t * u) + " " + (t * u) + ' 0 1 1 ' + (-2 * t * u) + ' 0 Z" fill-rule="evenodd" style="fill:' + CORG + ';fill-opacity:.3;stroke:' + CORG + ';stroke-width:2"/>';
+  const hr = Math.sqrt(Math.max(0, r * r - t * t)) * u;
+  g += ELL(cxs[2], cy, hr, hr, CIN, CIN, 2, 0.3);
+  g += T(cxs[0], cy + rr + 20, "圓柱截面 ＝ 9π", { size: 13, c: CGRN, w: 700 });
+  g += T(cxs[1], cy + rr + 20, "圓柱 − 圓錐 ＝ 9π − π" + f2(t * t) + " ＝ " + piS(9 - t * t), { size: 13, c: CORG, w: 700 });
+  g += T(cxs[2], cy + rr + 20, "半球截面 ＝ " + piS(9 - t * t), { size: 13, c: CIN, w: 700 });
+  $("l8fig").innerHTML = svgWrap(640, 380, g, "l8svg", "");
+  $("l8c").textContent = "9π"; $("l8k").textContent = piS(t * t); $("l8r").textContent = piS(9 - t * t); $("l8h").textContent = piS(9 - t * t);
+  $("l8msg").innerHTML = verdict("leak", "t ＝ " + f2(t) + "：圓環 " + piS(9 - t * t) + " ＝ 半球截面 " + piS(9 - t * t),
+    "半球截面半徑 √(3² − " + f2(t) + "²) ＝ " + f2(Math.sqrt(9 - t * t)) + "，面積 π(9 − " + f2(t * t) + ")。每一個 t，兩邊的面積都一樣，所以半球 ＝ 圓柱 − 圓錐 ＝ 27π − 9π ＝ 18π，三個立體的體積比是 9π ∶ 18π ∶ 27π ＝ 1 ∶ 2 ∶ 3。");
+}
+$("l8t").addEventListener("input", l8draw);
+$("l8a").addEventListener("click", () => { $("l8t").value = 1; l8draw(); });
+$("l8b").addEventListener("click", () => { $("l8t").value = 2; l8draw(); });
+l8draw();
+
+</script>
+<a class="bk-fab" href="passport.html" aria-label="回到探索紀錄本">← 紀錄本</a>
+<style id="island">
+/* ===== 探索島：預測／紀錄／判斷題／單元章 ===== */
+.isl-box{margin:0;padding:16px 22px;border-bottom:1px solid var(--edge-soft);background:var(--indigo-soft)}
+.isl-box .isl-k{font-size:12.5px;letter-spacing:.14em;font-weight:700;color:var(--indigo);margin-bottom:6px}
+.isl-box .isl-q{font-size:15.5px;color:var(--ink);margin:0 0 10px;max-width:none}
+.isl-obs{background:var(--orange-soft);border-top:1px solid var(--edge-soft);border-bottom:0}
+.isl-obs .isl-k{color:var(--orange)}
+.isl-opts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.isl-opts label{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;
+  padding:5px 12px;border:1px solid var(--edge);border-radius:999px;background:var(--card);cursor:pointer}
+.isl-opts label:has(input:checked){border-color:var(--indigo);color:var(--indigo);font-weight:600}
+.isl-opts input{accent-color:var(--indigo);margin:0}
+.isl-ta{width:100%;min-height:62px;resize:vertical;font:inherit;font-size:15px;line-height:1.6;
+  padding:9px 12px;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink)}
+.isl-ta:focus{outline:2px solid var(--indigo);outline-offset:1px}
+.isl-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.isl-btn{font:inherit;font-size:14.5px;font-weight:600;padding:7px 16px;border-radius:5px;cursor:pointer;
+  border:1px solid var(--indigo);background:var(--indigo);color:var(--card)}
+.isl-btn:disabled{opacity:.4;cursor:not-allowed}
+.isl-btn.ghost{background:var(--card);color:var(--indigo)}
+.isl-hint{font-size:13px;color:var(--ink-3)}
+.isl-mine{font-size:14.5px;color:var(--ink-2);margin:0;max-width:none}
+.isl-mine b{color:var(--indigo)}
+.isl-wait{padding:26px 22px;text-align:center;color:var(--ink-3);font-size:14.5px;
+  background:repeating-linear-gradient(45deg,transparent 0 10px,var(--edge-soft) 10px 11px)}
+.isl-done-tag{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--green);letter-spacing:.08em}
+.lab-foot.isl-reveal::before{content:"對照看看";display:block;font-size:12px;letter-spacing:.14em;
+  font-weight:700;color:var(--green);margin-bottom:2px}
+.isl-gate{margin:20px 0;padding:14px 18px;border:1px dashed var(--edge);border-radius:5px;
+  color:var(--ink-3);font-size:14px;text-align:center}
+
+/* 進度列 */
+.isl-prog{margin:0 0 6px;padding:12px 16px;border:1px solid var(--edge);border-radius:5px;background:var(--card);
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:14px}
+.isl-prog .t{font-weight:700;color:var(--ink-2);letter-spacing:.06em}
+.isl-dots{display:flex;gap:6px;flex-wrap:wrap}
+.isl-dots a{width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;
+  font-size:12.5px;font-weight:700;text-decoration:none;border:1.5px solid var(--edge);color:var(--ink-3);background:var(--paper)}
+.isl-dots a.half{border-color:var(--indigo);color:var(--indigo)}
+.isl-dots a.ok{border-color:var(--green);background:var(--green);color:var(--card)}
+.isl-prog .q{color:var(--ink-3)}
+.isl-prog .q.ok{color:var(--green);font-weight:700}
+
+/* 判斷題 */
+#isl-quiz{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-qcard{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);
+  padding:18px 22px;margin:16px 0}
+.isl-qcard .isl-qn{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--orange)}
+.isl-qcard p.isl-qt{font-size:16px;margin:4px 0 12px;max-width:none}
+.isl-choice{display:block;width:100%;text-align:left;font:inherit;font-size:15px;line-height:1.55;
+  padding:9px 14px;margin:0 0 8px;border:1px solid var(--edge);border-radius:5px;background:var(--paper);
+  color:var(--ink);cursor:pointer}
+.isl-choice:hover:not(:disabled){border-color:var(--indigo)}
+.isl-choice.no{border-color:var(--orange);background:var(--orange-soft);color:var(--ink-2);text-decoration:line-through}
+.isl-choice.yes{border-color:var(--green);background:var(--green-soft);font-weight:600}
+.isl-choice:disabled{cursor:default}
+.isl-fb{margin-top:6px;padding:10px 14px;border-radius:4px;font-size:14.5px;border:1px solid var(--edge)}
+.isl-fb.bad{border-color:var(--orange);background:var(--orange-soft)}
+.isl-fb.good{border-color:var(--green);background:var(--green-soft)}
+
+/* 紀錄與章 */
+#isl-record{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-sheet{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);padding:22px 24px}
+.isl-sheet-head{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--edge-soft);padding-bottom:14px;margin-bottom:6px}
+.isl-sheet-head h3{margin:0;font-size:22px}
+.isl-sheet-head .isl-sub{font-size:13.5px;color:var(--ink-3)}
+.isl-name{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.isl-name input{font:inherit;font-size:15px;padding:5px 10px;width:10em;border:1px solid var(--edge);
+  border-radius:5px;background:var(--paper);color:var(--ink)}
+.isl-tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
+.isl-tbl th,.isl-tbl td{border-bottom:1px solid var(--edge-soft);padding:9px 8px;vertical-align:top;text-align:left}
+.isl-tbl th{font-size:12.5px;letter-spacing:.1em;color:var(--ink-3);font-weight:700}
+.isl-tbl td.n{white-space:nowrap;font-weight:600;color:var(--ink-2);width:9.5em}
+.isl-tbl td .empty{color:var(--ink-3)}
+.isl-stamp-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:18px}
+.isl-stamp{width:150px;height:150px;flex:none}
+.isl-stamp.off{opacity:.18;filter:grayscale(1)}
+.isl-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.isl-clear{font-size:13px;color:var(--ink-3);background:none;border:0;text-decoration:underline;cursor:pointer;font:inherit}
+@media (max-width:600px){
+  .isl-tbl, .isl-tbl tbody, .isl-tbl tr, .isl-tbl td{display:block;width:auto}
+  .isl-tbl thead{display:none}
+  .isl-tbl td{border:0;padding:3px 0}
+  .isl-tbl tr{border-bottom:1px solid var(--edge-soft);padding:10px 0}
+  .isl-tbl td[data-h]::before{content:attr(data-h)"　";font-size:12px;color:var(--ink-3);font-weight:700}
+}
+@media print{
+  body.isl-print .wrap > *:not(#isl-record), body.isl-print .bk-top, body.isl-print .bk-fab,
+  body.isl-print .isl-tools, body.isl-print nav, body.isl-print #isl-record > .isl-hint{display:none !important}
+  body.isl-print{background:#fff}
+  body.isl-print .isl-sheet{box-shadow:none;border:1px solid #999}
+  body.isl-print .isl-name input{border:0;border-bottom:1px solid #999;border-radius:0}
+}
+/* 單元頁的手繪主題對所有 button 用了 !important，這裡要用更高的權重蓋回來 */
+button.isl-choice{background:var(--paper)!important;color:var(--ink)!important;opacity:1}
+button.isl-choice:disabled{color:var(--ink-2)!important}
+button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--green)!important;color:var(--ink)!important}
+button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
+button.isl-btn:disabled{opacity:.35}
+button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
+</style>
+<script>window.ISLAND={"slug": "g9b-ch3-solids", "chap": "九下3", "title": "多出來的那個方向", "topic": "生活中的立體圖形", "plain": "這座島上多了一個方向：表面要攤平來看，體積要一層一層疊起來。", "stations": {"lab1": {"mode": "predict", "q": "一張 A4 紙，長邊當圓周捲一次、短邊當圓周捲一次，兩個圓筒誰的體積比較大？", "opts": ["長邊當圓周的", "短邊當圓周的", "一樣大"], "multi": false, "obs": "換成正方形的紙呢？兩個圓筒的側面積一樣嗎？"}, "lab2": {"mode": "predict", "q": "空間裡的兩條直線，如果不相交，就一定平行嗎？", "opts": ["一定平行", "不一定"], "multi": false, "obs": "歪斜的兩條線，夾角要怎麼量？"}, "lab3": {"mode": "predict", "q": "正方體的 6 個面攤成一片，「一排五個、旁邊再接一個」折得起來嗎？", "opts": ["折得起來", "折不起來"], "multi": false, "obs": "能折成正方體的一共有幾種？折不起來的時候，哪兩格疊在一起？"}, "lab4": {"mode": "predict", "q": "底面半徑 3、高 4 的圓錐，側面攤開的扇形，半徑是多少？", "obs": "扇形的弧長等於什麼？側面積怎麼算？"}, "lab5": {"mode": "predict", "q": "一疊書推斜之後，整疊的體積會變大、變小，還是不變？", "opts": ["變大", "變小", "不變"], "multi": false, "obs": "推斜的時候，什麼在變、什麼沒變？體積要用高還是側稜長？"}, "lab6": {"mode": "predict", "q": "四角錐的體積，是同底同高四角柱的幾分之幾？", "obs": "層數越多，外接和內接的差怎麼變？"}, "lab7": {"mode": "predict", "q": "尖端朝下的錐形杯，水深是杯深的一半，水量是滿杯的幾分之幾？", "opts": ["1/2", "1/4", "1/8"], "multi": false, "obs": "要剛好半杯水，水深要到杯深的幾倍？"}, "lab8": {"mode": "predict", "q": "半徑都是 3 的圓錐、半球、圓柱（圓錐和圓柱的高也是 3），體積比是多少？", "obs": "在離底面 t 的地方切一刀，哪兩個截面積一樣大？"}}, "gates": [{"sel": "#p0", "after": "lab1"}, {"sel": "#p1", "after": "lab2"}, {"sel": "#end", "after": "ALL"}], "quiz": [{"q": "底面半徑 3、高 4 的圓錐，側面積是多少？", "opts": ["12π", "15π", "20π", "9π"], "ans": 1, "why": ["12π 用的是高，側面積要用母線長 5。", "", "20π 用了母線 × 4。", "9π 是底面積。"], "exp": "母線長 √(3² ＋ 4²) ＝ 5，側面積 ＝ π × 半徑 × 母線 ＝ π × 3 × 5 ＝ 15π。"}, {"q": "兩個相似的立體，相似比是 1 : 2，體積比是多少？", "opts": ["1 : 2", "1 : 4", "1 : 8", "1 : 6"], "ans": 2, "why": ["1 : 2 是長度的比。", "1 : 4 是面積的比。", "", "體積比是相似比的三次方。"], "exp": "長、寬、高都放大 2 倍，體積放大 2 × 2 × 2 ＝ 8 倍，所以是 1 : 8。"}, {"q": "同底同高的圓錐，體積是圓柱的幾分之幾？", "opts": ["1/2", "1/3", "2/3", "1/4"], "ans": 1, "why": ["錐體越往上每一層越小，比一半還少。", "", "2/3 是半球和同底同高圓柱的比。", "回去第 6 站看看兩邊逼近的數。"], "exp": "錐體一層一層夾出來，逼近同底同高柱體的 1/3。"}]};</script>
+<script>
+/* ===== 探索島：預測／紀錄／判斷題／單元章 =====
+   沒登入：紀錄只存在這台裝置的瀏覽器（localStorage）。
+   登入且在名單上：island-cloud.js 透過 window.ISLAND_API 接手，另存一份到雲端。 */
+(function () {
+  const C = window.ISLAND;
+  let KEY = "isl:" + C.slug;
+  let NAMEKEY = "isl:name";
+  let nameLocked = false;
+  const mem = {};
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return mem[k] ?? null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } },
+  };
+  let S;
+  try { S = JSON.parse(store.get(KEY)) || {}; } catch (e) { S = {}; }
+  S.st = S.st || {}; S.quiz = S.quiz || {};
+  const save = () => {
+    S.updated = new Date().toISOString();
+    S.n = ids.length; S.nd = ids.filter(id => S.st[id] && S.st[id].done).length;
+    S.q = C.quiz.length; S.qd = C.quiz.filter((_, i) => S.quiz[i] && S.quiz[i].ok).length;
+    store.set(KEY, JSON.stringify(S));
+    if (API.onSave) API.onSave(S);
+  };
+  const API = window.ISLAND_API = window.ISLAND_API || {};
+
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const ids = Object.keys(C.stations);
+  const MIN_OBS = 4;
+
+  const st = id => (S.st[id] = S.st[id] || { opts: [], pred: "", locked: false, obs: "", done: false });
+  const predText = (cfg, s) => {
+    const parts = [];
+    if (cfg.opts && s.opts.length) parts.push(s.opts.map(i => cfg.opts[i]).join("、"));
+    else if (cfg.opts && cfg.multi) parts.push("一個都沒選");
+    if (s.pred.trim()) parts.push(s.pred.trim());
+    return parts.join("；");
+  };
+  const stationDone = id => !!st(id).done;
+  const quizDone = i => !!(S.quiz[i] && S.quiz[i].ok);
+  const allStations = () => ids.every(stationDone);
+  const allQuiz = () => C.quiz.every((_, i) => quizDone(i));
+
+  /* ---------- 每一站 ---------- */
+  ids.forEach(id => {
+    const cfg = C.stations[id];
+    const lab = document.getElementById(id);
+    if (!lab) return;
+    let s = st(id);
+    const head = lab.querySelector(".lab-head");
+    const body = lab.querySelector(".lab-body");
+    const foot = lab.querySelector(".lab-foot");
+    const no = lab.querySelector(".lab-no").textContent.trim();
+    if (cfg.why) lab.querySelector(".lab-why").innerHTML = esc(cfg.why);
+    const tag = el("span", "isl-done-tag", "");
+    head.appendChild(tag);
+
+    /* 預測 */
+    let pbox = null, wait = null;
+    if (cfg.mode === "predict") {
+      pbox = el("div", "isl-box");
+      head.after(pbox);
+      wait = el("div", "isl-wait", "先寫下你的預測，這一站才會打開。");
+      body.before(wait);
+    }
+    const renderPred = () => {
+      if (!pbox) return;
+      if (s.locked) {
+        pbox.innerHTML = '<div class="isl-k">我的預測</div><p class="isl-mine">' + esc(cfg.q) + "<br><b>" + esc(predText(cfg, s)) + "</b></p>";
+        return;
+      }
+      const type = cfg.multi ? "checkbox" : "radio";
+      let h = '<div class="isl-k">先預測，再動手</div><p class="isl-q">' + esc(cfg.q) + "</p>";
+      if (cfg.opts) {
+        h += '<div class="isl-opts">' + cfg.opts.map((o, i) =>
+          '<label><input type="' + type + '" name="o-' + id + '" value="' + i + '"' + (s.opts.includes(i) ? " checked" : "") + "> " + esc(o) + "</label>").join("") + "</div>";
+      }
+      h += '<textarea class="isl-ta" placeholder="' + (cfg.opts ? "為什麼這樣猜？（寫一句就好）" : "寫下你的答案和理由") + '">' + esc(s.pred) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn primary">預測寫好了，開始操作</button><span class="isl-hint">送出後就不能改，猜錯沒關係，等一下對照才有東西看。</span></div>';
+      pbox.innerHTML = h;
+      const ta = pbox.querySelector("textarea"), btn = pbox.querySelector("button");
+      const ok = () => {
+        s.opts = [...pbox.querySelectorAll("input:checked")].map(x => +x.value);
+        s.pred = ta.value;
+        const hasOpt = !cfg.opts || s.opts.length > 0 || !cfg.multi;
+        btn.disabled = !(s.pred.trim().length >= 2 && (cfg.opts ? s.opts.length > 0 || cfg.multi : true));
+        return hasOpt;
+      };
+      pbox.addEventListener("input", () => { ok(); save(); });
+      pbox.addEventListener("change", () => { ok(); save(); });
+      ok();
+      btn.addEventListener("click", () => {
+        ok();
+        if (btn.disabled) return;
+        s.locked = true; s.lockedAt = new Date().toISOString(); save();
+        renderAll(); body.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    /* 觀察紀錄 */
+    const obox = el("div", "isl-box isl-obs");
+    body.after(obox);
+    const renderObs = () => {
+      let h = '<div class="isl-k">我看到的</div><p class="isl-q">' + esc(cfg.obs) + "</p>";
+      h += '<textarea class="isl-ta" placeholder="把你看到的寫下來">' + esc(s.obs) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn' + (s.done ? "" : " primary") + '">' + (s.done ? "更新紀錄" : "記下來，看對照") + '</button><span class="isl-hint"></span></div>';
+      obox.innerHTML = h;
+      const ta = obox.querySelector("textarea"), btn = obox.querySelector("button"), hint = obox.querySelector(".isl-hint");
+      const chk = () => { btn.disabled = ta.value.trim().length < MIN_OBS; };
+      ta.addEventListener("input", () => { s.obs = ta.value; save(); chk(); hint.textContent = s.done ? "已自動儲存" : ""; });
+      chk();
+      btn.addEventListener("click", () => {
+        s.obs = ta.value; if (s.obs.trim().length < MIN_OBS) return;
+        const first = !s.done;
+        s.done = true; s.doneAt = s.doneAt || new Date().toISOString(); save();
+        renderAll();
+        if (first && foot) foot.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    lab._islRender = () => {
+      s = st(id);
+      const open = cfg.mode !== "predict" || s.locked;
+      renderPred();
+      if (wait) wait.hidden = open;
+      body.hidden = !open;
+      obox.hidden = !open;
+      if (open) renderObs();
+      if (foot) { foot.hidden = !s.done; foot.classList.add("isl-reveal"); }
+      tag.textContent = s.done ? "✓ 已記錄" : "";
+    };
+  });
+
+  /* ---------- 會先講出答案的段落 ---------- */
+  const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
+    const sec = document.querySelector(g.sel);
+    if (!sec) return null;
+    const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
+    sec.appendChild(note);
+    return { g, kids, note };
+  }).filter(Boolean);
+
+  /* ---------- 進度列 ---------- */
+  const prog = el("div", "isl-prog");
+  document.querySelector("header").after(prog);
+
+  /* ---------- 判斷題 ---------- */
+  const quiz = el("section", "", "");
+  quiz.id = "isl-quiz";
+  const endSec = document.getElementById("end");
+  (endSec || document.querySelector(".wrap").lastElementChild).before(quiz);
+  const renderQuiz = () => {
+    let h = '<div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>過關前的 ' + C.quiz.length + ' 題</div>' +
+      "<h2>選一個，答錯可以再選</h2>";
+    quiz.innerHTML = h;
+    C.quiz.forEach((q, i) => {
+      const r = S.quiz[i] = S.quiz[i] || { tried: [], ok: false };
+      const card = el("div", "isl-qcard");
+      card.innerHTML = '<div class="isl-qn">第 ' + (i + 1) + " 題</div><p class=\"isl-qt\">" + esc(q.q) + "</p>";
+      q.opts.forEach((o, j) => {
+        const b = el("button", "isl-choice", esc(o));
+        if (r.tried.includes(j)) b.classList.add(j === q.ans ? "yes" : "no");
+        if (r.ok || r.tried.includes(j)) b.disabled = true;
+        b.addEventListener("click", () => {
+          r.tried.push(j);
+          if (j === q.ans) { r.ok = true; r.okAt = new Date().toISOString(); }
+          save(); renderAll();
+        });
+        card.appendChild(b);
+      });
+      const last = r.tried[r.tried.length - 1];
+      if (r.ok) card.appendChild(el("div", "isl-fb good", "<b>對。</b>" + esc(q.exp)));
+      else if (last != null) card.appendChild(el("div", "isl-fb bad", "<b>再想想。</b>" + esc(q.why[last])));
+      quiz.appendChild(card);
+    });
+  };
+
+  /* ---------- 紀錄與章 ---------- */
+  const rec = el("section", "", "");
+  rec.id = "isl-record";
+  document.querySelector(".wrap").appendChild(rec);
+  const stamp = (on, date) => {
+    const d = date ? date.slice(0, 10).replace(/-/g, ".") : "";
+    return '<svg class="isl-stamp' + (on ? "" : " off") + '" viewBox="0 0 150 150" role="img" aria-label="單元章">' +
+      '<g transform="rotate(-8 75 75)" style="fill:none;stroke:var(--crimson)">' +
+      '<circle cx="75" cy="75" r="66" stroke-width="4"/><circle cx="75" cy="75" r="57" stroke-width="1.5"/>' +
+      '<text x="75" y="52" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 13px var(--sans);letter-spacing:2px">' + esc(C.chap) + "　探索完成</text>" +
+      '<text x="75" y="84" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 21px var(--serif)">' + esc(C.title) + "</text>" +
+      '<line x1="34" y1="96" x2="116" y2="96" stroke-width="1.2"/>' +
+      '<text x="75" y="114" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:600 12px var(--sans)">' + (d || "　") + "</text></g></svg>";
+  };
+  let clearArmed = false;
+  const renderRecord = () => {
+    const done = allStations() && allQuiz();
+    const firstOK = C.quiz.filter((q, i) => S.quiz[i] && S.quiz[i].tried[0] === q.ans).length;
+    let h = '<div class="pillar-tag" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>我的探索紀錄</div>';
+    h += '<div class="isl-sheet"><div class="isl-sheet-head"><div><h3>' + esc(C.chap) + "　" + esc(C.title) + '</h3><div class="isl-sub">' + esc(C.topic) + '</div></div>' +
+      '<label class="isl-name">姓名 <input type="text" maxlength="20" value="' + esc(store.get(NAMEKEY) || "") + '"' + (nameLocked ? " readonly" : "") + '></label></div>';
+    h += '<table class="isl-tbl"><thead><tr><th>站</th><th>我的預測</th><th>我看到的</th></tr></thead><tbody>';
+    ids.forEach(id => {
+      const cfg = C.stations[id], s = st(id);
+      const lab = document.getElementById(id);
+      const name = lab ? lab.querySelector(".lab-no").textContent.trim() + "　" + lab.querySelector(".lab-title").textContent.trim() : id;
+      const p = cfg.mode === "predict" ? (s.locked ? esc(predText(cfg, s)) : '<span class="empty">還沒寫</span>') : '<span class="empty">（這站直接操作）</span>';
+      const o = s.done ? esc(s.obs.trim()) : '<span class="empty">還沒寫</span>';
+      h += '<tr><td class="n">' + esc(name) + '</td><td data-h="預測">' + p + '</td><td data-h="看到">' + o + "</td></tr>";
+    });
+    h += "</tbody></table>";
+    h += '<div class="isl-stamp-wrap">' + stamp(done, S.stampAt) + "<div>" +
+      (done ? "<b>這一章探索完成。</b><br>判斷題第一次就答對 " + firstOK + " ／ " + C.quiz.length + " 題。"
+            : "全部 " + ids.length + " 站都記錄完、" + C.quiz.length + " 題判斷題都答對，就會蓋上這個章。<br>目前：" +
+              ids.filter(stationDone).length + " ／ " + ids.length + " 站，" +
+              C.quiz.filter((_, i) => quizDone(i)).length + " ／ " + C.quiz.length + " 題。") +
+      "</div></div></div>";
+    h += '<div class="isl-tools"><button class="isl-btn primary" data-a="print">列印這份紀錄</button>' +
+      '<a class="isl-btn ghost" style="text-decoration:none" href="passport.html">看我的探索紀錄本</a>' +
+      '<button class="isl-clear" data-a="clear">' + (clearArmed ? "確定要清掉？再按一次" : "清除這一章的紀錄") + "</button></div>";
+    h += '<p class="isl-hint" style="margin-top:10px">沒登入時，紀錄只存在這台電腦的瀏覽器裡；登入名單上的帳號，紀錄會存到雲端。在共用電腦上用完記得登出。</p>';
+    rec.innerHTML = h;
+    rec.querySelector(".isl-name input").addEventListener("input", e => store.set(NAMEKEY, e.target.value));
+    rec.querySelector('[data-a="print"]').addEventListener("click", () => {
+      document.body.classList.add("isl-print"); window.print();
+      setTimeout(() => document.body.classList.remove("isl-print"), 500);
+    });
+    rec.querySelector('[data-a="clear"]').addEventListener("click", () => {
+      if (!clearArmed) { clearArmed = true; renderRecord(); setTimeout(() => { clearArmed = false; renderRecord(); }, 4000); return; }
+      if (API.onClear) { API.onClear(); return; }
+      store.del(KEY); location.reload();
+    });
+  };
+
+  function renderAll() {
+    if (allStations() && allQuiz() && !S.stampAt) { S.stampAt = new Date().toISOString(); save(); }
+    ids.forEach(id => { const lab = document.getElementById(id); lab && lab._islRender && lab._islRender(); });
+    gates.forEach(({ g, kids, note }) => {
+      const open = g.after === "ALL" ? allStations() : stationDone(g.after);
+      kids.forEach(k => { if (k !== note) k.hidden = !open; });
+      note.hidden = open;
+    });
+    const nq = C.quiz.filter((_, i) => quizDone(i)).length;
+    prog.innerHTML = '<span class="t">探索紀錄</span><span class="isl-dots">' + ids.map(id => {
+      const s = st(id), cfg = C.stations[id];
+      const n = document.querySelector("#" + id + " .lab-no").textContent.trim();
+      const cls = s.done ? "ok" : (cfg.mode === "predict" && s.locked) ? "half" : "";
+      return '<a class="' + cls + '" href="#' + id + '" title="第 ' + n + ' 站">' + n + "</a>";
+    }).join("") + '</span><a class="q' + (nq === C.quiz.length ? " ok" : "") + '" href="#isl-quiz" style="text-decoration:none">判斷題 ' + nq + " ／ " + C.quiz.length + "</a>" +
+      '<a class="q' + (S.stampAt ? " ok" : "") + '" href="#isl-record" style="text-decoration:none">' + (S.stampAt ? "✓ 已蓋章" : "我的紀錄 →") + "</a>";
+    renderQuiz();
+    renderRecord();
+  }
+  /* 給雲端模組用：換一個人的紀錄、換姓名、整頁重畫 */
+  API.config = C;
+  API.store = store;
+  API.state = () => S;
+  API.adopt = (newKey, newS, opts) => {
+    KEY = newKey;
+    S = newS || {};
+    S.st = S.st || {}; S.quiz = S.quiz || {};
+    if (opts && opts.nameKey) NAMEKEY = opts.nameKey;
+    if (opts && "name" in opts) { store.set(NAMEKEY, opts.name || ""); }
+    nameLocked = !!(opts && opts.nameLocked);
+    clearArmed = false;
+    store.set(KEY, JSON.stringify(S));
+    renderAll();
+  };
+  API.progressBox = prog;
+  API.recordBox = rec;
+  renderAll();
+  if (API.onReady) API.onReady();
+})();
+</script>
+<script src="firebase-config.js"></script>
+<script type="module" src="island-cloud.js"></script>
+</body>
+</html>

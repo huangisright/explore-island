@@ -4,7 +4,7 @@
 
 - `index.html`：入口地圖
 - `passport.html`：探索紀錄本（同一張地圖，標出走完的島）
-- `g8b-ch2-functions.html`：八下2《它不會改口》
+- `g*.html`：30 章單元頁（七上到九下）
 - `teacher.html`：老師頁面（學生名單、全班紀錄）
 
 ## 更新

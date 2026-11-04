@@ -81,23 +81,16 @@ function draw(cloud, opts) {
       g2 += '<text class="lab" text-anchor="middle" x="' + x + '" y="' + (y + rad * .82 + 20) + '">' + esc(u.ch.replace(" ", "")) + "</text>";
       g2 += wrapText(x, y + rad * .82 + 37, u.title, 7, "tiny", "middle", 15);
       if (u.open) {
-        const prog = S && S.n ? (S.stampAt ? "" : "走到 " + S.nd + "／" + S.n + " 站") : "還沒來過";
+        const prog = S && S.n && !S.stampAt ? "走到 " + S.nd + "／" + S.n + " 站" : "";
         if (prog) g2 += '<text class="tiny" text-anchor="middle" x="' + x + '" y="' + (y - rad * .82 - 8) + '" style="fill:#24489a">' + prog + "</text>";
-        s += '<a href="' + u.slug + '.html" aria-label="' + esc(u.ch + " " + u.title) + '">' + g2 + "</a>";
+        s += '<a href="' + u.slug + '.html" aria-label="' + esc(u.ch + " " + u.title) + '"><title>' + esc(u.ch + "　" + u.title + (PLAIN[u.slug] ? "：" + PLAIN[u.slug] : "")) + "</title>" + g2 + "</a>";
       } else s += '<g class="grey">' + g2 + "</g>";
     });
   });
   // 標註（Thing Explainer 式）
   const callout = (x1, y1, x2, y2, txt, n, anchor = "start") => line(x1, y1, x2, y2, 1.2) + wrapText(x2 + (anchor === "start" ? 6 : anchor === "end" ? -6 : 0), y2 + 5, txt, n, "note", anchor, 18);
-  // 開放中的島的說明
-  const openU = UNITS.filter(u => u.open);
-  openU.forEach(u => {
-    const plain = PLAIN[u.slug]; if (!plain) return;
-    const [x, y, rad] = POS[u.slug];
-    s += callout(x + 10, y + rad * .82 + 44, x + 40, y + 118, plain, 13);
-  });
   // 灰色的島
-  s += callout(205 + 90, 560 + 120, 330, 760, "線是虛的、顏色是灰的島：橋還沒蓋好，之後才能上去。", 14);
+  if (UNITS.some(u => !u.open)) s += callout(205 + 90, 560 + 120, 330, 760, "線是虛的、顏色是灰的島：橋還沒蓋好，之後才能上去。", 14);
   // 紀錄本（箱子）
   const bx = 70, by = 830;
   if (!opts.book) s += '<a href="passport.html" aria-label="探索紀錄本"><path d="' + blob(bx + 20, by - 8, 16, 8, .08) + '" fill="#e6d3a3" stroke="#1d1d1d" stroke-width="2"/>' +
