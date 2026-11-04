@@ -32,7 +32,11 @@ h1{font-size:clamp(36px,6vw,54px);margin:0;letter-spacing:.1em}
 .tally{color:var(--ink-2);font-size:16px}
 .tally b{color:var(--red);font-size:24px}
 h2{font-size:24px;margin:34px 0 4px;display:flex;align-items:baseline;gap:12px}
-h2 small{font-size:14px;color:var(--ink-3);font-weight:400}
+h2 small,h3 small{font-size:14px;color:var(--ink-3);font-weight:400}
+h3{font-size:20px;margin:22px 0 2px;display:flex;align-items:baseline;gap:10px}
+.now{margin-top:8px;padding:6px 20px 22px;border:2.5px solid var(--ink);border-radius:var(--wob2);background:#f3f9ee}
+.now h2{margin-top:14px}
+h2.all{margin-top:44px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:10px}
 .u{position:relative;display:flex;flex-direction:column;gap:4px;min-height:150px;padding:14px 16px 16px;
   background:var(--card);border:2.2px solid var(--ink);border-radius:var(--wob);text-decoration:none;color:inherit;overflow:hidden}
@@ -90,27 +94,31 @@ function render(cloud, cname) {
   let stamps = 0, open = 0;
   let h = "";
   if (cloud) { nm.value = cname || ""; nm.readOnly = true; } else { nm.value = get("isl:name") || ""; nm.readOnly = false; }
+  const card = u => {
+    if (!u.open) return '<div class="u off"><span class="ch">' + esc(u.ch) + '</span><span class="ti">' + esc(u.title) + '</span><span class="st">橋還沒蓋好</span></div>';
+    let S = null;
+    if (cloud) S = cloud[u.slug] || null;
+    else { try { S = JSON.parse(get("isl:" + u.slug)); } catch (e) {} }
+    let st, bar = 0, mark = "";
+    if (S && S.stampAt) { st = "走完了，蓋了章"; bar = 1; mark = stamp(S.stampAt.slice(0, 10).replace(/-/g, ".")); }
+    else if (S && S.n) { st = "走到第 " + S.nd + "／" + S.n + " 站，最後的題目答對 " + S.qd + "／" + S.q; bar = (S.nd + S.qd) / (S.n + S.q); }
+    else st = "還沒來過";
+    return '<a class="u" href="' + esc(u.slug) + '.html">' + mark + '<span class="ch">' + esc(u.ch) + '</span><span class="ti">' + esc(u.title) +
+      '</span><span class="st">' + st + '</span><span class="bar"><i style="width:' + Math.round(bar * 100) + '%"></i></span></a>';
+  };
+  const openU = UNITS.filter(u => u.open);
+  open = openU.length;
+  openU.forEach(u => {
+    let S = null;
+    if (cloud) S = cloud[u.slug] || null; else { try { S = JSON.parse(get("isl:" + u.slug)); } catch (e) {} }
+    if (S && S.stampAt) stamps++;
+  });
+  h += '<section class="now"><h2>現在能去的島<small>點一座島就上岸</small></h2><div class="grid">' + openU.map(card).join("") + "</div></section>";
+  h += '<h2 class="all">全部的島<small>灰色虛線的島，橋還沒蓋好</small></h2>';
   GRADES.forEach(g => {
     const us = UNITS.filter(u => u.grade === g);
     if (!us.length) return;
-    h += "<h2>" + esc(SHORT[g] || g) + "群島<small>" + us.length + " 座島</small></h2><div class=\"grid\">";
-    us.forEach(u => {
-      if (!u.open) {
-        h += '<div class="u off"><span class="ch">' + esc(u.ch) + '</span><span class="ti">' + esc(u.title) + '</span><span class="st">橋還沒蓋好</span></div>';
-        return;
-      }
-      open++;
-      let S = null;
-      if (cloud) S = cloud[u.slug] || null;
-      else { try { S = JSON.parse(get("isl:" + u.slug)); } catch (e) {} }
-      let st, bar = 0, mark = "";
-      if (S && S.stampAt) { stamps++; st = "走完了，蓋了章"; bar = 1; mark = stamp(S.stampAt.slice(0, 10).replace(/-/g, ".")); }
-      else if (S && S.n) { st = "走到第 " + S.nd + "／" + S.n + " 站，最後的題目答對 " + S.qd + "／" + S.q; bar = (S.nd + S.qd) / (S.n + S.q); }
-      else st = "還沒來過";
-      h += '<a class="u" href="' + esc(u.slug) + '.html">' + mark + '<span class="ch">' + esc(u.ch) + '</span><span class="ti">' + esc(u.title) +
-        '</span><span class="st">' + st + '</span><span class="bar"><i style="width:' + Math.round(bar * 100) + '%"></i></span></a>';
-    });
-    h += "</div>";
+    h += '<h3>' + esc(SHORT[g] || g) + "群島<small>" + us.length + " 座島</small></h3><div class=\"grid\">" + us.map(card).join("") + "</div>";
   });
   document.getElementById("main").innerHTML = h;
   document.getElementById("tally").innerHTML = "已經蓋了 <b>" + stamps + "</b> 個章（能去的島有 " + open + " 座）";
