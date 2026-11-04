@@ -3,102 +3,117 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>探索紀錄本｜數理資優班　互動探索站</title>
+<title>探索紀錄本｜探索島</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  color-scheme:light dark;
-  --paper:#F5F2E8; --grid:rgba(46,90,136,.075); --card:#FFFDF8; --edge:#DFD6C4; --edge-soft:#EBE3D4;
-  --ink:#23282D; --ink-2:#5C554A; --ink-3:#847B6C; --indigo:#2E5A88; --indigo-soft:#E7EEF6;
-  --orange:#C1652F; --green:#4A7C59; --green-soft:#E7F0E9; --crimson:#B23A3A;
-  --shadow:0 1px 2px rgba(72,60,40,.06), 0 6px 18px rgba(72,60,40,.07);
-  --serif:"Noto Serif TC",'Songti TC','Times New Roman',serif;
-  --sans:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color-scheme:light;
+  --paper:#fdfcf8; --card:#fffefa; --ink:#1d1d1d; --ink-2:#555; --ink-3:#8a8a8a;
+  --edge:#b9b5aa; --edge-soft:#dedad0; --grass:#cfe3bf; --sand:#efe8d6;
+  --red:#c8321e; --blue:#24489a; --green:#2f7a3a; --orange:#d4472b;
+  --indigo:#24489a; --hl:#fff2a8;
+  --hand:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif;
+  --sans:var(--hand);
+  --wob:255px 14px 225px 14px/14px 225px 14px 255px;
+  --wob2:14px 255px 14px 225px/225px 14px 255px 14px;
 }
-@media (prefers-color-scheme:dark){:root{
-  --paper:#161A1E; --grid:rgba(127,169,214,.07); --card:#1F252B; --edge:#333C45; --edge-soft:#2A323A;
-  --ink:#E7E2D6; --ink-2:#B3AC9E; --ink-3:#8B857A; --indigo:#82ADDC; --indigo-soft:#1E2C3B;
-  --orange:#E28B52; --green:#82B893; --green-soft:#1D2C22; --crimson:#D66B6B;
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
-}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.7;
-  background-image:repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 26px),repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 26px)}
-.wrap{max-width:980px;margin:0 auto;padding:0 22px 80px}
-header{padding:48px 0 22px}
-.eyebrow{font-size:12.5px;letter-spacing:.22em;color:var(--orange);font-weight:700;margin-bottom:12px}
-h1{font-family:var(--serif);font-size:clamp(34px,6vw,52px);line-height:1.15;margin:0 0 14px}
-.who{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;font-size:15px;color:var(--ink-2)}
-.who input{font:inherit;font-size:16px;padding:6px 12px;width:11em;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink)}
-.tally b{color:var(--crimson);font-size:20px}
-h2{font-family:var(--serif);font-size:22px;margin:34px 0 12px;display:flex;align-items:baseline;gap:12px}
-h2 small{font-family:var(--sans);font-size:13px;color:var(--ink-3);font-weight:400}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.u{position:relative;display:flex;flex-direction:column;gap:6px;min-height:150px;padding:14px 16px;
-  background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);
-  text-decoration:none;color:inherit;overflow:hidden}
-a.u:hover{border-color:var(--indigo)}
-.u .ch{font-size:12.5px;font-weight:700;letter-spacing:.08em;color:var(--indigo)}
-.u .ti{font-family:var(--serif);font-size:18px;font-weight:700;line-height:1.35;max-width:9em}
-.u .st{margin-top:auto;font-size:13px;color:var(--ink-3)}
-.u .bar{height:5px;border-radius:3px;background:var(--edge-soft);overflow:hidden}
-.u .bar i{display:block;height:100%;background:var(--indigo)}
-.u.off{box-shadow:none;background:transparent;border-style:dashed}
-.u.off .ch,.u.off .ti{color:var(--ink-3)}
-.u svg{position:absolute;right:-8px;top:8px;width:96px;height:96px}
-.note{margin-top:34px;font-size:13.5px;color:var(--ink-3);max-width:64ch}
-@media print{ .note{display:none} .who input{border:0;border-bottom:1px solid #999;border-radius:0} body{background:#fff} }
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--hand);line-height:1.6}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px 70px}
+.top{padding:18px 0 0;font-size:15px}
+.top a{color:var(--blue);text-decoration:none}
+header{padding:16px 0 10px;text-align:center}
+h1{font-size:clamp(36px,6vw,54px);margin:0;letter-spacing:.1em}
+.say{margin:2px 0 0;color:var(--ink-2);font-size:17px}
+.who{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:6px 22px;margin-top:14px;font-size:18px}
+.who input{font:inherit;font-size:20px;width:7.5em;text-align:center;padding:0 4px 2px;border:0;border-bottom:2px solid var(--ink);background:transparent;color:var(--ink)}
+.who input:focus{outline:none;background:var(--hl)}
+.tally{color:var(--ink-2);font-size:16px}
+.tally b{color:var(--red);font-size:24px}
+h2{font-size:24px;margin:34px 0 4px;display:flex;align-items:baseline;gap:12px}
+h2 small{font-size:14px;color:var(--ink-3);font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:10px}
+.u{position:relative;display:flex;flex-direction:column;gap:4px;min-height:150px;padding:14px 16px 16px;
+  background:var(--card);border:2.2px solid var(--ink);border-radius:var(--wob);text-decoration:none;color:inherit;overflow:hidden}
+.u:nth-child(even){border-radius:var(--wob2)}
+a.u:hover{background:#f3f9ee}
+a.u:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.u .ch{font-size:14px;font-weight:700;color:var(--ink-2)}
+.u .ti{font-size:20px;font-weight:700;line-height:1.3;max-width:8.5em}
+.u .st{margin-top:auto;font-size:14.5px;color:var(--ink-2)}
+.u .bar{height:12px;border:1.8px solid var(--ink);border-radius:var(--wob2);overflow:hidden;background:var(--paper)}
+.u .bar i{display:block;height:100%;background:var(--grass);border-right:1.8px solid var(--ink)}
+.u .bar i[style="width:0%"]{border-right:0}
+.u.off{background:transparent;border:1.8px dashed var(--edge);min-height:110px}
+.u.off .ch,.u.off .ti,.u.off .st{color:var(--ink-3)}
+.u svg{position:absolute;right:-6px;top:6px;width:92px;height:92px}
+.note{margin:38px auto 0;max-width:40em;text-align:center;font-size:15px;color:var(--ink-3)}
+.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 22px;margin-top:10px;font-size:14.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:22px;height:14px;border:1.8px solid var(--ink);border-radius:var(--wob2)}
+.isl-auth{font-family:var(--hand)!important;border:2px solid var(--ink)!important;border-radius:var(--wob)!important}
+.isl-auth button{border:2px solid var(--ink)!important;border-radius:var(--wob2)!important;background:var(--card)!important;color:var(--ink)!important}
+@media print{ .note,.top,.isl-auth{display:none!important} .who input{border-bottom:1px solid #999} }
 </style>
 </head>
 <body>
 <div class="wrap">
+<div class="top"><a href="index.html">← 回到地圖</a></div>
 <header>
-  <div class="eyebrow">數理資優班　互動探索站</div>
   <h1>探索紀錄本</h1>
-  <div class="who"><label>姓名 <input id="nm" type="text" maxlength="20"></label><span class="tally" id="tally"></span></div>
+  <p class="say">記你走過哪些島的本子。走完一座島，這裡就會蓋一個章。</p>
+  <div class="who"><label>這本是 <input id="nm" type="text" maxlength="20" placeholder="你的名字"> 的</label><span class="tally" id="tally"></span></div>
+  <div class="legend">
+    <span><i style="background:var(--grass)"></i>走過的部分</span>
+    <span><i style="border-style:dashed;border-color:var(--edge)"></i>橋還沒蓋好</span>
+  </div>
 </header>
 <main id="main"></main>
-<p class="note">沒登入時，紀錄只存在這台電腦的瀏覽器裡；登入名單上的帳號，紀錄會存到雲端。在共用電腦上用完記得登出。</p>
+<p class="note">沒登入的時候，這本只記在這台電腦裡；用名單上的帳號登入，就會記在雲端，換一台電腦也看得到。在大家一起用的電腦上，用完記得登出。</p>
 </div>
 <script>
 const UNITS = [{"slug": "g7a-ch1-number-line", "grade": "七年級上", "kind": "正課", "ch": "七上 1", "title": "一條數線，兩把尺", "open": false}, {"slug": "g7a-ch2-skeleton", "grade": "七年級上", "kind": "正課", "ch": "七上 2", "title": "拆開來看", "open": false}, {"slug": "g7a-ch2-modular", "grade": "七年級上", "kind": "補充卷", "ch": "七上 2", "title": "把數線捲起來", "open": false}, {"slug": "g7a-ch2-fraction-unit", "grade": "七年級上", "kind": "正課", "ch": "七上 2", "title": "分母是單位", "open": false}, {"slug": "g7a-ch3-naming", "grade": "七年級上", "kind": "正課", "ch": "七上 3", "title": "先給它一個名字", "open": false}, {"slug": "g7b-ch1-simultaneous", "grade": "七年級下", "kind": "正課", "ch": "七下 1", "title": "一條不夠", "open": false}, {"slug": "g7b-ch2-coordinates", "grade": "七年級下", "kind": "正課", "ch": "七下 2", "title": "一個數不夠", "open": false}, {"slug": "g7b-ch3-ratio", "grade": "七年級下", "kind": "正課", "ch": "七下 3", "title": "換一個基準看", "open": false}, {"slug": "g7b-ch4-inequality", "grade": "七年級下", "kind": "正課", "ch": "七下 4", "title": "答案是一整段", "open": false}, {"slug": "g7b-ch5-statistics", "grade": "七年級下", "kind": "正課", "ch": "七下 5", "title": "誰能代表大家", "open": false}, {"slug": "g7b-ch6-geometry", "grade": "七年級下", "kind": "正課", "ch": "七下 6", "title": "正對著看", "open": false}, {"slug": "g8a-ch1-polynomial", "grade": "八年級上", "kind": "正課", "ch": "八上 1", "title": "把十換成 x", "open": false}, {"slug": "g8a-s1-1-binomial", "grade": "八年級上", "kind": "補充卷", "ch": "八上 1-1", "title": "不要乘，用數的", "open": false}, {"slug": "g8a-ch2-sqrt-pythagoras", "grade": "八年級上", "kind": "正課", "ch": "八上 2", "title": "把面積翻回邊長", "open": false}, {"slug": "g8a-ch3-factoring", "grade": "八年級上", "kind": "正課", "ch": "八上 3", "title": "拆成乘法才看得見", "open": false}, {"slug": "g8a-ch3-genfunc-1", "grade": "八年級上", "kind": "補充卷", "ch": "八上 3", "title": "係數才是主角", "open": false}, {"slug": "g8a-ch3-genfunc-2", "grade": "八年級上", "kind": "補充卷", "ch": "八上 3", "title": "一直加下去", "open": false}, {"slug": "g8a-ch4-quadratic", "grade": "八年級上", "kind": "正課", "ch": "八上 4", "title": "變回你會解的樣子", "open": false}, {"slug": "g8a-ch5-statistics", "grade": "八年級上", "kind": "正課", "ch": "八上 5", "title": "中間的那個人在哪裡", "open": false}, {"slug": "g8b-ch1-sequences", "grade": "八年級下", "kind": "正課", "ch": "八下 1", "title": "規則才是數列", "open": false}, {"slug": "g8b-ch1-recursion", "grade": "八年級下", "kind": "補充卷", "ch": "八下 1", "title": "裡面有一個小的自己", "open": false}, {"slug": "g8b-ch2-functions", "grade": "八年級下", "kind": "正課", "ch": "八下 2", "title": "它不會改口", "open": true}, {"slug": "g8b-ch3-triangle", "grade": "八年級下", "kind": "正課", "ch": "八下 3", "title": "不能再動了", "open": false}, {"slug": "g8b-ch4-parallel", "grade": "八年級下", "kind": "正課", "ch": "八下 4", "title": "那條線本來不在圖上", "open": false}, {"slug": "g9a-ch1-similar", "grade": "九年級上", "kind": "正課", "ch": "九上 1", "title": "兩個角就夠了", "open": false}, {"slug": "g9a-ch2-circle", "grade": "九年級上", "kind": "正課", "ch": "九上 2", "title": "怎麼看都一樣", "open": false}, {"slug": "g9a-ch3-proof", "grade": "九年級上", "kind": "正課", "ch": "九上 3", "title": "不是剛好", "open": false}, {"slug": "g9b-ch1-quadratic", "grade": "九年級下", "kind": "正課", "ch": "九下 1", "title": "同一條，搬了家", "open": false}, {"slug": "g9b-ch2-statprob", "grade": "九年級下", "kind": "正課", "ch": "九下 2", "title": "算出來之前，先問", "open": false}, {"slug": "g9b-ch3-solids", "grade": "九年級下", "kind": "正課", "ch": "九下 3", "title": "多出來的那個方向", "open": false}];
 const GRADES = ["七年級上", "七年級下", "八年級上", "八年級下", "九年級上", "九年級下"];
+const SHORT = { "七年級上": "七上", "七年級下": "七下", "八年級上": "八上", "八年級下": "八下", "九年級上": "九上", "九年級下": "九下" };
 const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const set = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const nm = document.getElementById("nm");
 nm.addEventListener("input", () => { if (!nm.readOnly) set("isl:name", nm.value); });
-const stamp = (u, d) => '<svg viewBox="0 0 150 150" aria-label="已蓋章"><g transform="rotate(-12 75 75)" style="fill:none;stroke:var(--crimson);opacity:.85">' +
-  '<circle cx="75" cy="75" r="62" stroke-width="5"/><circle cx="75" cy="75" r="52" stroke-width="2"/>' +
-  '<text x="75" y="70" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 20px var(--sans)">完成</text>' +
-  '<text x="75" y="96" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:600 14px var(--sans)">' + esc(d) + '</text></g></svg>';
+const stamp = d => '<svg viewBox="0 0 150 150" aria-label="已蓋章"><g transform="rotate(-14 75 75)" style="fill:none;stroke:#c8321e;opacity:.9">' +
+  '<path d="M75,12 C112,10 140,40 138,76 C137,112 108,139 74,138 C38,137 11,110 12,74 C13,40 40,13 75,12 Z" stroke-width="5"/>' +
+  '<circle cx="75" cy="75" r="50" stroke-width="1.8"/>' +
+  '<text x="75" y="72" text-anchor="middle" style="fill:#c8321e;stroke:none;font:700 24px var(--hand)">走完了</text>' +
+  '<text x="75" y="98" text-anchor="middle" style="fill:#c8321e;stroke:none;font:700 15px var(--hand)">' + esc(d) + '</text></g></svg>';
 function render(cloud, cname) {
-let stamps = 0, open = 0;
-let h = "";
-if (cloud) { nm.value = cname || ""; nm.readOnly = true; } else { nm.value = get("isl:name") || ""; nm.readOnly = false; }
-GRADES.forEach(g => {
-  const us = UNITS.filter(u => u.grade === g);
-  if (!us.length) return;
-  h += "<h2>" + esc(g) + "<small>" + us.length + " 章</small></h2><div class=\"grid\">";
-  us.forEach(u => {
-    if (!u.open) {
-      h += '<div class="u off"><span class="ch">' + esc(u.ch) + '</span><span class="ti">' + esc(u.title) + '</span><span class="st">還沒開放</span></div>';
-      return;
-    }
-    open++;
-    let S = null;
-    if (cloud) S = cloud[u.slug] || null;
-    else { try { S = JSON.parse(get("isl:" + u.slug)); } catch (e) {} }
-    let st, bar = 0, mark = "";
-    if (S && S.stampAt) { stamps++; st = "探索完成"; bar = 1; mark = stamp(u, S.stampAt.slice(0, 10).replace(/-/g, ".")); }
-    else if (S && S.n) { st = S.nd + " ／ " + S.n + " 站，判斷題 " + S.qd + " ／ " + S.q; bar = (S.nd + S.qd) / (S.n + S.q); }
-    else st = "還沒開始";
-    h += '<a class="u" href="' + esc(u.slug) + '.html">' + mark + '<span class="ch">' + esc(u.ch) + "　" + esc(u.kind) + '</span><span class="ti">' + esc(u.title) +
-      '</span><span class="st">' + st + '</span><span class="bar"><i style="width:' + Math.round(bar * 100) + '%"></i></span></a>';
+  let stamps = 0, open = 0;
+  let h = "";
+  if (cloud) { nm.value = cname || ""; nm.readOnly = true; } else { nm.value = get("isl:name") || ""; nm.readOnly = false; }
+  GRADES.forEach(g => {
+    const us = UNITS.filter(u => u.grade === g);
+    if (!us.length) return;
+    h += "<h2>" + esc(SHORT[g] || g) + "群島<small>" + us.length + " 座島</small></h2><div class=\"grid\">";
+    us.forEach(u => {
+      if (!u.open) {
+        h += '<div class="u off"><span class="ch">' + esc(u.ch) + '</span><span class="ti">' + esc(u.title) + '</span><span class="st">橋還沒蓋好</span></div>';
+        return;
+      }
+      open++;
+      let S = null;
+      if (cloud) S = cloud[u.slug] || null;
+      else { try { S = JSON.parse(get("isl:" + u.slug)); } catch (e) {} }
+      let st, bar = 0, mark = "";
+      if (S && S.stampAt) { stamps++; st = "走完了，蓋了章"; bar = 1; mark = stamp(S.stampAt.slice(0, 10).replace(/-/g, ".")); }
+      else if (S && S.n) { st = "走到第 " + S.nd + "／" + S.n + " 站，最後的題目答對 " + S.qd + "／" + S.q; bar = (S.nd + S.qd) / (S.n + S.q); }
+      else st = "還沒來過";
+      h += '<a class="u" href="' + esc(u.slug) + '.html">' + mark + '<span class="ch">' + esc(u.ch) + '</span><span class="ti">' + esc(u.title) +
+        '</span><span class="st">' + st + '</span><span class="bar"><i style="width:' + Math.round(bar * 100) + '%"></i></span></a>';
+    });
+    h += "</div>";
   });
-  h += "</div>";
-});
-document.getElementById("main").innerHTML = h;
-document.getElementById("tally").innerHTML = "已蓋 <b>" + stamps + "</b> 個章　·　開放中 " + open + " 章" + (cloud ? "　·　雲端紀錄" : "　·　這台電腦的紀錄");
+  document.getElementById("main").innerHTML = h;
+  document.getElementById("tally").innerHTML = "已經蓋了 <b>" + stamps + "</b> 個章（能去的島有 " + open + " 座）";
 }
 window.ISLAND_PASSPORT = { show: render };
 render(null);
