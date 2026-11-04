@@ -26,6 +26,7 @@ def build_unit(src_site, out, cfg):
                '<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>', s, count=1, flags=re.S)
     s = re.sub(r'<a class="bk-fab" href="[^"]*"[^>]*>.*?</a>',
                '<a class="bk-fab" href="passport.html" aria-label="回到探索紀錄本">← 紀錄本</a>', s, count=1, flags=re.S)
+    s = s.replace("數理資優班學習單", "學習單").replace("數理資優班", "")
     for old, new in cfg.get("patches", []):
         assert s.count(old) == 1, ("patch not found once", old[:60])
         s = s.replace(old, new)
@@ -60,8 +61,10 @@ def build_passport(src_site, out):
     for r in rows:
         r["open"] = r["slug"] in built
     tpl = read(os.path.join(HERE, "passport.tpl.html"))
+    plain = {c["slug"]: c.get("plain", "") for c in BUILT}
     page = tpl.replace("/*UNITS*/[]", json.dumps(rows, ensure_ascii=False)) \
-              .replace("/*GRADES*/[]", json.dumps(GRADES, ensure_ascii=False))
+              .replace("/*GRADES*/[]", json.dumps(GRADES, ensure_ascii=False)) \
+              .replace("/*PLAIN*/{}", json.dumps(plain, ensure_ascii=False))
     with open(os.path.join(out, "passport.html"), "w", encoding="utf8") as f:
         f.write(page)
     return len(rows), len(built)
@@ -93,7 +96,7 @@ if __name__ == "__main__":
     os.makedirs(out, exist_ok=True)
     for c in BUILT:
         build_unit(src, out, c)
-    for f in ["island-cloud.js", "firebase-config.js"]:
+    for f in ["island-cloud.js", "firebase-config.js", "island-map.js"]:
         shutil.copy(os.path.join(HERE, f), os.path.join(out, f))
     build_teacher(out)
     build_home(src, out)
