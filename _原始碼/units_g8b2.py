@@ -7,6 +7,18 @@ CFG = {
   "topic": "函數與函數圖形",
   # 入口地圖上的白話說明（只用簡單的字）
   "plain": "這座島上的機器：餵一個數進去，它只吐一個出來，而且從來不改口。",
+  # 對原單元頁的修正（只改探索島複本）
+  "patches": [
+    # 第 3 站：x、y 一格長度要一樣，圓才不會被壓成橢圓（640×380 的圖，y 範圍 ±7 → x 範圍 ±7×640/380）
+    ['const pl = PL({ w: 640, h: 380, xr: [-7, 7], yr: [-7, 7], gx: 1, gy: 1 });',
+     'const pl = PL({ w: 640, h: 380, xr: [-7 * 640 / 380, 7 * 640 / 380], yr: [-7, 7], gx: 1, gy: 1 });'],
+    # 第 3 站：圓與上半圓改用真的圓弧畫，x ＝ ±5 那兩點才不會斷開
+    ["""          draw: pl => path(pl, x => (Math.abs(x) <= 5 ? Math.sqrt(25 - x * x) : null), { color: CIN, n: 400 }) +
+                      path(pl, x => (Math.abs(x) <= 5 ? -Math.sqrt(25 - x * x) : null), { color: CIN, n: 400 }) },""",
+     """          draw: pl => '<circle cx="' + pl.px(0).toFixed(1) + '" cy="' + pl.py(0).toFixed(1) + '" r="' + (pl.px(5) - pl.px(0)).toFixed(1) + '" style="fill:none;stroke:' + CIN + ';stroke-width:2.4"/>' },"""],
+    ["""          draw: pl => path(pl, x => (Math.abs(x) <= 5 ? Math.sqrt(25 - x * x) : null), { color: CIN, n: 400 }) },""",
+     """          draw: pl => { const r = (pl.px(5) - pl.px(0)).toFixed(1); return '<path d="M' + pl.px(-5).toFixed(1) + ',' + pl.py(0).toFixed(1) + ' A' + r + ',' + r + ' 0 0 1 ' + pl.px(5).toFixed(1) + ',' + pl.py(0).toFixed(1) + '" style="fill:none;stroke:' + CIN + ';stroke-width:2.4;stroke-linecap:round"/>'; } },"""],
+  ],
   "stations": {
     "lab1": {
       "mode": "observe",

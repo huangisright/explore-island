@@ -26,9 +26,12 @@ def build_unit(src_site, out, cfg):
                '<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>', s, count=1, flags=re.S)
     s = re.sub(r'<a class="bk-fab" href="[^"]*"[^>]*>.*?</a>',
                '<a class="bk-fab" href="passport.html" aria-label="回到探索紀錄本">← 紀錄本</a>', s, count=1, flags=re.S)
+    for old, new in cfg.get("patches", []):
+        assert s.count(old) == 1, ("patch not found once", old[:60])
+        s = s.replace(old, new)
     css = read(os.path.join(HERE, "island.css"))
     js = read(os.path.join(HERE, "island.js"))
-    data = json.dumps(cfg, ensure_ascii=False)
+    data = json.dumps({k: v for k, v in cfg.items() if k != "patches"}, ensure_ascii=False)
     inject = ('<style id="island">\n' + css + "</style>\n<script>window.ISLAND=" + data + ";</script>\n<script>\n" + js + "</script>\n"
               '<script src="firebase-config.js"></script>\n<script type="module" src="island-cloud.js"></script>\n')
     assert s.count("</body>") == 1
@@ -80,7 +83,7 @@ def build_home(src_site, out):
 
 def build_teacher(out):
     tpl = read(os.path.join(HERE, "teacher.tpl.html"))
-    page = tpl.replace("/*CFGS*/[]", json.dumps(BUILT, ensure_ascii=False))
+    page = tpl.replace("/*CFGS*/[]", json.dumps([{k: v for k, v in c.items() if k != "patches"} for c in BUILT], ensure_ascii=False))
     with open(os.path.join(out, "teacher.html"), "w", encoding="utf8") as f:
         f.write(page)
 

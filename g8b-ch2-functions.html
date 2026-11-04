@@ -1032,10 +1032,9 @@ const M3 = {
   ver:  { label: "x ＝ 1", ok: false, hits: x => (Math.abs(x - 1) < 0.03 ? Infinity : 0),
           draw: pl => '<line x1="' + pl.px(1) + '" y1="0" x2="' + pl.px(1) + '" y2="' + pl.H + '" style="stroke:' + CIN + ';stroke-width:2.6"/>' },
   cir:  { label: "x² ＋ y² ＝ 25", ok: false, hits: x => (Math.abs(x) < 4.97 ? 2 : Math.abs(x) <= 5.03 ? 1 : 0),
-          draw: pl => path(pl, x => (Math.abs(x) <= 5 ? Math.sqrt(25 - x * x) : null), { color: CIN, n: 400 }) +
-                      path(pl, x => (Math.abs(x) <= 5 ? -Math.sqrt(25 - x * x) : null), { color: CIN, n: 400 }) },
+          draw: pl => '<circle cx="' + pl.px(0).toFixed(1) + '" cy="' + pl.py(0).toFixed(1) + '" r="' + (pl.px(5) - pl.px(0)).toFixed(1) + '" style="fill:none;stroke:' + CIN + ';stroke-width:2.4"/>' },
   half: { label: "上半圓", ok: true, hits: x => (Math.abs(x) <= 5.03 ? 1 : 0),
-          draw: pl => path(pl, x => (Math.abs(x) <= 5 ? Math.sqrt(25 - x * x) : null), { color: CIN, n: 400 }) },
+          draw: pl => { const r = (pl.px(5) - pl.px(0)).toFixed(1); return '<path d="M' + pl.px(-5).toFixed(1) + ',' + pl.py(0).toFixed(1) + ' A' + r + ',' + r + ' 0 0 1 ' + pl.px(5).toFixed(1) + ',' + pl.py(0).toFixed(1) + '" style="fill:none;stroke:' + CIN + ';stroke-width:2.4;stroke-linecap:round"/>'; } },
   par:  { label: "y ＝ x² − 4", ok: true, hits: () => 1, draw: pl => path(pl, x => x * x - 4, { color: CIN }) },
   abs:  { label: "y ＝ |x|", ok: true, hits: () => 1, draw: pl => path(pl, x => Math.abs(x), { color: CIN }) },
 };
@@ -1043,7 +1042,7 @@ let m3mode = "lin";
 function m3draw() {
   const M = M3[m3mode], xv = +$("m3x").value / 100;
   $("m3xv").textContent = fmt(xv, 2);
-  const pl = PL({ w: 640, h: 380, xr: [-7, 7], yr: [-7, 7], gx: 1, gy: 1 });
+  const pl = PL({ w: 640, h: 380, xr: [-7 * 640 / 380, 7 * 640 / 380], yr: [-7, 7], gx: 1, gy: 1 });
   let s = M.draw(pl);
   s += vline(pl, xv, { color: CORG, dash: "6 4", w: 2 });
   const n = M.hits(xv);
