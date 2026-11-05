@@ -1295,6 +1295,8 @@ function statCard(k, n, locked) {
 .isl-btn:disabled{opacity:.4;cursor:not-allowed}
 .isl-btn.ghost{background:var(--card);color:var(--indigo)}
 .isl-hint{font-size:13px;color:var(--ink-3)}
+.isl-hint.warn{color:var(--orange);font-weight:600}
+.isl-rule{font-size:13.5px;color:var(--ink-2);margin:6px 0 0;max-width:none}
 .isl-mine{font-size:14.5px;color:var(--ink-2);margin:0;max-width:none}
 .isl-mine b{color:var(--indigo)}
 .isl-wait{padding:26px 22px;text-align:center;color:var(--ink-3);font-size:14.5px;
@@ -1415,7 +1417,7 @@ button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
   const ids = Object.keys(C.stations);
-  const MIN_OBS = 4;
+  const MIN_OBS = 1;   // 寫一個字（例如一個數字）就算
 
   const st = id => (S.st[id] = S.st[id] || { opts: [], pred: "", locked: false, obs: "", done: false });
   const predText = (cfg, s) => {
@@ -1465,15 +1467,24 @@ button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)
           '<label><input type="' + type + '" name="o-' + id + '" value="' + i + '"' + (s.opts.includes(i) ? " checked" : "") + "> " + esc(o) + "</label>").join("") + "</div>";
       }
       h += '<textarea class="isl-ta" placeholder="' + (cfg.opts ? "為什麼這樣猜？（寫一句就好）" : "寫下你的答案和理由") + '">' + esc(s.pred) + "</textarea>";
-      h += '<div class="isl-row"><button class="isl-btn primary">預測寫好了，開始操作</button><span class="isl-hint">送出後就不能改，猜錯沒關係，等一下對照才有東西看。</span></div>';
+      const rule = !cfg.opts ? "寫下你的答案就能送出，一個數字也可以。"
+        : cfg.multi ? "勾選你覺得對的（可以都不勾），再寫一句為什麼，就能送出。"
+        : "選一個答案，再寫一句為什麼，就能送出。";
+      h += '<p class="isl-rule">' + rule + '</p>';
+      h += '<div class="isl-row"><button class="isl-btn primary">預測寫好了，開始操作</button><span class="isl-hint"></span></div>';
       pbox.innerHTML = h;
-      const ta = pbox.querySelector("textarea"), btn = pbox.querySelector("button");
+      const ta = pbox.querySelector("textarea"), btn = pbox.querySelector("button"), hint = pbox.querySelector(".isl-hint");
       const ok = () => {
         s.opts = [...pbox.querySelectorAll("input:checked")].map(x => +x.value);
         s.pred = ta.value;
-        const hasOpt = !cfg.opts || s.opts.length > 0 || !cfg.multi;
-        btn.disabled = !(s.pred.trim().length >= 2 && (cfg.opts ? s.opts.length > 0 || cfg.multi : true));
-        return hasOpt;
+        const needOpt = cfg.opts && !cfg.multi && s.opts.length === 0;
+        const needText = s.pred.trim().length === 0;
+        btn.disabled = needOpt || needText;
+        hint.classList.toggle("warn", btn.disabled);
+        hint.textContent = needOpt && needText ? "還差：選一個答案、寫一句為什麼。"
+          : needOpt ? "還差：選一個答案。"
+          : needText ? (cfg.opts ? "還差：寫一句為什麼。" : "還差：寫下你的答案。")
+          : "送出後就不能改。猜錯沒關係，等一下對照才有東西看。";
       };
       pbox.addEventListener("input", () => { ok(); save(); });
       pbox.addEventListener("change", () => { ok(); save(); });
@@ -1492,11 +1503,14 @@ button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)
     const renderObs = () => {
       let h = '<div class="isl-k">我看到的</div><p class="isl-q">' + esc(cfg.obs) + "</p>";
       h += '<textarea class="isl-ta" placeholder="把你看到的寫下來">' + esc(s.obs) + "</textarea>";
-      h += '<div class="isl-row"><button class="isl-btn' + (s.done ? "" : " primary") + '">' + (s.done ? "更新紀錄" : "記下來，看對照") + '</button><span class="isl-hint"></span></div>';
+      h += '<div class="isl-row"><button class="isl-btn' + (s.done ? "" : " primary") + '">' + (s.done ? "更新紀錄" : "記下來，看對照") + '</button><span class="isl-hint">' + (s.done ? "" : "寫下你看到的（一句話就好），就能記錄。") + '</span></div>';
       obox.innerHTML = h;
       const ta = obox.querySelector("textarea"), btn = obox.querySelector("button"), hint = obox.querySelector(".isl-hint");
       const chk = () => { btn.disabled = ta.value.trim().length < MIN_OBS; };
-      ta.addEventListener("input", () => { s.obs = ta.value; save(); chk(); hint.textContent = s.done ? "已自動儲存" : ""; });
+      ta.addEventListener("input", () => {
+        s.obs = ta.value; save(); chk();
+        hint.textContent = s.done ? "已自動儲存" : btn.disabled ? "寫下你看到的（一句話就好），就能記錄。" : "";
+      });
       chk();
       btn.addEventListener("click", () => {
         s.obs = ta.value; if (s.obs.trim().length < MIN_OBS) return;

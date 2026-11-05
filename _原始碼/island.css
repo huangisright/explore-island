@@ -18,6 +18,8 @@
 .isl-btn:disabled{opacity:.4;cursor:not-allowed}
 .isl-btn.ghost{background:var(--card);color:var(--indigo)}
 .isl-hint{font-size:13px;color:var(--ink-3)}
+.isl-hint.warn{color:var(--orange);font-weight:600}
+.isl-rule{font-size:13.5px;color:var(--ink-2);margin:6px 0 0;max-width:none}
 .isl-mine{font-size:14.5px;color:var(--ink-2);margin:0;max-width:none}
 .isl-mine b{color:var(--indigo)}
 .isl-wait{padding:26px 22px;text-align:center;color:var(--ink-3);font-size:14.5px;
