@@ -1,6 +1,7 @@
 rules_version = '2';
 // 探索島：名單制
-//   roster/{email}            學生名單（文件 id = 小寫 email）：老師能寫；縣網帳號可以自己建一筆
+//   roster/{email}            學生名單（文件 id = 小寫 email）：老師能寫；學生輸入對的加入碼可以自己建一筆
+//   config/join               加入碼 { code }，只有老師能讀寫
 //   records/{uid}             學生本人的基本資料（email、姓名）
 //   records/{uid}/units/{slug} 每一章的探索紀錄
 // 學生：只有在名單上、而且是本人，才能寫；只能讀自己的。
@@ -13,21 +14,27 @@ service cloud.firestore {
     function isTeacher() { return verified() && myEmail() == 'kb5936@cnc.km.edu.tw'; }
     function rostered() { return verified() && exists(/databases/$(db)/documents/roster/$(myEmail())); }
     function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
-    // 可以自己加入名單的網域（要和 island-cloud.js 的 SELF_DOMAINS 一致）
-    function selfDomain() { return myEmail().matches('.*@cnc[.]km[.]edu[.]tw'); }
+    // 加入碼：config/join 的 code，只有老師讀得到、改得到
+    function joinCode() { return get(/databases/$(db)/documents/config/join).data.code; }
 
     match /roster/{email} {
       allow read: if isTeacher() || (verified() && email == myEmail());
       allow create, update: if isTeacher()
         && request.resource.data.keys().hasOnly(['name', 'seat', 'cls', 'note', 'self']);
-      // 學生第一次登入：只能用自己的 email 建一筆，之後要改找老師
-      allow create: if verified() && email == myEmail() && selfDomain()
-        && request.resource.data.keys().hasOnly(['name', 'seat', 'cls', 'self'])
+      // 學生第一次登入：輸入對的加入碼，才能用自己的 email 建一筆；之後要改找老師
+      allow create: if verified() && email == myEmail()
+        && exists(/databases/$(db)/documents/config/join)
+        && request.resource.data.keys().hasOnly(['name', 'seat', 'cls', 'self', 'code'])
+        && request.resource.data.code == joinCode()
         && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 20
         && request.resource.data.cls is string && request.resource.data.cls.size() <= 10
         && request.resource.data.seat is int
         && request.resource.data.self == true;
       allow delete: if isTeacher();
+    }
+
+    match /config/join {
+      allow read, write: if isTeacher();
     }
 
     match /records/{uid} {

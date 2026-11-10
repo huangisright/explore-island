@@ -64,7 +64,7 @@ th{font-size:12.5px;color:var(--ink-3);letter-spacing:.06em;position:sticky;top:
 <script type="module">
 import { auth, db, login, logout, emailOf, TEACHER } from "./island-cloud.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { collection, getDocs, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { collection, getDocs, getDoc, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 const U = window.ISLAND_UNITS;
 const $ = id => document.getElementById(id);
@@ -115,17 +115,32 @@ function parseLines(txt) {
   });
   return { out, bad };
 }
+let joinCode = null;
+async function loadCode() {
+  try { const d = await getDoc(doc(db, "config", "join")); joinCode = d.exists() ? (d.data().code || "") : ""; } catch (e) { joinCode = ""; }
+}
 function drawRoster() {
   const p = $("pane");
-  let h = '<div class="card"><b>加入或更新學生</b><p class="muted">一行一個學生：班級、座號、姓名、Google 帳號，用逗號或 Tab 隔開（可以直接從試算表複製貼上）。同一個帳號再貼一次就是更新。<br>例：801, 3, 王小明, s1100003@cnc.km.edu.tw</p>' +
+  let h = '<div class="card"><div class="row"><b>加入碼</b><span class="muted">學生第一次登入時要輸入這組碼，才會自己加入名單。上課時口頭說或寫在黑板，不要印在學習單上。換了新碼，舊碼就不能用，已經加入的學生不受影響。</span></div>' +
+    '<div class="row" style="margin-top:8px"><span>目前：<b id="jc">' + (joinCode === null ? "讀取中…" : joinCode ? esc(joinCode) : "還沒設定（學生沒辦法自己加入）") + '</b></span>' +
+    '<input id="jnew" placeholder="新的加入碼" size="14" autocomplete="off" style="font:inherit;padding:5px 8px"> <button class="p" id="jset">設定</button><button id="jrand">隨機產生</button><span class="muted" id="jmsg"></span></div></div>';
+  h += '<div class="card"><b>加入或更新學生</b><p class="muted">一行一個學生：班級、座號、姓名、Google 帳號，用逗號或 Tab 隔開（可以直接從試算表複製貼上）。同一個帳號再貼一次就是更新。<br>例：801, 3, 王小明, s1100003@cnc.km.edu.tw</p>' +
     '<textarea id="ta" placeholder="801, 3, 王小明, s1100003@cnc.km.edu.tw"></textarea><div class="row" style="margin-top:10px"><button class="p" id="add">加入名單</button><span class="muted" id="msg"></span></div></div>';
-  h += '<div class="card"><div class="row"><b>名單（' + roster.length + ' 人）</b><span class="muted">學生用縣網帳號第一次登入時，會自己填班級、座號、姓名加入這裡（標「自己加入」）；填錯可以在上面貼一行同帳號的資料蓋過去。其他帳號仍要由老師加入。</span></div><div class="scroll"><table><thead><tr><th>班級</th><th>座號</th><th>姓名</th><th>帳號</th><th>登入過</th><th></th></tr></thead><tbody>';
+  h += '<div class="card"><div class="row"><b>名單（' + roster.length + ' 人）</b><span class="muted">學生第一次登入時輸入加入碼，會自己填班級、座號、姓名加入這裡（標「自己加入」）；填錯可以在上面貼一行同帳號的資料蓋過去。</span></div><div class="scroll"><table><thead><tr><th>班級</th><th>座號</th><th>姓名</th><th>帳號</th><th>登入過</th><th></th></tr></thead><tbody>';
   roster.forEach((r, i) => {
     h += "<tr><td>" + esc(r.cls) + "</td><td>" + esc(r.seat) + "</td><td>" + esc(r.name) + (r.self ? ' <span class="tag">自己加入</span>' : "") + "</td><td>" + esc(r.email) + "</td><td>" +
       (uidOf[r.email] ? '<span class="tag ok">是</span>' : '<span class="tag">還沒</span>') + '</td><td><button data-del="' + i + '">移出</button></td></tr>';
   });
   h += "</tbody></table></div></div>";
   p.innerHTML = h;
+  if (joinCode === null) loadCode().then(() => { if (tab === "ros") drawRoster(); });
+  $("jrand").onclick = () => { const a = "abcdefghjkmnpqrstuvwxyz23456789"; let c = ""; for (let i = 0; i < 6; i++) c += a[Math.floor(Math.random() * a.length)]; $("jnew").value = c; };
+  $("jset").onclick = async () => {
+    const c = $("jnew").value.trim();
+    if (c.length < 4 || c.length > 30) { $("jmsg").textContent = "加入碼請用 4～30 個字"; return; }
+    try { await setDoc(doc(db, "config", "join"), { code: c }); joinCode = c; $("jc").textContent = c; $("jnew").value = ""; $("jmsg").textContent = "✓ 已更新"; }
+    catch (e) { $("jmsg").textContent = "設定失敗（" + (e.code || e.message) + "），確認權限規則已發布"; }
+  };
   const ta = $("ta"), msg = $("msg");
   ta.oninput = () => { const { out, bad } = parseLines(ta.value); msg.textContent = out.length + " 人可加入" + (bad.length ? "，" + bad.length + " 行看不懂：" + bad.slice(0, 2).join("／") : ""); };
   $("add").onclick = async () => {
