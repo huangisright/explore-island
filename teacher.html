@@ -119,9 +119,9 @@ function drawRoster() {
   const p = $("pane");
   let h = '<div class="card"><b>加入或更新學生</b><p class="muted">一行一個學生：班級、座號、姓名、Google 帳號，用逗號或 Tab 隔開（可以直接從試算表複製貼上）。同一個帳號再貼一次就是更新。<br>例：801, 3, 王小明, s1100003@cnc.km.edu.tw</p>' +
     '<textarea id="ta" placeholder="801, 3, 王小明, s1100003@cnc.km.edu.tw"></textarea><div class="row" style="margin-top:10px"><button class="p" id="add">加入名單</button><span class="muted" id="msg"></span></div></div>';
-  h += '<div class="card"><div class="row"><b>名單（' + roster.length + ' 人）</b><span class="muted">學生要用這裡登記的帳號登入，紀錄才會存到雲端。</span></div><div class="scroll"><table><thead><tr><th>班級</th><th>座號</th><th>姓名</th><th>帳號</th><th>登入過</th><th></th></tr></thead><tbody>';
+  h += '<div class="card"><div class="row"><b>名單（' + roster.length + ' 人）</b><span class="muted">學生用縣網帳號第一次登入時，會自己填班級、座號、姓名加入這裡（標「自己加入」）；填錯可以在上面貼一行同帳號的資料蓋過去。其他帳號仍要由老師加入。</span></div><div class="scroll"><table><thead><tr><th>班級</th><th>座號</th><th>姓名</th><th>帳號</th><th>登入過</th><th></th></tr></thead><tbody>';
   roster.forEach((r, i) => {
-    h += "<tr><td>" + esc(r.cls) + "</td><td>" + esc(r.seat) + "</td><td>" + esc(r.name) + "</td><td>" + esc(r.email) + "</td><td>" +
+    h += "<tr><td>" + esc(r.cls) + "</td><td>" + esc(r.seat) + "</td><td>" + esc(r.name) + (r.self ? ' <span class="tag">自己加入</span>' : "") + "</td><td>" + esc(r.email) + "</td><td>" +
       (uidOf[r.email] ? '<span class="tag ok">是</span>' : '<span class="tag">還沒</span>') + '</td><td><button data-del="' + i + '">移出</button></td></tr>';
   });
   h += "</tbody></table></div></div>";

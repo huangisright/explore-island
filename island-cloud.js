@@ -1,5 +1,5 @@
 /* ===== 探索島：Google 登入＋雲端存檔（Firebase） =====
-   單元頁與紀錄本共用。名單制：只有老師名單上的帳號會存到雲端。 */
+   單元頁與紀錄本共用。名單制：名單上的帳號才會存到雲端；縣網帳號第一次登入時可以自己填資料加入名單。 */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
@@ -16,6 +16,10 @@ export function login() {
 }
 export const logout = () => signOut(auth);
 export const emailOf = u => (u && u.email || "").toLowerCase();
+
+/* 可以自己加入名單的帳號網域（要和 firestore.rules 的 selfDomain() 一致） */
+export const SELF_DOMAINS = ["cnc.km.edu.tw"];
+export const canSelfJoin = u => !!u && u.emailVerified !== false && SELF_DOMAINS.includes(emailOf(u).split("@")[1] || "");
 
 /* 這個帳號在不在名單上；在的話回傳名單資料 */
 export async function rosterOf(user) {
@@ -44,6 +48,29 @@ export function authBar(where) {
   return bar;
 }
 
+/* 第一次登入：學生自己填班級、座號、姓名，加入名單。成功回傳名單資料 */
+export function joinForm(bar, u, onDone, onCancel) {
+  const nm = (u.displayName || "").replace(/\s+/g, "").slice(0, 20);
+  bar.innerHTML = '<span>第一次登入 <b>' + esc(u.email) + '</b>，請填一次：</span>' +
+    '<input id="jc" placeholder="班級 例 801" size="7" inputmode="numeric"> <input id="js" placeholder="座號" size="4" inputmode="numeric"> ' +
+    '<input id="jn" placeholder="姓名" size="8" value="' + esc(nm) + '"> <button class="primary" id="jok">加入</button><button id="jx" style="margin-left:0">換帳號</button><span class="warn" id="jm"></span>';
+  const css = document.createElement("style");
+  css.textContent = ".isl-auth input{font:inherit;font-size:14px;padding:4px 8px;border:1px solid var(--edge);border-radius:5px;background:var(--bg,#fff);color:var(--ink)}";
+  bar.appendChild(css);
+  const $ = id => bar.querySelector("#" + id), m = $("jm");
+  $("jx").onclick = onCancel;
+  $("jok").onclick = async () => {
+    const cls = $("jc").value.trim(), seatRaw = $("js").value.trim(), name = $("jn").value.trim();
+    if (!/^\d{3}$/.test(cls)) { m.textContent = "班級請填三位數，例如 801"; return; }
+    if (!/^\d{1,2}$/.test(seatRaw)) { m.textContent = "座號請填數字"; return; }
+    if (!name || name.length > 20) { m.textContent = "請填姓名"; return; }
+    const r = { cls, seat: +seatRaw, name, self: true };
+    $("jok").disabled = true; m.textContent = "加入中…";
+    try { await setDoc(doc(db, "roster", emailOf(u)), r); onDone(r); }
+    catch (e) { $("jok").disabled = false; m.textContent = "加入失敗，請再按一次或找老師（" + (e.code || e.message) + "）"; }
+  };
+}
+
 /* ---------- 單元頁 ---------- */
 function unitPage() {
   const API = window.ISLAND_API;
@@ -62,7 +89,7 @@ function unitPage() {
       const t = emailOf(user) === TEACHER;
       bar.innerHTML = t
         ? '<span>老師帳號 <b>' + esc(user.email) + '</b>：全班紀錄請到 <a href="teacher.html">老師頁面</a>。</span><button>登出</button>'
-        : '<span class="warn">這個帳號不在名單上</span><span>' + esc(user.email) + '，紀錄只會存在這台電腦。請找老師把你加進名單，或換一個帳號。</span><button>換帳號</button>';
+        : '<span class="warn">這個帳號不在名單上</span><span>' + esc(user.email) + '，紀錄只會存在這台電腦。請改用縣網帳號（@cnc.km.edu.tw）登入。</span><button>換帳號</button>';
       bar.querySelector("button").onclick = doLogout;
       return;
     }
@@ -107,7 +134,12 @@ function unitPage() {
     user = u;
     if (!u) { unitRef = null; paint(); return; }
     bar.innerHTML = "<span>確認名單中…</span>";
-    const r = await rosterOf(u);
+    let r = await rosterOf(u);
+    if (!r && canSelfJoin(u) && emailOf(u) !== TEACHER) {
+      unitRef = null;
+      r = await new Promise(res => joinForm(bar, u, res, () => { res(null); doLogout(); }));
+      if (!r || user !== u) return;
+    }
     if (!r) { unitRef = null; paint(); return; }
     rosterName = r.name || "";
     profRef = doc(db, "records", u.uid);
@@ -139,7 +171,12 @@ function passportPage() {
       paint("<span>登入學校帳號，就能看到存在雲端的紀錄。</span>", "用 Google 登入", () => login().catch(() => {}));
       P.show(null, null); return;
     }
-    const r = await rosterOf(u);
+    let r = await rosterOf(u);
+    if (!r && canSelfJoin(u) && emailOf(u) !== TEACHER) {
+      P.show(null, null);
+      r = await new Promise(res => joinForm(bar, u, res, async () => { res(null); await logout(); }));
+      if (!r || auth.currentUser !== u) return;
+    }
     if (!r) {
       paint('<span class="warn">這個帳號不在名單上</span><span>' + esc(u.email) + "</span>", "換帳號", async () => { await logout(); });
       P.show(null, null); return;
