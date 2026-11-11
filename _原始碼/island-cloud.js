@@ -4,7 +4,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
+/* 主管理者：寫死、不能被移除（Firebase 專案也在這個帳號底下） */
 export const TEACHER = "kb5936@cnc.km.edu.tw";
+export const ROLES = { admin: "管理者", teacher: "老師", viewer: "檢視" };
 export const app = initializeApp(window.ISLAND_FIREBASE);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
@@ -17,8 +19,18 @@ export function login() {
 export const logout = () => signOut(auth);
 export const emailOf = u => (u && u.email || "").toLowerCase();
 
+/* 這個帳號在老師帳號清單上的層級：admin／teacher／viewer，不是老師回傳 "" */
+export async function staffRole(user) {
+  if (!user) return "";
+  if (emailOf(user) === TEACHER) return "admin";
+  try {
+    const r = await getDoc(doc(db, "staff", emailOf(user)));
+    return r.exists() && ROLES[r.data().role] ? r.data().role : "";
+  } catch (e) { return ""; }
+}
+
 /* 任何 Google 帳號第一次登入，輸入老師給的加入碼就能自己加入名單 */
-export const canSelfJoin = u => !!u && u.emailVerified !== false && emailOf(u) !== TEACHER;
+export const canSelfJoin = u => !!u && u.emailVerified !== false && emailOf(u) !== TEACHER;  // 老師帳號另外在 staffRole 先擋掉
 
 /* 這個帳號在不在名單上；在的話回傳名單資料 */
 export async function rosterOf(user) {
@@ -81,7 +93,7 @@ function unitPage() {
   const C = API.config, store = API.store;
   const anonKey = "isl:" + C.slug;
   const bar = authBar(API.progressBox);
-  let user = null, timer = null, status = "", unitRef = null, profRef = null, rosterName = "";
+  let user = null, timer = null, status = "", unitRef = null, profRef = null, rosterName = "", staff = "";
 
   const paint = () => {
     if (!user) {
@@ -90,9 +102,8 @@ function unitPage() {
       return;
     }
     if (!unitRef) {
-      const t = emailOf(user) === TEACHER;
-      bar.innerHTML = t
-        ? '<span>老師帳號 <b>' + esc(user.email) + '</b>：全班紀錄請到 <a href="teacher.html">老師頁面</a>。</span><button>登出</button>'
+      bar.innerHTML = staff
+        ? '<span>' + ROLES[staff] + '帳號 <b>' + esc(user.email) + '</b>：全班紀錄請到 <a href="teacher.html">老師頁面</a>。</span><button>登出</button>'
         : '<span class="warn">這個帳號不在名單上</span><span>' + esc(user.email) + '，紀錄只會存在這台電腦。按「換帳號」重新登入，就能輸入加入碼。</span><button>換帳號</button>';
       bar.querySelector("button").onclick = doLogout;
       return;
@@ -139,6 +150,9 @@ function unitPage() {
     if (!u) { unitRef = null; paint(); return; }
     bar.innerHTML = "<span>確認名單中…</span>";
     let r = await rosterOf(u);
+    staff = r ? "" : await staffRole(u);
+    if (user !== u) return;
+    if (staff) { unitRef = null; paint(); return; }
     if (!r && canSelfJoin(u)) {
       unitRef = null;
       r = await new Promise(res => joinForm(bar, u, res, () => { res(null); doLogout(); }));
@@ -176,6 +190,11 @@ function passportPage() {
       P.show(null, null); return;
     }
     let r = await rosterOf(u);
+    const st = r ? "" : await staffRole(u);
+    if (st) {
+      paint('<span>' + ROLES[st] + '帳號 <b>' + esc(u.email) + '</b>：全班紀錄請到 <a href="teacher.html">老師頁面</a>。</span>', "登出", async () => { await logout(); });
+      P.show(null, null); return;
+    }
     if (!r && canSelfJoin(u)) {
       P.show(null, null);
       r = await new Promise(res => joinForm(bar, u, res, async () => { res(null); await logout(); }));

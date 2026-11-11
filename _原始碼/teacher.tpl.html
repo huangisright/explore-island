@@ -72,7 +72,7 @@ th{font-size:12.5px;color:var(--ink-3);letter-spacing:.06em;position:sticky;top:
 <script>window.ISLAND_UNITS = /*CFGS*/[];</script>
 <script src="firebase-config.js"></script>
 <script type="module">
-import { auth, db, login, logout, emailOf, TEACHER } from "./island-cloud.js";
+import { auth, db, login, logout, emailOf, TEACHER, ROLES, staffRole } from "./island-cloud.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 import { collection, getDocs, getDoc, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
@@ -80,6 +80,7 @@ const U = window.ISLAND_UNITS;
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const app = $("app");
+let myRole = "", staffList = [];
 let roster = [], uidOf = {}, tab = "sum", cls = "", unitSlug = U[0] && U[0].slug, station = "", live = {}, unsubs = [];
 
 onAuthStateChanged(auth, async u => {
@@ -89,9 +90,10 @@ onAuthStateChanged(auth, async u => {
     $("li").onclick = () => login().catch(e => alertBox(e.code || e.message));
     return;
   }
-  $("who").innerHTML = esc(u.email) + ' <button id="lo">登出</button>';
+  myRole = await staffRole(u);
+  $("who").innerHTML = esc(u.email) + (myRole ? ' <span class="tag ok">' + ROLES[myRole] + '</span>' : "") + ' <button id="lo">登出</button>';
   $("lo").onclick = () => logout();
-  if (emailOf(u) !== TEACHER) { app.innerHTML = '<p class="gate">這個頁面只有老師帳號能用。</p>'; return; }
+  if (!myRole) { app.innerHTML = '<p class="gate">這個頁面只有老師帳號能用。要開通請找管理者加入。</p>'; return; }
   await loadAll();
   draw();
 });
@@ -106,9 +108,60 @@ async function loadAll() {
 }
 
 function draw() {
-  app.innerHTML = '<div class="tabs"><button data-t="sum">跨章總表</button><button data-t="rec">單章紀錄</button><button data-t="ros">學生名單</button></div><div id="pane"></div>';
+  const tabs = [["sum", "跨章總表"], ["rec", "單章紀錄"]];
+  if (myRole !== "viewer") tabs.push(["ros", "學生名單"]);
+  if (myRole === "admin") tabs.push(["staff", "老師帳號"]);
+  if (!tabs.some(t => t[0] === tab)) tab = "sum";
+  app.innerHTML = '<div class="tabs">' + tabs.map(t => '<button data-t="' + t[0] + '">' + t[1] + "</button>").join("") + '</div><div id="pane"></div>';
   app.querySelectorAll(".tabs button").forEach(b => { b.classList.toggle("on", b.dataset.t === tab); b.onclick = () => { tab = b.dataset.t; draw(); }; });
-  if (tab === "ros") drawRoster(); else if (tab === "sum") drawSummary(); else drawRecords();
+  if (tab === "ros") drawRoster(); else if (tab === "staff") drawStaff(); else if (tab === "sum") drawSummary(); else drawRecords();
+}
+
+/* ---------- 老師帳號（只有管理者） ---------- */
+async function loadStaff() {
+  staffList = [];
+  try { const qs = await getDocs(collection(db, "staff")); qs.forEach(d => staffList.push({ email: d.id, ...d.data() })); } catch (e) {}
+  staffList.sort((a, b) => a.email.localeCompare(b.email));
+}
+const roleSel = (id, v) => '<select id="' + id + '">' + Object.keys(ROLES).map(k => '<option value="' + k + '"' + (k === v ? " selected" : "") + ">" + ROLES[k] + "</option>").join("") + "</select>";
+async function drawStaff() {
+  const p = $("pane");
+  p.innerHTML = '<p class="muted">讀取中…</p>';
+  await loadStaff();
+  if (tab !== "staff") return;
+  let h = '<div class="card"><b>加入老師帳號</b><p class="muted">管理者：全部權限，包括管理老師帳號。老師：看全班紀錄、管學生名單、設定加入碼。檢視：只能看全班紀錄。<br>對方用這個 Google 帳號登入老師頁面就能用；同一個帳號再加一次就是更新層級。</p>' +
+    '<div class="row"><input id="se" placeholder="Google 帳號 email" size="28" autocomplete="off" style="font:inherit;padding:5px 8px"> <input id="sn" placeholder="稱呼（可空白）" size="10" style="font:inherit;padding:5px 8px"> ' + roleSel("sr", "teacher") + ' <button class="p" id="sadd">加入</button><span class="muted" id="smsg"></span></div></div>';
+  h += '<div class="card"><b>老師帳號（' + (staffList.length + 1) + ' 個）</b><div class="scroll"><table><thead><tr><th>帳號</th><th>稱呼</th><th>層級</th><th></th></tr></thead><tbody>' +
+    '<tr><td>' + esc(TEACHER) + '</td><td></td><td>管理者 <span class="muted">（主帳號，不能移除）</span></td><td></td></tr>';
+  staffList.forEach((r, i) => {
+    h += "<tr><td>" + esc(r.email) + "</td><td>" + esc(r.name || "") + "</td><td>" + roleSel("r" + i, r.role) + '</td><td><button data-sdel="' + i + '">移除</button></td></tr>';
+  });
+  h += "</tbody></table></div></div>";
+  p.innerHTML = h;
+  const msg = $("smsg");
+  $("sadd").onclick = async () => {
+    const email = $("se").value.trim().toLowerCase(), name = $("sn").value.trim().slice(0, 20), role = $("sr").value;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg.textContent = "email 格式不對"; return; }
+    if (email === TEACHER) { msg.textContent = "這是主帳號，本來就是管理者"; return; }
+    try { await setDoc(doc(db, "staff", email), name ? { role, name } : { role }); drawStaff(); }
+    catch (e) { msg.textContent = "加入失敗（" + (e.code || e.message) + "）"; }
+  };
+  staffList.forEach((r, i) => {
+    $("r" + i).onchange = async e => {
+      try { await setDoc(doc(db, "staff", r.email), r.name ? { role: e.target.value, name: r.name } : { role: e.target.value }); }
+      catch (err) { alertBox("改層級失敗（" + (err.code || err.message) + "）"); }
+      if (r.email === emailOf(auth.currentUser)) location.reload(); else drawStaff();
+    };
+  });
+  p.querySelectorAll("[data-sdel]").forEach(b => {
+    let armed = false;
+    b.onclick = async () => {
+      if (!armed) { armed = true; b.textContent = "確定？"; setTimeout(() => { armed = false; b.textContent = "移除"; }, 3000); return; }
+      const r = staffList[+b.dataset.sdel];
+      try { await deleteDoc(doc(db, "staff", r.email)); } catch (e) { alertBox("移除失敗（" + (e.code || e.message) + "）"); }
+      if (r.email === emailOf(auth.currentUser)) location.reload(); else drawStaff();
+    };
+  });
 }
 
 /* ---------- 共用：班級篩選、時間、CSV ---------- */
