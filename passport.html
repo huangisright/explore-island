@@ -41,9 +41,12 @@ a{color:var(--blue)}
 
 /* ---- 索引標籤 ---- */
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 0;padding:0 14px}
-.tabs a{display:block;padding:5px 14px 3px;background:var(--card);border:1.5px solid var(--edge);border-bottom:0;border-radius:8px 8px 0 0;text-decoration:none;color:var(--ink-2);font-size:15px}
-.tabs a b{color:var(--red);font-weight:700;margin-left:4px;font-size:13px}
-.tabs a:hover{background:var(--hl);color:var(--ink)}
+.tabs{position:relative;z-index:1}
+.tabs button{font:inherit;display:block;padding:5px 14px 3px;margin:6px 0 0;background:#f1ede2;border:1.5px solid var(--edge);border-bottom:0;border-radius:8px 8px 0 0;color:var(--ink-3);font-size:15px;cursor:pointer}
+.tabs button b{color:var(--red);font-weight:700;margin-left:4px;font-size:13px}
+.tabs button:hover{background:var(--hl);color:var(--ink)}
+.tabs button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.tabs button.on{background:var(--paper);color:var(--ink);font-weight:700;font-size:17px;margin-top:0;padding:8px 18px 5px;margin-bottom:-1.5px;border-bottom:1.5px solid var(--paper)}
 
 /* ---- 內頁 ---- */
 .page{position:relative;background:var(--paper);border:1.5px solid var(--edge);border-radius:3px;margin:0 0 22px;padding:20px 22px 18px 56px;
@@ -51,7 +54,8 @@ a{color:var(--blue)}
 .page::before{content:"";position:absolute;left:40px;top:0;bottom:0;border-left:1.5px solid var(--margin)}
 .page::after{content:"";position:absolute;left:13px;top:34px;bottom:34px;width:14px;
   background:radial-gradient(circle at 7px 7px, var(--desk) 0 6px, rgba(0,0,0,.18) 6px 7px, transparent 7.5px) 0 0 / 14px 25% repeat-y}
-.tabs + .page{margin-top:0}
+.page{display:none}
+.page.on{display:block}
 .page h2{font-size:24px;margin:0 0 2px;letter-spacing:.08em;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .page h2 small{font-size:14px;font-weight:400;color:var(--ink-3);letter-spacing:0}
 .page .pno{margin-left:auto;font-size:13px;color:var(--ink-3);font-weight:400;letter-spacing:0}
@@ -129,6 +133,8 @@ a{color:var(--blue)}
   .cover{box-shadow:none;background:#fff;color:#000;border:2px solid #000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .cover::before{display:none} .tally b{color:#000}
   .page{box-shadow:none;break-inside:auto;margin-bottom:14px}
+  .page.has{display:block!important}
+  .anyhas .page:not(.has){display:none!important}
   .page::after{display:none}
   .row{break-inside:avoid}
   .stp.on,.bx.ok::after,.bx.half::after{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -149,7 +155,7 @@ a{color:var(--blue)}
   </div>
   <p class="tally" id="tally"></p>
 </header>
-<nav class="tabs" id="tabs" aria-label="學期"></nav>
+<div class="tabs" id="tabs" role="tablist" aria-label="學期"></div>
 <div id="pages"></div>
 <div class="tools">
   <div class="legend">
@@ -175,6 +181,14 @@ const ymd = iso => { const d = new Date(iso); return isNaN(d) ? "" : d.getFullYe
 const nm = $("nm");
 nm.addEventListener("input", () => { if (!nm.readOnly) set("isl:name", nm.value); });
 const openSet = new Set();          // 展開中的章（重畫時保留）
+let cur = null;                     // 現在翻到哪一個學期（GRADES 的第幾個）；null = 還沒選過
+try { const v = sessionStorage.getItem("isl:tab"); if (v !== null && v !== "") cur = +v; } catch (e) {}
+function turn(gi, byUser) {
+  cur = gi;
+  if (byUser) { try { sessionStorage.setItem("isl:tab", gi); } catch (e) {} }
+  document.querySelectorAll("#tabs button").forEach(b => { const on = +b.dataset.g === gi; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; });
+  document.querySelectorAll(".page").forEach(pg => pg.classList.toggle("on", pg.id === "p" + gi));
+}
 
 /* 一站的狀態與文字。預測的選項文字存在 pt（舊紀錄沒有 pt，就只有寫下的那一句） */
 const stOf = (S, id) => (S && S.st && S.st[id]) || {};
@@ -211,29 +225,43 @@ function render(cloud, cname, me) {
   $("seat").textContent = cloud && me && me.seat ? me.seat : "";
   const rec = u => { if (cloud) return cloud[u.slug] || null; try { return JSON.parse(get("isl:" + u.slug)); } catch (e) { return null; } };
   const open = UNITS.filter(u => u.open);
-  let stamps = 0, stations = 0, tabs = "", pages = "";
+  let stamps = 0, stations = 0, tabs = "", pages = "", shown = [], last = ["", null];
   GRADES.forEach((g, gi) => {
     const us = open.filter(u => u.grade === g);
     if (!us.length) return;
-    let gs = 0, rows = "";
+    let gs = 0, rows = "", has = false;
     us.forEach(u => {
       const S = rec(u);
       if (S && S.stampAt) { stamps++; gs++; }
+      if (started(S)) { has = true; if ((S.updated || S.stampAt || "") >= last[0]) last = [S.updated || S.stampAt || "", gi]; }
       stations += (u.st || []).filter(id => stOf(S, id).done).length;
       rows += rowHtml(u, S);
     });
-    tabs += '<a href="#p' + gi + '">' + SHORT[g] + (gs ? "<b>" + gs + " 章</b>" : "") + "</a>";
-    pages += '<section class="page" id="p' + gi + '"><h2>' + esc(g) + "<small>" + us.length + " 座島，蓋了 " + gs + ' 個章</small><span class="pno">第 ' + (gi + 1) + " 頁</span></h2>" +
+    shown.push(gi);
+    tabs += '<button type="button" role="tab" data-g="' + gi + '" aria-controls="p' + gi + '">' + SHORT[g] + (gs ? "<b>" + gs + " 章</b>" : "") + "</button>";
+    pages += '<section class="page' + (has ? " has" : "") + '" role="tabpanel" id="p' + gi + '"><h2>' + esc(g) + "<small>" + us.length + " 座島，蓋了 " + gs + ' 個章</small><span class="pno">第 ' + (gi + 1) + " 頁</span></h2>" +
       '<div class="cols"><span>章</span><span>島名</span><span>探索站</span><span>判斷題</span><span>完成章</span></div>' + rows + "</section>";
   });
   $("tabs").innerHTML = tabs;
   $("pages").innerHTML = pages;
+  document.body.classList.toggle("anyhas", !!document.querySelector(".page.has"));
   $("tally").innerHTML = "蓋了<b>" + stamps + "</b>個章，記錄了<b>" + stations + "</b>站（能去的島有 " + open.length + " 座）";
+  // 沒選過學期：翻到最近寫過的那一頁；都沒寫過就翻第一頁
+  turn(shown.includes(cur) ? cur : (last[1] !== null ? last[1] : shown[0]), false);
+  document.querySelectorAll("#tabs button").forEach(b => {
+    b.addEventListener("click", () => turn(+b.dataset.g, true));
+    b.addEventListener("keydown", e => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      const i = shown.indexOf(cur), n = shown[(i + (e.key === "ArrowRight" ? 1 : shown.length - 1)) % shown.length];
+      turn(n, true); document.querySelector('#tabs button[data-g="' + n + '"]').focus();
+    });
+  });
   document.querySelectorAll("details.row").forEach(d => d.addEventListener("toggle", () => { d.open ? openSet.add(d.dataset.slug) : openSet.delete(d.dataset.slug); }));
 }
 
 /* 列印：有紀錄的章全部展開，印完再收回原樣 */
 let before = null;
+/* 有紀錄的學期都印（都沒有紀錄，就印現在翻到的那一頁） */
 window.addEventListener("beforeprint", () => { before = [...document.querySelectorAll("details.row")].map(d => [d, d.open]); before.forEach(([d]) => { d.open = true; }); });
 window.addEventListener("afterprint", () => { if (before) before.forEach(([d, o]) => { d.open = o; }); before = null; });
 $("prt").addEventListener("click", () => window.print());
