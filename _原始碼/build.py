@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """探索島產生器：讀原本的互動版網站，另外輸出到別的資料夾，原檔一個字都不動。
 
-用法：python3 build.py <互動版網站資料夾> <輸出資料夾>
+用法：python3 build.py <互動版網站資料夾> <輸出資料夾> [內容檔資料夾]
 加單元：寫一個 units_xxx.py（CFG），在下面 BUILT 補上。
+
+登入後才載入內容（空殼頁）：
+  GATED 裡的單元，輸出資料夾只放空殼頁 <slug>.html（沒有教材），教材另外寫成 <內容檔資料夾>/<slug>.json，
+  由管理者在 upload.html 上傳到 Firestore 的 content/<slug>。內容檔資料夾不要放進公開的 repo。
+  TRIAL 裡的單元照舊輸出完整頁，另外多做一份空殼頁 try-<slug>.html 給老師先測。
 """
-import html, json, os, re, shutil, sys
+import datetime, html, json, os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -13,6 +18,14 @@ import glob, importlib
 # 每一章一個設定檔 units_*.py（CFG），依檔名排序
 BUILT = [importlib.import_module(os.path.basename(f)[:-3]).CFG for f in sorted(glob.glob(os.path.join(HERE, "units_*.py")))]
 GRADES = ["七年級上", "七年級下", "八年級上", "八年級下", "九年級上", "九年級下"]
+# 空殼頁設定：GATED = "ALL" 代表全部單元；TRIAL 是只做試做頁的單元
+GATED = set()
+TRIAL = {"g8b-ch2-functions"}
+CLOUD_TAIL = '<script src="firebase-config.js"></script>\n<script type="module" src="island-cloud.js"></script>\n'
+
+
+def is_gated(slug):
+    return GATED == "ALL" or slug in GATED
 
 
 def read(p):
@@ -47,7 +60,7 @@ def restructure_h4(s, cfg):
     return "".join(out)
 
 
-def build_unit(src_site, out, cfg):
+def build_unit(src_site, out, cfg, content_dir=None):
     s = read(os.path.join(src_site, "units", cfg["slug"] + ".html"))
     if cfg.get("restructure") == "h4":
         s = restructure_h4(s, cfg)
@@ -63,13 +76,43 @@ def build_unit(src_site, out, cfg):
     css = read(os.path.join(HERE, "island.css"))
     js = read(os.path.join(HERE, "island.js"))
     data = json.dumps({k: v for k, v in cfg.items() if k not in ("patches", "restructure")}, ensure_ascii=False)
-    inject = ('<style id="island">\n' + css + "</style>\n<script>window.ISLAND=" + data + ";</script>\n<script>\n" + js + "</script>\n"
-              '<script src="firebase-config.js"></script>\n<script type="module" src="island-cloud.js"></script>\n')
+    inject = ('<style id="island">\n' + css + "</style>\n<script>window.ISLAND=" + data + ";</script>\n<script>\n" + js + "</script>\n" + CLOUD_TAIL)
     assert s.count("</body>") == 1
     s = s.replace("</body>", inject + "</body>")
     s = re.sub(r"<title>(.*?)</title>", lambda m: "<title>" + m.group(1) + "｜數學探索島</title>", s, count=1)
-    with open(os.path.join(out, cfg["slug"] + ".html"), "w", encoding="utf8") as f:
-        f.write(s)
+    slug = cfg["slug"]
+    if not is_gated(slug):
+        with open(os.path.join(out, slug + ".html"), "w", encoding="utf8") as f:
+            f.write(s)
+    if is_gated(slug) or slug in TRIAL:
+        assert content_dir, "有空殼頁的單元，要給第三個參數：內容檔資料夾"
+        shell, payload = split_page(s, cfg)
+        with open(os.path.join(out, (slug if is_gated(slug) else "try-" + slug) + ".html"), "w", encoding="utf8") as f:
+            f.write(shell)
+        os.makedirs(content_dir, exist_ok=True)
+        with open(os.path.join(content_dir, slug + ".json"), "w", encoding="utf8") as f:
+            json.dump(payload, f, ensure_ascii=False)
+
+
+def split_page(s, cfg):
+    """完整單元頁 → （空殼頁, 內容檔）。內容檔的 head／body 之後由 island-cloud.js 的 mount() 放回頁面。"""
+    head = re.search(r"<head>(.*?)</head>", s, re.S).group(1)
+    body = re.search(r"<body>(.*)</body>", s, re.S).group(1)
+    title = html.unescape(re.search(r"<title>(.*?)</title>", head, re.S).group(1))
+    head, n = re.subn(r'<meta charset="utf-8">\s*|<meta name="viewport"[^>]*>\s*|<title>.*?</title>\s*', "", head, flags=re.S)
+    assert n == 3, "head 裡 charset／viewport／title 應該各一個"
+    assert body.count(CLOUD_TAIL) == 1 and body.rstrip().endswith(CLOUD_TAIL.rstrip()), "雲端模組應該在 body 最後"
+    body = body.replace(CLOUD_TAIL, "")       # 空殼頁自己已經載入這兩支
+    assert "<script" not in head, "head 裡不預期有 script"
+    payload = {"slug": cfg["slug"], "title": title, "head": head, "body": body,
+               "updated": datetime.datetime.now().astimezone().isoformat(timespec="seconds")}
+    size = len(json.dumps(payload, ensure_ascii=False).encode("utf8"))
+    assert size < 950_000, ("內容檔太大，Firestore 一份文件上限 1 MiB", cfg["slug"], size)
+    gate = {"slug": cfg["slug"], "chap": cfg["chap"], "title": cfg["title"]}
+    shell = read(os.path.join(HERE, "gate.tpl.html")) \
+        .replace("/*TITLE*/", html.escape(title)).replace("/*CHAP*/", html.escape(cfg["chap"])) \
+        .replace("/*NAME*/", html.escape(cfg["title"])).replace("/*GATE*/{}", json.dumps(gate, ensure_ascii=False))
+    return shell, payload
 
 
 def units_from_index(src_site):
@@ -123,10 +166,13 @@ def build_teacher(out):
 
 if __name__ == "__main__":
     src, out = sys.argv[1], sys.argv[2]
+    content_dir = sys.argv[3] if len(sys.argv) > 3 else None
+    if content_dir:
+        assert not os.path.abspath(content_dir).startswith(os.path.abspath(out) + os.sep), "內容檔資料夾不能放在輸出（公開）資料夾裡面"
     os.makedirs(out, exist_ok=True)
     for c in BUILT:
-        build_unit(src, out, c)
-    for f in ["island-cloud.js", "firebase-config.js", "island-map.js"]:
+        build_unit(src, out, c, content_dir)
+    for f in ["island-cloud.js", "firebase-config.js", "island-map.js", "upload.html"]:
         shutil.copy(os.path.join(HERE, f), os.path.join(out, f))
     build_teacher(out)
     build_home(src, out)

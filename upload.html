@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>教材上傳｜數學探索島</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --paper:#F5F2E8; --card:#FFFDF8; --edge:#DFD6C4; --edge-soft:#EBE3D4;
+  --ink:#23282D; --ink-2:#5C554A; --ink-3:#847B6C; --indigo:#2E5A88; --orange:#C1652F; --green:#4A7C59; --crimson:#B23A3A;
+  --serif:"Noto Serif TC",'Songti TC',serif;
+  --sans:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#161A1E; --card:#1F252B; --edge:#333C45; --edge-soft:#2A323A;
+  --ink:#E7E2D6; --ink-2:#B3AC9E; --ink-3:#8B857A; --indigo:#82ADDC; --orange:#E28B52; --green:#82B893; --crimson:#D66B6B;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;font-size:15px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px 80px}
+header{padding:34px 0 14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px}
+h1{font-family:var(--serif);font-size:32px;margin:0}
+.who{margin-left:auto;font-size:14px;color:var(--ink-2);display:flex;gap:10px;align-items:center}
+button{font:inherit;color:var(--ink);padding:6px 14px;border:1px solid var(--edge);border-radius:5px;background:var(--card);cursor:pointer;font-weight:600}
+button.p{background:var(--indigo);border-color:var(--indigo);color:var(--card)}
+button:disabled{opacity:.4;cursor:default}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:6px;padding:16px 18px;margin:0 0 16px}
+.muted{color:var(--ink-3);font-size:13.5px}
+.gate{padding:60px 0;text-align:center}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--edge-soft);text-align:left;vertical-align:top}
+th{font-size:12.5px;color:var(--ink-3);letter-spacing:.06em}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ok{color:var(--green);font-weight:700} .bad{color:var(--crimson);font-weight:700} .wait{color:var(--ink-3)}
+a{color:var(--indigo)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>教材上傳</h1><span class="muted">數學探索島</span><span class="who" id="who"></span></header>
+<div id="app"><p class="gate muted">載入中…</p></div>
+</div>
+<script src="firebase-config.js"></script>
+<script type="module">
+/* 管理者把 build.py 產生的內容檔（<slug>.json）放到 Firestore 的 content/<slug>。
+   空殼頁登入後就是讀這裡的內容；公開的網站資料夾裡不放教材。 */
+import { auth, db, login, logout, ROLES, staffRole } from "./island-cloud.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const app = $("app");
+const kb = n => (n / 1024).toFixed(0) + " KB";
+const when = s => { const d = new Date(s); return isNaN(d) ? esc(s || "") : d.toLocaleString("zh-TW", { hour12: false }); };
+const LIMIT = 950000;           // Firestore 一份文件上限 1 MiB，留一點餘裕
+let cloud = [], picked = [];
+
+onAuthStateChanged(auth, async u => {
+  if (!u) {
+    $("who").innerHTML = "";
+    app.innerHTML = '<div class="gate"><p>用管理者帳號登入。</p><button class="p" id="li">用 Google 登入</button></div>';
+    $("li").onclick = () => login().catch(e => { app.insertAdjacentHTML("afterbegin", '<div class="card">' + esc(e.code || e.message) + "</div>"); });
+    return;
+  }
+  const role = await staffRole(u);
+  $("who").innerHTML = esc(u.email) + (role ? ' <span class="muted">' + ROLES[role] + "</span>" : "") + ' <button id="lo">登出</button>';
+  $("lo").onclick = () => logout();
+  if (role !== "admin") { app.innerHTML = '<p class="gate">這個頁面只有管理者能用。</p>'; return; }
+  await loadCloud();
+  draw();
+});
+
+async function loadCloud() {
+  cloud = [];
+  const qs = await getDocs(collection(db, "content"));
+  qs.forEach(d => { const x = d.data(); cloud.push({ slug: d.id, title: x.title || "", updated: x.updated || "", size: new Blob([x.head || "", x.body || ""]).size }); });
+  cloud.sort((a, b) => a.slug.localeCompare(b.slug));
+  // 還在試做階段的單元，另外有一頁 try-<slug>.html
+  await Promise.all(cloud.map(async c => { try { c.trial = (await fetch("try-" + c.slug + ".html", { method: "HEAD" })).ok; } catch (e) { c.trial = false; } }));
+}
+
+function draw() {
+  let h = '<div class="card"><p style="margin:0 0 10px"><b>選內容檔上傳</b>　<span class="muted">build.py 產生在「內容檔資料夾」裡的 .json，可以一次選很多個。同一章再傳一次就是更新。</span></p>' +
+    '<input type="file" id="pick" accept=".json,application/json" multiple> <button class="p" id="go"' + (picked.some(p => p.ok) ? "" : " disabled") + ">上傳</button>";
+  if (picked.length) {
+    h += '<table style="margin-top:12px"><thead><tr><th>檔案</th><th>單元</th><th>大小</th><th>狀態</th></tr></thead><tbody>' +
+      picked.map(p => "<tr><td>" + esc(p.file) + "</td><td>" + esc(p.slug || "") + "<br><span class=\"muted\">" + esc(p.title || "") + '</span></td><td class="n">' + (p.size ? kb(p.size) : "") +
+        '</td><td class="' + (p.state === "done" ? "ok" : p.ok ? "wait" : "bad") + '">' + esc(p.msg) + "</td></tr>").join("") + "</tbody></table>";
+  }
+  h += "</div>";
+  h += '<div class="card"><p style="margin:0 0 10px"><b>雲端上已經有的內容</b>　<span class="muted">共 ' + cloud.length + " 章</span></p>";
+  h += cloud.length ? '<table><thead><tr><th>單元</th><th>大小</th><th>內容檔產生時間</th><th></th></tr></thead><tbody>' +
+      cloud.map(c => "<tr><td>" + esc(c.slug) + '<br><span class="muted">' + esc(c.title) + '</span></td><td class="n">' + kb(c.size) + '</td><td class="n">' + when(c.updated) +
+        '</td><td><a href="' + (c.trial ? "try-" : "") + esc(c.slug) + '.html">' + (c.trial ? "開試做頁" : "開這一章") + '</a></td></tr>').join("") + "</tbody></table>"
+    : '<p class="muted" style="margin:0">還沒有任何一章。</p>';
+  h += '</div><p class="muted"><a href="teacher.html">← 老師頁面</a></p>';
+  app.innerHTML = h;
+  $("pick").onchange = e => readFiles([...e.target.files]);
+  $("go").onclick = upload;
+}
+
+async function readFiles(files) {
+  picked = [];
+  for (const f of files) {
+    const p = { file: f.name, ok: false, msg: "" };
+    try {
+      const x = JSON.parse(await f.text());
+      p.slug = x.slug; p.title = x.title;
+      if (typeof x.slug !== "string" || !/^[a-z0-9-]+$/.test(x.slug) || typeof x.head !== "string" || typeof x.body !== "string") p.msg = "不是探索島的內容檔";
+      else {
+        p.data = { slug: x.slug, title: String(x.title || ""), head: x.head, body: x.body, updated: String(x.updated || "") };
+        p.size = new Blob([JSON.stringify(p.data)]).size;
+        if (p.size > LIMIT) p.msg = "太大了（上限約 " + kb(LIMIT) + "）";
+        else { p.ok = true; p.msg = cloud.some(c => c.slug === x.slug) ? "等待上傳（會更新雲端那一份）" : "等待上傳（新的一章）"; }
+      }
+    } catch (e) { p.msg = "讀不懂這個檔案"; }
+    picked.push(p);
+  }
+  draw();
+}
+
+async function upload() {
+  $("go").disabled = true;
+  for (const p of picked) {
+    if (!p.ok || p.state === "done") continue;
+    p.msg = "上傳中…"; draw(); $("go").disabled = true;
+    try { await setDoc(doc(db, "content", p.slug), p.data); p.state = "done"; p.msg = "✓ 已上傳"; }
+    catch (e) { p.ok = false; p.msg = "上傳失敗：" + (e.code === "permission-denied" ? "沒有權限（安全規則還沒更新，或不是管理者）" : (e.code || e.message)); }
+  }
+  try { await loadCloud(); } catch (e) {}
+  draw();
+}
+</script>
+</body>
+</html>

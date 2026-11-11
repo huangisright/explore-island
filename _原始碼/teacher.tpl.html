@@ -113,6 +113,7 @@ function draw() {
   if (myRole === "admin") tabs.push(["staff", "老師帳號"]);
   if (!tabs.some(t => t[0] === tab)) tab = "sum";
   app.innerHTML = '<div class="tabs">' + tabs.map(t => '<button data-t="' + t[0] + '">' + t[1] + "</button>").join("") + '</div><div id="pane"></div>';
+  if (myRole === "admin") app.querySelector(".tabs").insertAdjacentHTML("beforeend", '<a href="upload.html" style="margin-left:auto;align-self:center;font-size:13.5px;color:var(--indigo)">教材上傳</a>');
   app.querySelectorAll(".tabs button").forEach(b => { b.classList.toggle("on", b.dataset.t === tab); b.onclick = () => { tab = b.dataset.t; draw(); }; });
   if (tab === "ros") drawRoster(); else if (tab === "staff") drawStaff(); else if (tab === "sum") drawSummary(); else drawRecords();
 }

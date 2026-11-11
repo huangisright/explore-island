@@ -53,6 +53,21 @@ service cloud.firestore {
       allow read, write: if isTeacher();
     }
 
+    // 教材內容（空殼頁登入後才載入的那一包）：
+    //   讀一章：名單上的學生，或老師帳號（管理者／老師／檢視）
+    //   列出全部：只有老師帳號（上傳頁要看哪幾章已經放上去）
+    //   寫入、刪除：只有管理者
+    match /content/{slug} {
+      allow get: if rostered() || canView();
+      allow list: if canView();
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(['slug', 'title', 'head', 'body', 'updated'])
+        && request.resource.data.slug == slug
+        && request.resource.data.head is string
+        && request.resource.data.body is string;
+      allow delete: if isAdmin();
+    }
+
     match /records/{uid} {
       allow read: if canView() || isOwner(uid);
       allow create, update: if isOwner(uid) && rostered()

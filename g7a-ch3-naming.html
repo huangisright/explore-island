@@ -1685,7 +1685,7 @@ button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)
     h += '<div class="isl-tools"><button class="isl-btn primary" data-a="print">列印這份紀錄</button>' +
       '<a class="isl-btn ghost" style="text-decoration:none" href="passport.html">看我的探索紀錄本</a>' +
       '<button class="isl-clear" data-a="clear">' + (clearArmed ? "確定要清掉？再按一次" : "清除這一章的紀錄") + "</button></div>";
-    h += '<p class="isl-hint" style="margin-top:10px">沒登入時，紀錄只存在這台電腦的瀏覽器裡；登入名單上的帳號，紀錄會存到雲端。在共用電腦上用完記得登出。</p>';
+    h += '<p class="isl-hint" style="margin-top:10px">' + (window.ISLAND_GATE ? "" : "沒登入時，紀錄只存在這台電腦的瀏覽器裡；") + '登入名單上的帳號，紀錄會存到雲端。在共用電腦上用完記得登出。</p>';
     rec.innerHTML = h;
     rec.querySelector(".isl-name input").addEventListener("input", e => store.set(NAMEKEY, e.target.value));
     rec.querySelector('[data-a="print"]').addEventListener("click", () => {
