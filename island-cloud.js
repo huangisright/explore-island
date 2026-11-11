@@ -215,7 +215,7 @@ function passportPage() {
       const qs = await getDocs(collection(db, "records", u.uid, "units"));
       qs.forEach(d => { try { got[d.id] = JSON.parse(d.data().data); } catch (e) {} });
     } catch (e) {}
-    P.show(got, r.name || "");
+    P.show(got, r.name || "", r);
   });
 }
 

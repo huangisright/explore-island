@@ -102,7 +102,7 @@
       btn.addEventListener("click", () => {
         ok();
         if (btn.disabled) return;
-        s.locked = true; s.lockedAt = new Date().toISOString(); save();
+        s.locked = true; s.lockedAt = new Date().toISOString(); s.pt = predText(cfg, s); save();
         renderAll(); body.scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
     };
@@ -133,6 +133,7 @@
 
     lab._islRender = () => {
       s = st(id);
+      if (s.locked && s.pt == null) s.pt = predText(cfg, s);   // 紀錄本要顯示預測的文字（那一頁沒有選項內容）
       const open = cfg.mode !== "predict" || s.locked;
       renderPred();
       if (wait) wait.hidden = open;

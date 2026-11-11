@@ -130,9 +130,14 @@ def units_from_index(src_site):
 
 def build_passport(src_site, out):
     rows = units_from_index(src_site)
-    built = {c["slug"] for c in BUILT}
+    built = {c["slug"]: c for c in BUILT}
     for r in rows:
         r["open"] = r["slug"] in built
+        if r["open"]:      # 紀錄本要畫每一站的格子：站的代號、哪幾站不用先預測、判斷題幾題（都不是教材內容）
+            c = built[r["slug"]]
+            r["st"] = list(c["stations"])
+            r["ob"] = [k for k, v in c["stations"].items() if v.get("mode") != "predict"]
+            r["q"] = len(c["quiz"])
     tpl = read(os.path.join(HERE, "passport.tpl.html"))
     plain = {c["slug"]: c.get("plain", "") for c in BUILT}
     page = tpl.replace("/*UNITS*/[]", json.dumps(rows, ensure_ascii=False)) \

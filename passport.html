@@ -9,91 +9,238 @@
 <style>
 :root{
   color-scheme:light;
-  --paper:#fdfcf8; --card:#fffefa; --ink:#1d1d1d; --ink-2:#555; --ink-3:#8a8a8a;
-  --edge:#b9b5aa; --edge-soft:#dedad0; --grass:#cfe3bf; --sand:#efe8d6;
-  --red:#c8321e; --blue:#24489a; --green:#2f7a3a; --orange:#d4472b;
-  --indigo:#24489a; --hl:#fff2a8;
+  --desk:#ece7da; --paper:#fdfcf8; --card:#fffefa; --ink:#1d1d1d; --ink-2:#555; --ink-3:#8a8a8a;
+  --edge:#b9b5aa; --edge-soft:#dedad0; --rule:#cfd9e6; --margin:#e3a59b; --cover:#2f4a3a; --cover-ink:#f6f1e1;
+  --red:#c8321e; --blue:#24489a; --green:#2f7a3a; --orange:#d4472b; --indigo:#24489a; --hl:#fff2a8;
   --hand:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif;
   --sans:var(--hand);
   --wob:255px 14px 225px 14px/14px 225px 14px 255px;
   --wob2:14px 255px 14px 225px/225px 14px 255px 14px;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--hand);line-height:1.6}
-.wrap{max-width:1040px;margin:0 auto;padding:0 18px 70px}
-.top{padding:18px 0 0;font-size:15px}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--hand);line-height:1.6;font-size:16px}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 70px}
+.top{padding:16px 2px 8px;font-size:15px}
 .top a{color:var(--blue);text-decoration:none}
-header{padding:16px 0 10px;text-align:center}
-h1{font-size:clamp(36px,6vw,54px);margin:0;letter-spacing:.1em}
-.say{margin:2px 0 0;color:var(--ink-2);font-size:17px}
-.who{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:6px 22px;margin-top:14px;font-size:18px}
-.who input{font:inherit;font-size:20px;width:7.5em;text-align:center;padding:0 4px 2px;border:0;border-bottom:2px solid var(--ink);background:transparent;color:var(--ink)}
-.who input:focus{outline:none;background:var(--hl)}
-.tally{color:var(--ink-2);font-size:16px}
-.tally b{color:var(--red);font-size:24px}
-.mapbox{position:relative;overflow-x:auto;border:2.5px solid var(--ink);border-radius:255px 14px 225px 14px/14px 225px 14px 255px;background:var(--card);padding:6px;margin-top:10px}
-svg.map{display:block;width:100%;height:auto;min-width:880px}
-.swipe{display:none;text-align:center;font-size:13px;color:var(--ink-3);margin:4px 0 0}
-@media (max-width:900px){.swipe{display:block}}
-svg.map text{font-family:var(--hand);fill:var(--ink)}
-svg.map a{cursor:pointer}
-svg.map a:hover .isle{fill:#e3f0d6}
-svg.map a:focus-visible{outline:none}
-svg.map a:focus-visible .isle{stroke:var(--blue);stroke-width:3.5}
-svg.map .lab{font-size:15px}
-svg.map .tiny{font-size:12.5px;fill:var(--ink-2)}
-svg.map .big{font-size:22px;font-weight:700}
-svg.map .note{font-size:14px;fill:var(--ink-2)}
-.grey text{fill:var(--ink-3)}
-.note{margin:38px auto 0;max-width:40em;text-align:center;font-size:15px;color:var(--ink-3)}
-.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 22px;margin-top:10px;font-size:14.5px;color:var(--ink-2)}
+a{color:var(--blue)}
+
+/* ---- 封面 ---- */
+.cover{position:relative;margin-top:10px;background:var(--cover);color:var(--cover-ink);border-radius:6px 14px 14px 6px;padding:26px 28px 24px 46px;
+  box-shadow:0 2px 0 #1e3026, 0 10px 24px rgba(40,34,20,.18)}
+.cover::before{content:"";position:absolute;left:0;top:0;bottom:0;width:22px;border-radius:6px 0 0 6px;background:#243a2d;border-right:1px solid rgba(255,255,255,.14)}
+.cover .site{font-size:14px;letter-spacing:.3em;opacity:.8}
+.cover h1{font-size:clamp(32px,6vw,46px);line-height:1.2;margin:2px 0 14px;letter-spacing:.12em}
+.label{background:var(--paper);color:var(--ink);border-radius:3px;padding:12px 16px 10px;max-width:440px;display:grid;grid-template-columns:auto 1fr auto 1fr;gap:6px 10px;align-items:baseline;font-size:16px}
+.label .k{color:var(--ink-3);font-size:13.5px;white-space:nowrap}
+.label .v{border-bottom:1.5px solid var(--ink);min-height:1.7em;padding:0 4px;font-size:18px}
+.label .wide{grid-column:2 / -1}
+.label input{font:inherit;width:100%;border:0;background:transparent;color:var(--ink);padding:0}
+.label input:focus{outline:none;background:var(--hl)}
+.tally{margin:14px 0 0;font-size:15.5px;opacity:.95}
+.tally b{font-size:24px;color:#ffd9a0;margin:0 2px}
+
+/* ---- 索引標籤 ---- */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0 0;padding:0 14px}
+.tabs a{display:block;padding:5px 14px 3px;background:var(--card);border:1.5px solid var(--edge);border-bottom:0;border-radius:8px 8px 0 0;text-decoration:none;color:var(--ink-2);font-size:15px}
+.tabs a b{color:var(--red);font-weight:700;margin-left:4px;font-size:13px}
+.tabs a:hover{background:var(--hl);color:var(--ink)}
+
+/* ---- 內頁 ---- */
+.page{position:relative;background:var(--paper);border:1.5px solid var(--edge);border-radius:3px;margin:0 0 22px;padding:20px 22px 18px 56px;
+  box-shadow:0 1px 0 #fff inset, 0 6px 16px rgba(40,34,20,.10)}
+.page::before{content:"";position:absolute;left:40px;top:0;bottom:0;border-left:1.5px solid var(--margin)}
+.page::after{content:"";position:absolute;left:13px;top:34px;bottom:34px;width:14px;
+  background:radial-gradient(circle at 7px 7px, var(--desk) 0 6px, rgba(0,0,0,.18) 6px 7px, transparent 7.5px) 0 0 / 14px 25% repeat-y}
+.tabs + .page{margin-top:0}
+.page h2{font-size:24px;margin:0 0 2px;letter-spacing:.08em;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.page h2 small{font-size:14px;font-weight:400;color:var(--ink-3);letter-spacing:0}
+.page .pno{margin-left:auto;font-size:13px;color:var(--ink-3);font-weight:400;letter-spacing:0}
+
+.cols,.row > summary,a.row{display:grid;grid-template-columns:4.4em minmax(0,1fr) auto 4.6em 58px;gap:0 12px;align-items:center}
+.cols{font-size:12.5px;color:var(--ink-3);border-bottom:2px solid var(--ink);padding:10px 0 3px;letter-spacing:.06em}
+.cols span:nth-child(4),.cols span:nth-child(5){text-align:center}
+.row{border-bottom:1px solid var(--rule)}
+.row > summary,a.row{min-height:58px;padding:5px 0;cursor:pointer;list-style:none;color:inherit;text-decoration:none}
+.row > summary::-webkit-details-marker{display:none}
+.row > summary:hover,a.row:hover{background:linear-gradient(transparent 62%, var(--hl) 62% 92%, transparent 92%)}
+.row > summary:focus-visible,a.row:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.ch{font-size:15px;color:var(--ink-2);white-space:nowrap}
+.ti{font-size:18px;font-weight:700;line-height:1.35}
+.ti small{display:block;font-size:13px;font-weight:400;color:var(--ink-3)}
+.row > summary .ti .o,.row[open] > summary .ti .c{display:none}
+.row[open] > summary .ti .o{display:block}
+.new .ti{font-weight:400;color:var(--ink-2)}
+.boxes{display:flex;flex-wrap:wrap;gap:4px;max-width:150px}
+.bx{width:17px;height:17px;border:1.6px solid var(--ink);border-radius:2px;position:relative;background:var(--card)}
+.new .bx{border-color:var(--edge)}
+.bx.half::after{content:"";position:absolute;left:1px;right:1px;top:50%;border-top:1.8px solid var(--blue);transform:rotate(-45deg)}
+.bx.ok::after{content:"";position:absolute;left:3px;top:-3px;width:7px;height:13px;border:solid var(--blue);border-width:0 2.6px 2.6px 0;transform:rotate(40deg)}
+.qz{text-align:center;font-size:15px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.qz.ok{color:var(--green);font-weight:700}
+.new .qz{color:var(--edge)}
+.stp{width:52px;height:52px;margin:0 auto;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;font-size:10.5px;border:1.5px dashed var(--edge);color:var(--edge)}
+.stp.on{border:2.6px solid var(--red);color:var(--red);font-weight:700;transform:rotate(-10deg);box-shadow:0 0 0 2px var(--paper) inset, 0 0 0 3px var(--red) inset}
+.stp.on b{font-size:15px}
+.stp.on i{font-style:normal;font-size:9.5px;font-weight:400}
+
+/* ---- 展開：這一章的紀錄單 ---- */
+.sheet{margin:2px 0 14px;padding:0 0 4px}
+.sheet table{width:100%;border-collapse:collapse;font-size:15.5px;table-layout:fixed}
+.sheet th{font-size:12.5px;font-weight:400;color:var(--ink-3);text-align:left;padding:6px 8px 2px;border-bottom:1.5px solid var(--ink-2);letter-spacing:.06em}
+.sheet th:first-child{width:4.6em}
+.sheet td{padding:7px 8px;border-bottom:1px dashed var(--edge);vertical-align:top;overflow-wrap:anywhere;white-space:pre-wrap}
+.sheet td:first-child{color:var(--ink-2);white-space:nowrap}
+.sheet .p{color:var(--blue)}
+.sheet .e{color:var(--edge)}
+.sheet .foot{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;margin-top:8px;font-size:14px;color:var(--ink-3)}
+.sheet .go{margin-left:auto;font-size:15.5px;text-decoration:none;border:1.8px solid var(--ink);border-radius:var(--wob2);padding:2px 14px;color:var(--ink);background:var(--card)}
+.sheet .go:hover{background:var(--hl)}
+
+.tools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin-top:4px}
+.tools button{font:inherit;font-size:15.5px;border:1.8px solid var(--ink);border-radius:var(--wob2);padding:3px 16px;background:var(--card);color:var(--ink);cursor:pointer}
+.tools button:hover{background:var(--hl)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;color:var(--ink-2)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{display:inline-block;width:22px;height:14px;border:1.8px solid var(--ink);border-radius:var(--wob2)}
-.legend .st{color:var(--red);font-weight:700}
-.isl-auth{font-family:var(--hand)!important;border:2px solid var(--ink)!important;border-radius:var(--wob)!important}
-.isl-auth button{border:2px solid var(--ink)!important;border-radius:var(--wob2)!important;background:var(--card)!important;color:var(--ink)!important}
-@media print{ .note,.top,.isl-auth{display:none!important} .who input{border-bottom:1px solid #999} }
+.note{margin:22px auto 0;max-width:40em;text-align:center;font-size:14.5px;color:var(--ink-3)}
+.isl-auth{font-family:var(--hand)!important;border:1.8px solid var(--ink)!important;border-radius:var(--wob)!important;background:var(--card)!important;margin:0 0 6px!important}
+.isl-auth button{border:1.8px solid var(--ink)!important;border-radius:var(--wob2)!important;background:var(--card)!important;color:var(--ink)!important}
+
+@media (max-width:640px){
+  .cover{padding:20px 18px 18px 36px}
+  .label{grid-template-columns:auto 1fr}
+  .label .wide{grid-column:2}
+  .page{padding:16px 12px 14px 34px}
+  .page::before{left:24px}
+  .page::after{display:none}
+  .cols{display:none}
+  .row > summary,a.row{grid-template-columns:minmax(0,1fr) 58px;grid-template-areas:"ch st" "ti st" "bx st" "qz st";gap:1px 10px;padding:9px 0}
+  .ch{grid-area:ch;font-size:13.5px} .ti{grid-area:ti} .boxes{grid-area:bx;max-width:none;margin-top:4px} .qz{grid-area:qz;text-align:left;font-size:13.5px} .stp{grid-area:st}
+  .qz::before{content:"判斷題 "}
+  .sheet table,.sheet tbody,.sheet tr,.sheet td{display:block}
+  .sheet thead{display:none}
+  .sheet tr{border-bottom:1px dashed var(--edge);padding:6px 0}
+  .sheet td{border:0;padding:1px 4px}
+  .sheet td[data-h]::before{content:attr(data-h) "：";color:var(--ink-3);font-size:12.5px}
+}
+@media print{
+  body{background:#fff}
+  .top,.isl-auth,.tabs,.tools,.note,.sheet .go{display:none!important}
+  .wrap{max-width:none;padding:0}
+  .cover{box-shadow:none;background:#fff;color:#000;border:2px solid #000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cover::before{display:none} .tally b{color:#000}
+  .page{box-shadow:none;break-inside:auto;margin-bottom:14px}
+  .page::after{display:none}
+  .row{break-inside:avoid}
+  .stp.on,.bx.ok::after,.bx.half::after{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="top"><a href="index.html">← 回到地圖</a></div>
-<header>
-  <h1>探索紀錄本</h1>
-  <p class="say">記你走過哪些島的本子。走完一座島，這裡就會蓋一個章。</p>
-  <div class="who"><label>這本是 <input id="nm" type="text" maxlength="20" placeholder="你的名字"> 的</label><span class="tally" id="tally"></span></div>
-  <div class="legend">
-    <span><i style="background:var(--grass)"></i>能去的島</span>
-    <span><i style="border-style:dashed;border-color:var(--edge);background:#efe8d6"></i>橋還沒蓋好</span>
-    <span><span class="st">○完成</span>走完的島</span>
-  </div>
-</header>
 <main id="main"></main>
-<p class="swipe">← 地圖可以左右滑 →</p><div class="mapbox"><svg class="map" id="map" viewBox="0 0 1200 900" role="img" aria-label="探索紀錄地圖"></svg></div>
-<p class="note">沒登入的時候，這本只記在這台電腦裡；用名單上的帳號登入，就會記在雲端，換一台電腦也看得到。在大家一起用的電腦上，用完記得登出。</p>
+<header class="cover">
+  <div class="site">數學探索島</div>
+  <h1>探索紀錄本</h1>
+  <div class="label">
+    <span class="k">班級</span><span class="v" id="cls"></span>
+    <span class="k">座號</span><span class="v" id="seat"></span>
+    <span class="k">姓名</span><span class="v wide"><input id="nm" type="text" maxlength="20" placeholder="寫上名字" aria-label="姓名"></span>
+  </div>
+  <p class="tally" id="tally"></p>
+</header>
+<nav class="tabs" id="tabs" aria-label="學期"></nav>
+<div id="pages"></div>
+<div class="tools">
+  <div class="legend">
+    <span><i class="bx"></i>還沒去的站</span>
+    <span><i class="bx half"></i>寫了預測</span>
+    <span><i class="bx ok"></i>記錄完成</span>
+  </div>
+  <button id="prt" type="button">列印這本紀錄本</button>
 </div>
-<script>window.ISLAND_MAP = { units: [{"slug": "g7a-ch1-number-line", "grade": "七年級上", "kind": "正課", "ch": "七上 1", "title": "一條數線，兩把尺", "open": true}, {"slug": "g7a-ch2-skeleton", "grade": "七年級上", "kind": "正課", "ch": "七上 2", "title": "拆開來看", "open": true}, {"slug": "g7a-ch2-modular", "grade": "七年級上", "kind": "補充卷", "ch": "七上 2", "title": "把數線捲起來", "open": true}, {"slug": "g7a-ch2-fraction-unit", "grade": "七年級上", "kind": "正課", "ch": "七上 2", "title": "分母是單位", "open": true}, {"slug": "g7a-ch3-naming", "grade": "七年級上", "kind": "正課", "ch": "七上 3", "title": "先給它一個名字", "open": true}, {"slug": "g7b-ch1-simultaneous", "grade": "七年級下", "kind": "正課", "ch": "七下 1", "title": "一條不夠", "open": true}, {"slug": "g7b-ch2-coordinates", "grade": "七年級下", "kind": "正課", "ch": "七下 2", "title": "一個數不夠", "open": true}, {"slug": "g7b-ch3-ratio", "grade": "七年級下", "kind": "正課", "ch": "七下 3", "title": "換一個基準看", "open": true}, {"slug": "g7b-ch4-inequality", "grade": "七年級下", "kind": "正課", "ch": "七下 4", "title": "答案是一整段", "open": true}, {"slug": "g7b-ch5-statistics", "grade": "七年級下", "kind": "正課", "ch": "七下 5", "title": "誰能代表大家", "open": true}, {"slug": "g7b-ch6-geometry", "grade": "七年級下", "kind": "正課", "ch": "七下 6", "title": "正對著看", "open": true}, {"slug": "g8a-ch1-polynomial", "grade": "八年級上", "kind": "正課", "ch": "八上 1", "title": "把十換成 x", "open": true}, {"slug": "g8a-s1-1-binomial", "grade": "八年級上", "kind": "補充卷", "ch": "八上 1-1", "title": "不要乘，用數的", "open": true}, {"slug": "g8a-ch2-sqrt-pythagoras", "grade": "八年級上", "kind": "正課", "ch": "八上 2", "title": "把面積翻回邊長", "open": true}, {"slug": "g8a-ch3-factoring", "grade": "八年級上", "kind": "正課", "ch": "八上 3", "title": "拆成乘法才看得見", "open": true}, {"slug": "g8a-ch3-genfunc-1", "grade": "八年級上", "kind": "補充卷", "ch": "八上 3", "title": "係數才是主角", "open": true}, {"slug": "g8a-ch3-genfunc-2", "grade": "八年級上", "kind": "補充卷", "ch": "八上 3", "title": "一直加下去", "open": true}, {"slug": "g8a-ch4-quadratic", "grade": "八年級上", "kind": "正課", "ch": "八上 4", "title": "變回你會解的樣子", "open": true}, {"slug": "g8a-ch5-statistics", "grade": "八年級上", "kind": "正課", "ch": "八上 5", "title": "中間的那個人在哪裡", "open": true}, {"slug": "g8b-ch1-sequences", "grade": "八年級下", "kind": "正課", "ch": "八下 1", "title": "規則才是數列", "open": true}, {"slug": "g8b-ch1-recursion", "grade": "八年級下", "kind": "補充卷", "ch": "八下 1", "title": "裡面有一個小的自己", "open": true}, {"slug": "g8b-ch2-functions", "grade": "八年級下", "kind": "正課", "ch": "八下 2", "title": "它不會改口", "open": true}, {"slug": "g8b-ch3-triangle", "grade": "八年級下", "kind": "正課", "ch": "八下 3", "title": "不能再動了", "open": true}, {"slug": "g8b-ch4-parallel", "grade": "八年級下", "kind": "正課", "ch": "八下 4", "title": "那條線本來不在圖上", "open": true}, {"slug": "g9a-ch1-similar", "grade": "九年級上", "kind": "正課", "ch": "九上 1", "title": "兩個角就夠了", "open": true}, {"slug": "g9a-ch2-circle", "grade": "九年級上", "kind": "正課", "ch": "九上 2", "title": "怎麼看都一樣", "open": true}, {"slug": "g9a-ch3-proof", "grade": "九年級上", "kind": "正課", "ch": "九上 3", "title": "不是剛好", "open": true}, {"slug": "g9b-ch1-quadratic", "grade": "九年級下", "kind": "正課", "ch": "九下 1", "title": "同一條，搬了家", "open": true}, {"slug": "g9b-ch2-statprob", "grade": "九年級下", "kind": "正課", "ch": "九下 2", "title": "算出來之前，先問", "open": true}, {"slug": "g9b-ch3-solids", "grade": "九年級下", "kind": "正課", "ch": "九下 3", "title": "多出來的那個方向", "open": true}], grades: ["七年級上", "七年級下", "八年級上", "八年級下", "九年級上", "九年級下"], plain: {"g7a-ch1-number-line": "這座島上有一條長長的路：加法是在路上走，乘法是把整條路拉長、壓短或翻過來。", "g7a-ch2-skeleton": "這座島上的數都可以拆開，拆到再也拆不開的零件，叫作質數。", "g7a-ch2-fraction-unit": "這座島上，分母是一把尺的刻度：先看一份有多大，再數你有幾份。", "g7a-ch2-modular": "這座島把數線捲成一個圈：只留下餘數，商丟掉不要。", "g7a-ch3-naming": "這座島上，還不知道的數可以先取個名字，帶著它一路算下去。", "g7b-ch1-simultaneous": "這座島上，一條線索不夠：兩個不知道的數，要兩條說法才釘得住。", "g7b-ch2-coordinates": "這座島上一個數不夠用：平面上的每一個點，都要一對有順序的數。", "g7b-ch3-ratio": "這座島上，比之前要先說好以誰為基準；換一個基準看，結論可能整個翻過來。", "g7b-ch4-inequality": "這座島上的答案不是一個數，是數線上的一整段。", "g7b-ch5-statistics": "這座島上，要選一個數代表一群人：平均、中間的那個、最多人的那個，各回答不同的問題。", "g7b-ch6-geometry": "這座島上要正對著看：最短的路是垂直的那一條，對折之後只要看一半。", "g8a-ch1-polynomial": "這座島上，把數字裡的 10 換成 x，一個數就變成一條可以餵任何數的規則。", "g8a-s1-1-binomial": "這座島上的係數都在數數：從好幾個括號裡挑出幾個，一共有幾種挑法。", "g8a-ch2-sqrt-pythagoras": "這座島上，平方把邊長變成面積，開方要把面積翻回邊長；往回翻的時候會出事。", "g8a-ch3-factoring": "這座島上，把加起來的式子改寫成乘起來，答案就會自己掉出來。", "g8a-ch3-genfunc-1": "這座島上的 x 只是掛鉤：把一列數字掛上去，乘一乘，係數就幫你數完了。", "g8a-ch3-genfunc-2": "這座島上，一條無限長的數列，可以裝進一個很短的式子裡。", "g8a-ch4-quadratic": "這座島上的每一招，都是把方程式搬回你本來就會解的樣子。", "g8a-ch5-statistics": "這座島上，一群人的成績被排隊、分組、畫成圖；每換一種看法，就丟掉一些東西，也換到一些東西。", "g8b-ch1-sequences": "這座島上，數列不是猜出來的，是規則寫出來的；第 1 項站在原地，一步都還沒走。", "g8b-ch1-recursion": "這座島上的每個大問題，裡面都藏著一個小一號的自己。", "g8b-ch2-functions": "這座島上的機器：餵一個數進去，它只吐一個出來，而且從來不改口。", "g8b-ch3-triangle": "這座島上，看不能當憑據：條件夠了，圖形就不能再動，不用量也知道。", "g8b-ch4-parallel": "這座島上的難題，常常要先補一條本來不在圖上的線。", "g9a-ch1-similar": "這座島上只管形狀、不管大小：兩個角一樣，三角形就長得一樣。", "g9a-ch2-circle": "這座島是一個圓：從圓心看出去每個方向都一樣遠，所以怎麼轉都和自己一樣。", "g9a-ch3-proof": "這座島上，看起來對的不算數；三條線剛好交在一點，背後一定有理由。", "g9b-ch1-quadratic": "這座島上所有的拋物線都是同一條，只是搬了家、變了胖瘦。", "g9b-ch2-statprob": "這座島上，算機率之前先問一句：分母是誰？", "g9b-ch3-solids": "這座島上多了一個方向：表面要攤平來看，體積要一層一層疊起來。"} };</script>
-<script src="island-map.js"></script>
+<p class="note">點有紀錄的那一章，會打開那一章的紀錄單。沒登入的時候，這本只記在這台電腦裡；用名單上的帳號登入，就會記在雲端，換一台電腦也看得到。在大家一起用的電腦上，用完記得登出。</p>
+</div>
+<script>window.ISLAND_MAP = { units: [{"slug": "g7a-ch1-number-line", "grade": "七年級上", "kind": "正課", "ch": "七上 1", "title": "一條數線，兩把尺", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g7a-ch2-skeleton", "grade": "七年級上", "kind": "正課", "ch": "七上 2", "title": "拆開來看", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5"], "ob": [], "q": 3}, {"slug": "g7a-ch2-modular", "grade": "七年級上", "kind": "補充卷", "ch": "七上 2", "title": "把數線捲起來", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6"], "ob": [], "q": 3}, {"slug": "g7a-ch2-fraction-unit", "grade": "七年級上", "kind": "正課", "ch": "七上 2", "title": "分母是單位", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5"], "ob": ["lab5"], "q": 3}, {"slug": "g7a-ch3-naming", "grade": "七年級上", "kind": "正課", "ch": "七上 3", "title": "先給它一個名字", "open": true, "st": ["lab6", "lab7", "lab5", "lab3", "lab1", "lab4", "lab2"], "ob": [], "q": 3}, {"slug": "g7b-ch1-simultaneous", "grade": "七年級下", "kind": "正課", "ch": "七下 1", "title": "一條不夠", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g7b-ch2-coordinates", "grade": "七年級下", "kind": "正課", "ch": "七下 2", "title": "一個數不夠", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g7b-ch3-ratio", "grade": "七年級下", "kind": "正課", "ch": "七下 3", "title": "換一個基準看", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": ["lab4"], "q": 3}, {"slug": "g7b-ch4-inequality", "grade": "七年級下", "kind": "正課", "ch": "七下 4", "title": "答案是一整段", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g7b-ch5-statistics", "grade": "七年級下", "kind": "正課", "ch": "七下 5", "title": "誰能代表大家", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g7b-ch6-geometry", "grade": "七年級下", "kind": "正課", "ch": "七下 6", "title": "正對著看", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g8a-ch1-polynomial", "grade": "八年級上", "kind": "正課", "ch": "八上 1", "title": "把十換成 x", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g8a-s1-1-binomial", "grade": "八年級上", "kind": "補充卷", "ch": "八上 1-1", "title": "不要乘，用數的", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g8a-ch2-sqrt-pythagoras", "grade": "八年級上", "kind": "正課", "ch": "八上 2", "title": "把面積翻回邊長", "open": true, "st": ["lab-abs", "lab-squeeze", "lab-incom", "lab-long", "lab-unit", "lab-rat", "lab-rearr", "lab-door1", "lab-lune", "lab-door3", "lab-triple", "lab-spiral"], "ob": ["lab-long", "lab-spiral"], "q": 3}, {"slug": "g8a-ch3-factoring", "grade": "八年級上", "kind": "正課", "ch": "八上 3", "title": "拆成乘法才看得見", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5"], "ob": ["lab4"], "q": 3}, {"slug": "g8a-ch3-genfunc-1", "grade": "八年級上", "kind": "補充卷", "ch": "八上 3", "title": "係數才是主角", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5"], "ob": [], "q": 3}, {"slug": "g8a-ch3-genfunc-2", "grade": "八年級上", "kind": "補充卷", "ch": "八上 3", "title": "一直加下去", "open": true, "st": ["lab1", "lab3", "lab2", "lab4", "lab5"], "ob": [], "q": 3}, {"slug": "g8a-ch4-quadratic", "grade": "八年級上", "kind": "正課", "ch": "八上 4", "title": "變回你會解的樣子", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6"], "ob": [], "q": 3}, {"slug": "g8a-ch5-statistics", "grade": "八年級上", "kind": "正課", "ch": "八上 5", "title": "中間的那個人在哪裡", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6"], "ob": ["lab3"], "q": 3}, {"slug": "g8b-ch1-sequences", "grade": "八年級下", "kind": "正課", "ch": "八下 1", "title": "規則才是數列", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g8b-ch1-recursion", "grade": "八年級下", "kind": "補充卷", "ch": "八下 1", "title": "裡面有一個小的自己", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6"], "ob": [], "q": 3}, {"slug": "g8b-ch2-functions", "grade": "八年級下", "kind": "正課", "ch": "八下 2", "title": "它不會改口", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": ["lab1"], "q": 3}, {"slug": "g8b-ch3-triangle", "grade": "八年級下", "kind": "正課", "ch": "八下 3", "title": "不能再動了", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": ["lab3"], "q": 3}, {"slug": "g8b-ch4-parallel", "grade": "八年級下", "kind": "正課", "ch": "八下 4", "title": "那條線本來不在圖上", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g9a-ch1-similar", "grade": "九年級上", "kind": "正課", "ch": "九上 1", "title": "兩個角就夠了", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g9a-ch2-circle", "grade": "九年級上", "kind": "正課", "ch": "九上 2", "title": "怎麼看都一樣", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g9a-ch3-proof", "grade": "九年級上", "kind": "正課", "ch": "九上 3", "title": "不是剛好", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g9b-ch1-quadratic", "grade": "九年級下", "kind": "正課", "ch": "九下 1", "title": "同一條，搬了家", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7"], "ob": [], "q": 3}, {"slug": "g9b-ch2-statprob", "grade": "九年級下", "kind": "正課", "ch": "九下 2", "title": "算出來之前，先問", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7", "lab8"], "ob": [], "q": 3}, {"slug": "g9b-ch3-solids", "grade": "九年級下", "kind": "正課", "ch": "九下 3", "title": "多出來的那個方向", "open": true, "st": ["lab1", "lab2", "lab3", "lab4", "lab5", "lab6", "lab7", "lab8"], "ob": [], "q": 3}], grades: ["七年級上", "七年級下", "八年級上", "八年級下", "九年級上", "九年級下"], plain: {"g7a-ch1-number-line": "這座島上有一條長長的路：加法是在路上走，乘法是把整條路拉長、壓短或翻過來。", "g7a-ch2-skeleton": "這座島上的數都可以拆開，拆到再也拆不開的零件，叫作質數。", "g7a-ch2-fraction-unit": "這座島上，分母是一把尺的刻度：先看一份有多大，再數你有幾份。", "g7a-ch2-modular": "這座島把數線捲成一個圈：只留下餘數，商丟掉不要。", "g7a-ch3-naming": "這座島上，還不知道的數可以先取個名字，帶著它一路算下去。", "g7b-ch1-simultaneous": "這座島上，一條線索不夠：兩個不知道的數，要兩條說法才釘得住。", "g7b-ch2-coordinates": "這座島上一個數不夠用：平面上的每一個點，都要一對有順序的數。", "g7b-ch3-ratio": "這座島上，比之前要先說好以誰為基準；換一個基準看，結論可能整個翻過來。", "g7b-ch4-inequality": "這座島上的答案不是一個數，是數線上的一整段。", "g7b-ch5-statistics": "這座島上，要選一個數代表一群人：平均、中間的那個、最多人的那個，各回答不同的問題。", "g7b-ch6-geometry": "這座島上要正對著看：最短的路是垂直的那一條，對折之後只要看一半。", "g8a-ch1-polynomial": "這座島上，把數字裡的 10 換成 x，一個數就變成一條可以餵任何數的規則。", "g8a-s1-1-binomial": "這座島上的係數都在數數：從好幾個括號裡挑出幾個，一共有幾種挑法。", "g8a-ch2-sqrt-pythagoras": "這座島上，平方把邊長變成面積，開方要把面積翻回邊長；往回翻的時候會出事。", "g8a-ch3-factoring": "這座島上，把加起來的式子改寫成乘起來，答案就會自己掉出來。", "g8a-ch3-genfunc-1": "這座島上的 x 只是掛鉤：把一列數字掛上去，乘一乘，係數就幫你數完了。", "g8a-ch3-genfunc-2": "這座島上，一條無限長的數列，可以裝進一個很短的式子裡。", "g8a-ch4-quadratic": "這座島上的每一招，都是把方程式搬回你本來就會解的樣子。", "g8a-ch5-statistics": "這座島上，一群人的成績被排隊、分組、畫成圖；每換一種看法，就丟掉一些東西，也換到一些東西。", "g8b-ch1-sequences": "這座島上，數列不是猜出來的，是規則寫出來的；第 1 項站在原地，一步都還沒走。", "g8b-ch1-recursion": "這座島上的每個大問題，裡面都藏著一個小一號的自己。", "g8b-ch2-functions": "這座島上的機器：餵一個數進去，它只吐一個出來，而且從來不改口。", "g8b-ch3-triangle": "這座島上，看不能當憑據：條件夠了，圖形就不能再動，不用量也知道。", "g8b-ch4-parallel": "這座島上的難題，常常要先補一條本來不在圖上的線。", "g9a-ch1-similar": "這座島上只管形狀、不管大小：兩個角一樣，三角形就長得一樣。", "g9a-ch2-circle": "這座島是一個圓：從圓心看出去每個方向都一樣遠，所以怎麼轉都和自己一樣。", "g9a-ch3-proof": "這座島上，看起來對的不算數；三條線剛好交在一點，背後一定有理由。", "g9b-ch1-quadratic": "這座島上所有的拋物線都是同一條，只是搬了家、變了胖瘦。", "g9b-ch2-statprob": "這座島上，算機率之前先問一句：分母是誰？", "g9b-ch3-solids": "這座島上多了一個方向：表面要攤平來看，體積要一層一層疊起來。"} };</script>
 <script>
+(function () {
+const { units: UNITS, grades: GRADES } = window.ISLAND_MAP;
+const SHORT = { "七年級上": "七上", "七年級下": "七下", "八年級上": "八上", "八年級下": "八下", "九年級上": "九上", "九年級下": "九下" };
+const $ = id => document.getElementById(id);
 const get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const set = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
-const nm = document.getElementById("nm");
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const md = iso => { const d = new Date(iso); return isNaN(d) ? "" : (d.getMonth() + 1) + "/" + d.getDate(); };
+const ymd = iso => { const d = new Date(iso); return isNaN(d) ? "" : d.getFullYear() + "." + (d.getMonth() + 1) + "." + d.getDate(); };
+const nm = $("nm");
 nm.addEventListener("input", () => { if (!nm.readOnly) set("isl:name", nm.value); });
-function render(cloud, cname) {
-  if (cloud) { nm.value = cname || ""; nm.readOnly = true; } else { nm.value = get("isl:name") || ""; nm.readOnly = false; }
-  window.__who = cloud ? (cname || "") : (get("isl:name") || "");
-  const open = ISLAND_MAP.units.filter(u => u.open);
-  let stamps = 0;
-  open.forEach(u => {
-    let S = null;
-    if (cloud) S = cloud[u.slug]; else { try { S = JSON.parse(get("isl:" + u.slug)); } catch (e) {} }
-    if (S && S.stampAt) stamps++;
+const openSet = new Set();          // 展開中的章（重畫時保留）
+
+/* 一站的狀態與文字。預測的選項文字存在 pt（舊紀錄沒有 pt，就只有寫下的那一句） */
+const stOf = (S, id) => (S && S.st && S.st[id]) || {};
+const predOf = s => s.pt != null ? s.pt : ((s.opts && s.opts.length ? "選了第 " + s.opts.map(i => i + 1).join("、") + " 個；" : "") + (s.pred || "").trim());
+const started = S => !!S && (!!S.stampAt || Object.values(S.st || {}).some(x => x.locked || x.done || (x.pred || "").trim() || (x.obs || "").trim()) || Object.values(S.quiz || {}).some(x => x.tried && x.tried.length));
+
+function rowHtml(u, S) {
+  const ids = u.st || [], nq = u.q || 0;
+  const boxes = ids.map((id, i) => { const s = stOf(S, id); return '<i class="bx' + (s.done ? " ok" : s.locked ? " half" : "") + '" title="第 ' + (i + 1) + ' 站"></i>'; }).join("");
+  const nd = ids.filter(id => stOf(S, id).done).length;
+  const qd = S ? Math.min(nq, Object.values(S.quiz || {}).filter(x => x.ok).length) : 0;
+  const head = '<span class="ch">' + esc(u.ch.replace(" ", "")) + "</span>";
+  const stamp = S && S.stampAt ? '<span class="stp on" title="' + ymd(S.stampAt) + ' 完成"><b>完成</b><i>' + md(S.stampAt) + "</i></span>" : '<span class="stp" aria-hidden="true">蓋章處</span>';
+  const boxesWrap = '<span class="boxes" aria-label="探索站 ' + nd + "／" + ids.length + '">' + boxes + "</span>";
+  const qz = '<span class="qz' + (nq && qd === nq ? " ok" : "") + '">' + qd + "／" + nq + "</span>";
+  if (!started(S)) {
+    return '<a class="row new" href="' + u.slug + '.html"><span class="ch">' + esc(u.ch.replace(" ", "")) + '</span><span class="ti">' + esc(u.title) + "<small>還沒去過，點這一列出發</small></span>" + boxesWrap + qz + stamp + "</a>";
+  }
+  let sheet = '<div class="sheet"><table><thead><tr><th>站</th><th>我的預測</th><th>我看到的</th></tr></thead><tbody>';
+  ids.forEach((id, i) => {
+    const s = stOf(S, id), p = s.locked ? predOf(s) : "", o = s.done ? (s.obs || "").trim() : "";
+    sheet += "<tr><td>第 " + (i + 1) + ' 站</td><td data-h="預測"' + (p ? ' class="p">' + esc(p) : ' class="e">' + ((u.ob || []).includes(id) ? "（這站直接操作）" : "還沒寫")) + '</td><td data-h="看到"' + (o ? ">" + esc(o) : ' class="e">還沒寫') + "</td></tr>";
   });
-  document.getElementById("tally").innerHTML = "已經蓋了 <b>" + stamps + "</b> 個章（能去的島有 " + open.length + " 座）";
-  IslandMap.draw(cloud, { book: true });
+  sheet += '</tbody></table><div class="foot"><span>探索站 ' + nd + "／" + ids.length + "　判斷題 " + qd + "／" + nq + "</span>" +
+    (S.stampAt ? "<span>" + ymd(S.stampAt) + " 蓋章</span>" : S.updated ? "<span>上次寫到 " + ymd(S.updated) + "</span>" : "") +
+    '<a class="go" href="' + u.slug + '.html">' + (S.stampAt ? "回這座島看看" : "接著寫") + " →</a></div></div>";
+  return '<details class="row" data-slug="' + u.slug + '"' + (openSet.has(u.slug) ? " open" : "") + "><summary>" + head + '<span class="ti">' + esc(u.title) +
+    '<small class="c">' + (S.stampAt ? "點開看紀錄單" : "寫到一半，點開看紀錄單") + '</small><small class="o">點一下收起來</small></span>' + boxesWrap + qz + stamp + "</summary>" + sheet + "</details>";
 }
+
+function render(cloud, cname, me) {
+  if (cloud) { nm.value = cname || ""; nm.readOnly = true; } else { nm.value = get("isl:name") || ""; nm.readOnly = false; }
+  $("cls").textContent = cloud && me && me.cls ? me.cls : "";
+  $("seat").textContent = cloud && me && me.seat ? me.seat : "";
+  const rec = u => { if (cloud) return cloud[u.slug] || null; try { return JSON.parse(get("isl:" + u.slug)); } catch (e) { return null; } };
+  const open = UNITS.filter(u => u.open);
+  let stamps = 0, stations = 0, tabs = "", pages = "";
+  GRADES.forEach((g, gi) => {
+    const us = open.filter(u => u.grade === g);
+    if (!us.length) return;
+    let gs = 0, rows = "";
+    us.forEach(u => {
+      const S = rec(u);
+      if (S && S.stampAt) { stamps++; gs++; }
+      stations += (u.st || []).filter(id => stOf(S, id).done).length;
+      rows += rowHtml(u, S);
+    });
+    tabs += '<a href="#p' + gi + '">' + SHORT[g] + (gs ? "<b>" + gs + " 章</b>" : "") + "</a>";
+    pages += '<section class="page" id="p' + gi + '"><h2>' + esc(g) + "<small>" + us.length + " 座島，蓋了 " + gs + ' 個章</small><span class="pno">第 ' + (gi + 1) + " 頁</span></h2>" +
+      '<div class="cols"><span>章</span><span>島名</span><span>探索站</span><span>判斷題</span><span>完成章</span></div>' + rows + "</section>";
+  });
+  $("tabs").innerHTML = tabs;
+  $("pages").innerHTML = pages;
+  $("tally").innerHTML = "蓋了<b>" + stamps + "</b>個章，記錄了<b>" + stations + "</b>站（能去的島有 " + open.length + " 座）";
+  document.querySelectorAll("details.row").forEach(d => d.addEventListener("toggle", () => { d.open ? openSet.add(d.dataset.slug) : openSet.delete(d.dataset.slug); }));
+}
+
+/* 列印：有紀錄的章全部展開，印完再收回原樣 */
+let before = null;
+window.addEventListener("beforeprint", () => { before = [...document.querySelectorAll("details.row")].map(d => [d, d.open]); before.forEach(([d]) => { d.open = true; }); });
+window.addEventListener("afterprint", () => { if (before) before.forEach(([d, o]) => { d.open = o; }); before = null; });
+$("prt").addEventListener("click", () => window.print());
+
 window.ISLAND_PASSPORT = { show: render };
 render(null);
+})();
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="island-cloud.js"></script>
