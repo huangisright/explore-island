@@ -9,4 +9,4 @@ window.ISLAND_FIREBASE = {
   appId: "1:12080862626:web:67b6a3d714ba46bfc20efb",
 };
 // 報告島：學生海報原圖備份到老師雲端硬碟的 Apps Script 網址（見 _原始碼/drive-upload.gs）。空白＝不備份，只存在探索島資料庫。
-window.ISLAND_DRIVE = "";
+window.ISLAND_DRIVE = "https://script.google.com/macros/s/AKfycbxbO48sUkvv2awlKC8dZBz_UZ53qRpcrh5VGG3wW1nvsG7pHuhQlTrcqLXOO3SRHXyO/exec";

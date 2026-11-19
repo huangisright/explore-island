@@ -11,6 +11,9 @@
  *      貼到探索島 _原始碼/firebase-config.js 的 window.ISLAND_DRIVE。
  *   之後改了這支程式：「部署」→「管理部署作業」→ 編輯 → 版本選「新版本」，網址不會變。
  *
+ * 目前的部署（2026-11-19，kb5936@cnc.km.edu.tw，Apps Script 專案「探索島 報告島 雲端硬碟備份」）：
+ *   https://script.google.com/macros/s/AKfycbxbO48sUkvv2awlKC8dZBz_UZ53qRpcrh5VGG3wW1nvsG7pHuhQlTrcqLXOO3SRHXyO/exec
+ *
  * 安全：網址雖然是「任何人」都能呼叫，但每一次都會拿學生的登入憑證去問 Firebase，
  *       確認是本人登入、而且在探索島名單上，才會收檔。
  *
