@@ -66,7 +66,7 @@ export async function prepImage(file, withThumb) {
     if (q > .55) q -= .08; else side = Math.round(side * .82);
   }
   const thumb = withThumb ? encode(im, 420, .62) : "";
-  const full = encode(im, 3000, .88);
+  const full = encode(im, 2200, .8);   // 老師雲端硬碟空間有限（2026-11 已用 96%），備份版不用原尺寸
   return { show, thumb, full, w: im.naturalWidth, h: im.naturalHeight };
 }
 
