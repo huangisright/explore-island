@@ -22,6 +22,7 @@
   <div><b>3. 交上來</b><p>拍照或上傳圖檔（最多 3 張），也可以附 Canva／雲端連結。截止前都能改。</p></div>
   <div><b>4. 上台</b><p>輪到的時候上台報告；台下打開<a href="report-show.html">展示廳</a>給星星、寫一句話。</p></div>
 </div>
+<section class="sketch guide" id="guide"></section>
 <div id="main"></div>
 <div class="semtabs" id="sems"></div>
 <div class="chaps" id="chaps"></div>
@@ -33,7 +34,7 @@
 <script src="firebase-config.js"></script>
 <script type="module">
 import { auth, db, login, logout, emailOf, ROLES, staffRole, rosterOf, canSelfJoin, authBar, joinForm } from "./island-cloud.js";
-import { CH, chapById, SEMS, DIR_NOTE, RUBRIC, LEVEL, esc, rich, plain, fmtTime, prepImage, driveReady, driveUpload } from "./report-lib.js";
+import { CH, chapById, SEMS, DIR_NOTE, RUBRIC, LEVEL, RUBRIC_DESC, POSTER_MUST, esc, rich, plain, fmtTime, prepImage, driveReady, driveUpload } from "./report-lib.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 import { doc, getDoc, getDocs, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
@@ -78,6 +79,13 @@ onAuthStateChanged(auth, async u => {
   }
   drawChaps(); openChap(chap, true);
 });
+
+/* ---------- 海報要有什麼、老師看什麼 ---------- */
+$("guide").innerHTML = '<div class="gcols"><div><h3>一頁海報一定要有</h3><ol>' + POSTER_MUST.map(t => "<li>" + esc(t) + "</li>").join("") +
+  '</ol><p class="muted">另外，每一題都有自己的「報告裡要有」，選題之後會列在「我的報告」裡。</p></div>' +
+  '<div><h3>老師評分看五件事 <span class="muted">（每項 1～3：待加強／做到／很好）</span></h3><table class="rub"><thead><tr><th></th><th>做到</th><th>很好</th></tr></thead><tbody>' +
+  RUBRIC.map((r, i) => "<tr><th>" + esc(r) + "</th><td>" + esc(RUBRIC_DESC[i][0]) + "</td><td>" + esc(RUBRIC_DESC[i][1]) + "</td></tr>").join("") +
+  '</tbody></table><p class="muted">上台時，台下同學會給 1～3 顆星：聽得懂／有說服力／讓我學到新東西。</p></div></div>';
 
 /* ---------- 章 ---------- */
 function drawSems() {
@@ -159,7 +167,9 @@ function mineCard(c, m, lock) {
   const x = c.qs[m.q];
   let h = '<div class="sketch2" id="mine"><div class="row" style="justify-content:space-between"><b style="font-size:18px">我的報告</b>' +
     (m.done ? '<span class="pill ok">✓ 已交　' + esc(fmtTime(m.doneAt)) + "</span>" : '<span class="pill no">還沒交</span>') + "</div>" +
-    '<p style="margin:6px 0"><span class="dir pill b">' + esc(x.k) + "</span>　" + rich(x.t) + "</p>";
+    '<p style="margin:6px 0"><span class="dir pill b">' + esc(x.k) + "</span>　" + rich(x.t) + "</p>" +
+    '<div class="need" style="margin:6px 0 4px"><b>這一題的報告裡要有</b>　' + rich(x.show) + "</div>" +
+    '<details class="more"><summary>延伸任務（可以照這幾步做）</summary><ol>' + x.s.map(t => "<li>" + rich(t) + "</li>").join("") + "</ol></details>";
   if (lock) {
     h += '<p class="warn">老師已經截止收件，內容不能再改。</p>';
     if (m.concl) h += "<p><b>一句話結論：</b>" + esc(m.concl) + "</p>";
@@ -172,6 +182,9 @@ function mineCard(c, m, lock) {
     draft.imgs.map((im, i) => '<figure><img src="' + im.show + '" alt="第 ' + (i + 1) + ' 張"><button data-del="' + i + '" title="拿掉這張">✕</button></figure>').join("") +
     (draft.imgs.length < 3 ? '<div class="add" id="add">＋ 拍照或選圖檔</div>' : "") + "</div></div>" +
     '<div class="field"><label for="fl">海報連結 <span class="muted">（選填：Canva、Google 簡報、雲端硬碟的分享連結）</span></label><input type="url" id="fl" placeholder="https://" value="' + esc(draft.link) + '"></div>' +
+    '<details class="more chk"><summary>送出前，自己對一次</summary><ul>' +
+      POSTER_MUST.map(t => "<li><label><input type=\"checkbox\"> " + esc(t) + "</label></li>").join("") +
+      '<li><label><input type="checkbox"> 這一題的「報告裡要有」都放進去了</label></li></ul></details>' +
     '<div class="row"><button class="p" id="send"' + (busy ? " disabled" : "") + ">" + (m.done ? "更新繳交內容" : "送出") + '</button><button class="ghost" id="drop">取消選題</button><span id="msg" class="muted">' + esc(msg) + "</span></div>";
   return h + "</div>";
 }

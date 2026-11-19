@@ -82,3 +82,15 @@ i.m{font-family:"Times New Roman",serif;font-style:italic}
 .isl-auth{font-family:var(--hand)!important}
 footer{margin-top:36px;text-align:center;color:var(--ink-3);font-size:14px}
 [hidden]{display:none!important}
+/* 海報要有什麼、老師看什麼 */
+.guide h3{font-size:17px;margin:2px 0 6px}
+.guide ol{margin:0;padding-left:22px;font-size:15px}
+.guide .gcols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:10px 26px}
+@media (max-width:820px){.guide .gcols{grid-template-columns:1fr}}
+table.rub{border-collapse:collapse;font-size:14.5px;width:100%}
+table.rub th,table.rub td{border-bottom:1px dashed var(--edge);padding:4px 8px 4px 0;text-align:left;vertical-align:top}
+table.rub thead th{font-size:13px;color:var(--ink-3);font-weight:600}
+table.rub tbody th{white-space:nowrap;font-weight:700}
+.chk ul{list-style:none;padding-left:4px;margin:4px 0;font-size:14.5px}
+.chk label{cursor:pointer}
+#mine .need{font-size:14.5px;background:#fbf6e7;border-radius:6px;padding:6px 10px}

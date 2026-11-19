@@ -87,7 +87,7 @@
 <script src="firebase-config.js"></script>
 <script type="module">
 import { auth, db, login, logout, ROLES, staffRole, rosterOf, canSelfJoin, authBar, joinForm } from "./island-cloud.js";
-import { CH, chapById, SEMS, DIR_NOTE, RUBRIC, LEVEL, STARS, esc, rich, plain, fmtTime, chapLabel } from "./report-lib.js";
+import { CH, chapById, SEMS, DIR_NOTE, RUBRIC, RUBRIC_DESC, LEVEL, STARS, esc, rich, plain, fmtTime, chapLabel } from "./report-lib.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 import { doc, getDoc, getDocs, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
@@ -409,7 +409,7 @@ function gradeForm(box, u, compact) {
   const g = grades[u] || { s: {}, comment: "", show: false };
   const s = { ...(g.s || {}) };
   box.innerHTML = '<div class="sketch" style="margin-top:12px"><b>老師評分</b>　<span class="muted">批改看五件事，每項 1～3</span>' +
-    '<div class="rub" style="margin:8px 0">' + RUBRIC.map((r, i) => "<span>" + esc(r) + '</span><span class="lv" data-i="' + i + '">' + [1, 2, 3].map(n => '<button data-n="' + n + '"' + (s["r" + i] === n ? ' class="on"' : "") + (ro ? " disabled" : "") + ">" + n + " " + LEVEL[n] + "</button>").join("") + "</span>").join("") + "</div>" +
+    '<div class="rub" style="margin:8px 0">' + RUBRIC.map((r, i) => '<span title="做到：' + esc(RUBRIC_DESC[i][0]) + '\n很好：' + esc(RUBRIC_DESC[i][1]) + '" style="cursor:help;border-bottom:1px dotted var(--edge)">' + esc(r) + '</span><span class="lv" data-i="' + i + '">' + [1, 2, 3].map(n => '<button data-n="' + n + '"' + (s["r" + i] === n ? ' class="on"' : "") + (ro ? " disabled" : "") + (n > 1 ? ' title="' + esc(RUBRIC_DESC[i][n - 2]) + '"' : "") + ">" + n + " " + LEVEL[n] + "</button>").join("") + "</span>").join("") + "</div>" +
     '<div class="row"><span>總分 <b class="tt">' + RUBRIC.reduce((a, r, i) => a + (s["r" + i] || 0), 0) + "</b>／15</span></div>" +
     '<div class="field"><textarea class="cmt" placeholder="給學生的評語" maxlength="1000"' + (ro ? " disabled" : "") + ">" + esc(g.comment || "") + "</textarea></div>" +
     (ro ? "" : '<div class="row"><label><input type="checkbox" class="shw"' + (g.show ? " checked" : "") + "> 學生看得到（報告島上他自己的那一章）</label><button class=\"p sv\">存評分</button><span class=\"muted m\"></span></div>") + "</div>";
