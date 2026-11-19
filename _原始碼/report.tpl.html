@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>報告島｜數學探索島</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="report.css">
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="back" href="index.html">← 回地圖</a>
+  <a class="navr" href="report-show.html">展示廳 →</a>
+  <h1>報告島</h1>
+  <p class="say">一章上完，從那一章的六題裡選一題，做一頁海報，上台說給大家聽。</p>
+</header>
+<div class="steps">
+  <div><b>1. 選題</b><p>先選章，再從六題裡挑一題。同一題可以好幾個人選。</p></div>
+  <div><b>2. 做海報</b><p>一頁就好：題目、一句話的結論、支持結論的證據、什麼時候不成立。</p></div>
+  <div><b>3. 交上來</b><p>拍照或上傳圖檔（最多 3 張），也可以附 Canva／雲端連結。截止前都能改。</p></div>
+  <div><b>4. 上台</b><p>輪到的時候上台報告；台下打開<a href="report-show.html">展示廳</a>給星星、寫一句話。</p></div>
+</div>
+<div id="main"></div>
+<div class="semtabs" id="sems"></div>
+<div class="chaps" id="chaps"></div>
+<div id="ch"></div>
+<footer>黃士祐 老師（IsRight）</footer>
+</div>
+<input type="file" id="pick" accept="image/*" multiple hidden>
+<script>window.REPORT_DATA = /*DATA*/[];</script>
+<script src="firebase-config.js"></script>
+<script type="module">
+import { auth, db, login, logout, emailOf, ROLES, staffRole, rosterOf, canSelfJoin, authBar, joinForm } from "./island-cloud.js";
+import { CH, chapById, SEMS, DIR_NOTE, RUBRIC, LEVEL, esc, rich, plain, fmtTime, prepImage, driveReady, driveUpload } from "./report-lib.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { doc, getDoc, getDocs, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+const $ = id => document.getElementById(id);
+const bar = authBar($("main"));
+let user = null, me = null, staff = "", mine = {}, sem = "", chap = "", counts = null, names = {}, ext = {}, grade = null, unsub = null;
+let draft = null;          // 這一章正在編輯的內容 { concl, link, imgs:[{show, thumb, full, fresh}] , dirty }
+let busy = false, msg = "";
+
+/* ---------- 登入 ---------- */
+function paintBar() {
+  if (!user) {
+    bar.innerHTML = '<span>題目大家都看得到；要選題、交海報，請先登入。</span><button class="p">用 Google 登入</button>';
+    bar.querySelector("button").onclick = () => login().catch(() => {});
+  } else if (staff) {
+    bar.innerHTML = '<span>' + ROLES[staff] + '帳號 <b>' + esc(user.email) + '</b>：選題與繳交狀況、報告順序、評分都在 <a href="report-show.html">展示廳</a>。</span><button>登出</button>';
+    bar.querySelector("button").onclick = () => logout();
+  } else if (!me) {
+    bar.innerHTML = '<span class="warn">這個帳號不在名單上</span><span>' + esc(user.email) + '</span><button>換帳號</button>';
+    bar.querySelector("button").onclick = () => logout();
+  } else {
+    bar.innerHTML = '<span><b>' + esc(me.name) + '</b>（' + esc(me.cls) + ' 班 ' + esc(me.seat) + ' 號）</span><button>登出</button>';
+    bar.querySelector("button").onclick = () => logout();
+  }
+}
+onAuthStateChanged(auth, async u => {
+  user = u; me = null; staff = ""; mine = {}; draft = null; grade = null;
+  if (!u) { paintBar(); drawChaps(); openChap(chap, true); return; }
+  bar.innerHTML = "<span>確認名單中…</span>";
+  let r = await rosterOf(u);
+  staff = r ? "" : await staffRole(u);
+  if (user !== u) return;
+  if (!r && !staff && canSelfJoin(u)) {
+    r = await new Promise(res => joinForm(bar, u, res, () => { res(null); logout(); }));
+    if (!r || user !== u) return;
+  }
+  me = r;
+  paintBar();
+  if (me) {
+    const got = await Promise.all(CH.map(c => getDoc(doc(db, "ext", c.id, "subs", u.uid)).then(d => d.exists() ? d.data() : null).catch(() => null)));
+    CH.forEach((c, i) => { if (got[i]) mine[c.id] = got[i]; });
+  }
+  drawChaps(); openChap(chap, true);
+});
+
+/* ---------- 章 ---------- */
+function drawSems() {
+  $("sems").innerHTML = SEMS.filter(s => CH.some(c => c.sem === s)).map(s => '<button data-s="' + s + '">' + s + "</button>").join("");
+  $("sems").querySelectorAll("button").forEach(b => b.onclick = () => { sem = b.dataset.s; drawSems(); drawChaps(); });
+  $("sems").querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.s === sem));
+}
+function drawChaps() {
+  $("chaps").innerHTML = CH.filter(c => c.sem === sem).map(c => {
+    const m = mine[c.id];
+    const st = !m ? "" : m.done ? '<span class="st done">✓ 已交</span>' : '<span class="st pick">已選題，還沒交</span>';
+    return '<button data-c="' + c.id + '"' + (c.id === chap ? ' class="on"' : "") + '><span class="muted">' + esc(c.code) + "　" + esc(c.name) + "</span><b>《" + esc(c.title) + "》</b>" + st + "</button>";
+  }).join("");
+  $("chaps").querySelectorAll("button").forEach(b => b.onclick = () => { location.hash = b.dataset.c; });
+}
+window.addEventListener("hashchange", () => openChap(location.hash.slice(1)));
+
+async function openChap(id, keep) {
+  const c = chapById(id);
+  if (!c) { chap = ""; $("ch").innerHTML = '<p class="muted" style="text-align:center">選一章，就會看到這一章的六題。</p>'; return; }
+  if (draft && draft.dirty && chap !== id && !confirm("這一章還有沒送出的修改，確定要離開嗎？")) { location.hash = chap; return; }
+  const changed = chap !== id;
+  chap = id; if (c.sem !== sem) { sem = c.sem; drawSems(); }
+  drawChaps();
+  if (changed || !keep) { draft = null; grade = null; counts = null; }
+  if (unsub) { unsub(); unsub = null; }
+  ext = {};
+  if (me || staff) {
+    unsub = onSnapshot(doc(db, "ext", id), d => { ext = d.exists() ? d.data() : {}; drawChap(); }, () => {});
+    try {
+      const s = await getDocs(collection(db, "ext", id, "subs"));
+      counts = [0, 0, 0, 0, 0, 0]; names = {};
+      s.forEach(d => { const x = d.data(); counts[x.q] = (counts[x.q] || 0) + 1; names[d.id] = x.name; });
+    } catch (e) { counts = null; }
+  }
+  if (me && !draft) await loadDraft();
+  if (me && mine[id]) { try { const g = await getDoc(doc(db, "ext", id, "grades", user.uid)); grade = g.exists() ? g.data() : null; } catch (e) { grade = null; } }
+  if (chap === id) drawChap();
+}
+
+async function loadDraft() {
+  const m = mine[chap];
+  draft = { concl: m ? m.concl || "" : "", link: m ? m.link || "" : "", imgs: [], dirty: false };
+  if (m && m.n) {
+    for (let i = 0; i < m.n; i++) {
+      try { const d = await getDoc(doc(db, "ext", chap, "subs", user.uid, "img", String(i))); if (d.exists()) draft.imgs.push({ show: d.data().data, thumb: i === 0 ? m.thumb : "", fresh: false }); }
+      catch (e) {}
+    }
+  }
+}
+
+function drawChap() {
+  const c = chapById(chap); if (!c) return;
+  const m = me ? mine[chap] : null, lock = !!ext.lock;
+  let h = '<div class="chhead" style="margin:10px 0 12px"><div class="code">' + esc(c.code) + "　" + esc(c.name) + "</div><h2>《" + esc(c.title) + "》</h2></div>";
+  if (ext.now && (me || staff)) {
+    const who = names[ext.now] || "同學";
+    if (!me || ext.now !== user.uid) h += '<div class="banner"><b>報告進行中</b><span>現在台上：' + esc(who) + '</span><a href="report-show.html#' + chap + '"><button class="p">去展示廳給星星 →</button></a></div>';
+    else h += '<div class="banner"><b>輪到你上台了！</b><span>同學正在展示廳看你的海報。</span></div>';
+  }
+  if (me) h += draft ? mineCard(c, m, lock) : '<div class="sketch2 muted">載入中…</div>';
+  if (grade) h += gradeCard(grade);
+  h += '<div class="qs">' + c.qs.map((x, i) => {
+    const pickBtn = me && !lock ? (m && m.q === i ? '<span class="pill ok">✓ 我選的題</span>' : '<button class="ghost" data-q="' + i + '">選這題</button>') : "";
+    const n = counts ? counts[i] || 0 : null;
+    return '<article class="q' + (m && m.q === i ? " mine" : "") + '"><span class="dir" title="' + esc(DIR_NOTE[x.k]) + '">' + esc(x.k) + "</span><h3>" + rich(x.t) + "</h3>" +
+      '<div class="lbl">從這一章出發</div><p>' + rich(x.c) + "</p>" +
+      '<details class="more"><summary>延伸任務與報告裡要有</summary><ol>' + x.s.map(t => "<li>" + rich(t) + "</li>").join("") + '</ol><div class="need"><b>報告裡要有</b>　' + rich(x.show) + "</div></details>" +
+      '<div class="act">' + pickBtn + (n !== null ? '<span class="cnt">' + (n ? "已有 " + n + " 人選" : "還沒有人選") + "</span>" : "") + "</div></article>";
+  }).join("") + "</div>";
+  $("ch").innerHTML = h;
+  $("ch").querySelectorAll("button[data-q]").forEach(b => b.onclick = () => pickQ(+b.dataset.q));
+  if (draft) wireMine(c, m, lock);
+}
+
+/* ---------- 我的報告 ---------- */
+function mineCard(c, m, lock) {
+  if (!m) return '<div class="sketch2"><b>我的報告</b>　<span class="muted">' + (lock ? "老師已經截止收件。" : "從下面六題選一題，按「選這題」。") + "</span></div>";
+  const x = c.qs[m.q];
+  let h = '<div class="sketch2" id="mine"><div class="row" style="justify-content:space-between"><b style="font-size:18px">我的報告</b>' +
+    (m.done ? '<span class="pill ok">✓ 已交　' + esc(fmtTime(m.doneAt)) + "</span>" : '<span class="pill no">還沒交</span>') + "</div>" +
+    '<p style="margin:6px 0"><span class="dir pill b">' + esc(x.k) + "</span>　" + rich(x.t) + "</p>";
+  if (lock) {
+    h += '<p class="warn">老師已經截止收件，內容不能再改。</p>';
+    if (m.concl) h += "<p><b>一句話結論：</b>" + esc(m.concl) + "</p>";
+    h += '<div class="imgs">' + draft.imgs.map(im => '<figure><img src="' + im.show + '" alt=""></figure>').join("") + "</div>";
+    if (m.link) h += '<p><a href="' + esc(m.link) + '" target="_blank" rel="noopener">海報連結 →</a></p>';
+    return h + "</div>";
+  }
+  h += '<div class="field"><label for="fc">一句話的結論 <span class="muted">（海報上最顯眼的那一句，120 字以內）</span></label><textarea id="fc" maxlength="120">' + esc(draft.concl) + "</textarea></div>" +
+    '<div class="field"><label>海報照片 <span class="muted">（拍清楚、整張入鏡，最多 3 張；第 1 張當封面）</span></label><div class="imgs" id="imgs">' +
+    draft.imgs.map((im, i) => '<figure><img src="' + im.show + '" alt="第 ' + (i + 1) + ' 張"><button data-del="' + i + '" title="拿掉這張">✕</button></figure>').join("") +
+    (draft.imgs.length < 3 ? '<div class="add" id="add">＋ 拍照或選圖檔</div>' : "") + "</div></div>" +
+    '<div class="field"><label for="fl">海報連結 <span class="muted">（選填：Canva、Google 簡報、雲端硬碟的分享連結）</span></label><input type="url" id="fl" placeholder="https://" value="' + esc(draft.link) + '"></div>' +
+    '<div class="row"><button class="p" id="send"' + (busy ? " disabled" : "") + ">" + (m.done ? "更新繳交內容" : "送出") + '</button><button class="ghost" id="drop">取消選題</button><span id="msg" class="muted">' + esc(msg) + "</span></div>";
+  return h + "</div>";
+}
+function wireMine(c, m, lock) {
+  if (!m || lock) return;
+  $("fc").oninput = e => { draft.concl = e.target.value; draft.dirty = true; };
+  $("fl").oninput = e => { draft.link = e.target.value.trim(); draft.dirty = true; };
+  const add = $("add"); if (add) add.onclick = () => $("pick").click();
+  $("imgs").querySelectorAll("button[data-del]").forEach(b => b.onclick = () => { draft.imgs.splice(+b.dataset.del, 1); draft.dirty = true; drawChap(); });
+  $("send").onclick = submit;
+  $("drop").onclick = dropPick;
+}
+$("pick").onchange = async e => {
+  const files = [...e.target.files]; e.target.value = "";
+  if (!draft) return;
+  for (const f of files) {
+    if (draft.imgs.length >= 3) { setMsg("最多 3 張"); break; }
+    setMsg("處理照片中…");
+    try { const p = await prepImage(f, true); draft.imgs.push({ show: p.show, thumb: p.thumb, full: p.full, fresh: true }); draft.dirty = true; setMsg(""); }
+    catch (err) { setMsg(err.message); }
+  }
+  drawChap();
+};
+function setMsg(t, cls) { msg = t; const e = $("msg"); if (e) { e.textContent = t; e.className = cls || "muted"; } }
+
+function gradeCard(g) {
+  const s = g.s || {};
+  const rows = RUBRIC.map((r, i) => "<tr><td>" + esc(r) + "</td><td><b>" + esc(LEVEL[s["r" + i]] || "—") + "</b></td></tr>").join("");
+  return '<div class="sketch gradebox"><b style="font-size:18px">老師的回饋</b><table style="margin:6px 0">' + rows + "</table>" +
+    (g.comment ? '<p style="margin:4px 0;white-space:pre-wrap">' + esc(g.comment) + "</p>" : "") + "</div>";
+}
+
+/* ---------- 寫入 ---------- */
+const subRef = () => doc(db, "ext", chap, "subs", user.uid);
+function base() { return { name: me.name ?? "", cls: me.cls ?? "", seat: me.seat ?? 0 }; }
+
+async function pickQ(q) {
+  const c = chapById(chap), m = mine[chap];
+  if (m && m.done && !confirm("已經交過了。改選別題，海報內容會留著，但要記得改成新題目的海報。確定要改？")) return;
+  const x = c.qs[q];
+  const d = m ? { ...m, ...base(), q, k: x.k, title: plain(x.t).slice(0, 200), updated: new Date().toISOString() }
+    : { ...base(), q, k: x.k, title: plain(x.t).slice(0, 200), concl: "", link: "", n: 0, thumb: "", drive: [], done: false, updated: new Date().toISOString(), doneAt: "" };
+  try { await setDoc(subRef(), d); mine[chap] = d; if (counts) { if (m) counts[m.q]--; counts[q] = (counts[q] || 0) + 1; } if (!draft) await loadDraft(); drawChaps(); drawChap(); document.getElementById("mine")?.scrollIntoView({ behavior: "smooth", block: "start" }); }
+  catch (e) { alert("選題沒有存成功：" + (e.code === "permission-denied" ? "可能已經截止收件，或名單資料對不上，請找老師" : e.message)); }
+}
+
+async function dropPick() {
+  const m = mine[chap];
+  if (!confirm(m.done ? "已經交過了，取消會把交上來的海報一起刪掉。確定？" : "確定取消選題？")) return;
+  try {
+    for (let i = 0; i < 3; i++) await deleteDoc(doc(db, "ext", chap, "subs", user.uid, "img", String(i))).catch(() => {});
+    await deleteDoc(subRef());
+    if (counts) counts[m.q]--;
+    delete mine[chap]; draft = null; await loadDraft(); drawChaps(); drawChap();
+  } catch (e) { alert("沒有刪成功：" + e.message); }
+}
+
+async function submit() {
+  const m = mine[chap];
+  draft.concl = $("fc").value.trim(); draft.link = $("fl").value.trim();
+  if (!draft.concl) { setMsg("請寫一句話的結論", "warn"); return; }
+  if (draft.link && !/^https:\/\/\S+$/.test(draft.link)) { setMsg("連結要以 https:// 開頭", "warn"); return; }
+  if (!draft.imgs.length && !draft.link) { setMsg("至少要上傳一張海報照片，或附一個連結", "warn"); return; }
+  busy = true; $("send").disabled = true; setMsg("上傳中…");
+  try {
+    const now = new Date().toISOString();
+    for (let i = 0; i < draft.imgs.length; i++) await setDoc(doc(db, "ext", chap, "subs", user.uid, "img", String(i)), { data: draft.imgs[i].show, updated: now });
+    for (let i = draft.imgs.length; i < Math.max(3, (m.n || 0)); i++) await deleteDoc(doc(db, "ext", chap, "subs", user.uid, "img", String(i))).catch(() => {});
+    let thumb = draft.imgs[0] ? (draft.imgs[0].thumb || m.thumb || "") : "";
+    const imgsChanged = draft.imgs.some(im => im.fresh) || draft.imgs.length !== (m.n || 0);
+    const d = { ...m, ...base(), concl: draft.concl.slice(0, 120), link: draft.link.slice(0, 400), n: draft.imgs.length, thumb, done: true, updated: now, doneAt: now,
+      drive: imgsChanged ? [] : (m.drive || []) };
+    await setDoc(subRef(), d);
+    mine[chap] = d; draft.dirty = false; draft.imgs.forEach(im => im.fresh = false);
+    busy = false; msg = "✓ 交好了"; drawChaps(); drawChap(); setMsg("✓ 交好了", "ok");
+    if (imgsChanged && draft.imgs.length && driveReady()) backup(d, draft.imgs.map(im => im.full || im.show));
+  } catch (e) {
+    busy = false; $("send").disabled = false;
+    setMsg("沒有交成功：" + (e.code === "permission-denied" ? "可能已經截止收件，或名單資料對不上，請找老師" : (e.message || e.code)), "warn");
+  }
+}
+/* 原圖另外備份到老師的雲端硬碟；失敗不影響已經交好的內容 */
+async function backup(d, list) {
+  const id = chap, uid = user.uid;
+  try {
+    const ids = [];
+    for (let i = 0; i < list.length; i++) { setMsg("✓ 交好了（原圖備份到老師的雲端硬碟 " + (i + 1) + "／" + list.length + "）", "ok"); ids.push(await driveUpload(id, i, list[i], d.k)); }
+    if (chap === id && user && user.uid === uid) {
+      const nd = { ...mine[id], drive: ids };
+      await setDoc(doc(db, "ext", id, "subs", uid), nd); mine[id] = nd;
+      setMsg("✓ 交好了，原圖也備份好了", "ok");
+    }
+  } catch (e) { setMsg("✓ 交好了（原圖備份沒成功，不影響繳交：" + e.message + "）", "ok"); }
+}
+window.addEventListener("beforeunload", e => { if (draft && draft.dirty) { e.preventDefault(); e.returnValue = ""; } });
+
+sem = (chapById(location.hash.slice(1)) || CH[0] || {}).sem || "七上";
+chap = location.hash.slice(1);
+drawSems(); drawChaps(); paintBar(); openChap(chap, true);
+</script>
+</body>
+</html>

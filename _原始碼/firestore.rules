@@ -68,6 +68,75 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // ===== 報告島：章後延伸報告 =====
+    //   ext/{chap}                         這一章的報告場次 { order:{班級:[uid…]}, now: 正在報告的 uid, nowCls, lock: 截止收件 }，老師寫
+    //   ext/{chap}/subs/{uid}              學生的選題與繳交（名單上的人都看得到，方便看展示）
+    //   ext/{chap}/subs/{uid}/img/{0|1|2}  海報照片（壓縮過的 JPEG，base64）
+    //   ext/{chap}/grades/{uid}            老師評分與評語；show == true 之後學生本人才看得到
+    //   ext/{chap}/peer/{target}_{rater}   同學互評；只有台上那一位正在報告時才能寫；老師與寫的人看得到
+    function extDoc(chap) { return /databases/$(db)/documents/ext/$(chap); }
+    function extOpen(chap) { return !exists(extDoc(chap)) || get(extDoc(chap)).data.get('lock', false) != true; }
+    function myRoster() { return get(/databases/$(db)/documents/roster/$(myEmail())).data; }
+
+    match /ext/{chap} {
+      allow read: if rostered() || canView();
+      allow create, update: if isTeacher() && chap.matches('g[789][ab]-[0-9]+')
+        && request.resource.data.keys().hasOnly(['order', 'now', 'nowCls', 'lock', 'updated']);
+      allow delete: if isTeacher();
+
+      match /subs/{uid} {
+        allow read: if rostered() || canView();
+        allow create, update: if isOwner(uid) && rostered() && extOpen(chap)
+          && request.resource.data.keys().hasOnly(['name', 'cls', 'seat', 'q', 'k', 'title', 'concl', 'link', 'n', 'thumb', 'drive', 'done', 'updated', 'doneAt'])
+          && request.resource.data.name == myRoster().get('name', '')
+          && request.resource.data.cls == myRoster().get('cls', '')
+          && request.resource.data.seat == myRoster().get('seat', 0)
+          && request.resource.data.k is string && request.resource.data.k.size() <= 10
+          && request.resource.data.q is int && request.resource.data.q >= 0 && request.resource.data.q <= 5
+          && request.resource.data.title is string && request.resource.data.title.size() <= 200
+          && request.resource.data.concl is string && request.resource.data.concl.size() <= 120
+          && request.resource.data.link is string && request.resource.data.link.size() <= 400
+          && request.resource.data.n is int && request.resource.data.n >= 0 && request.resource.data.n <= 3
+          && request.resource.data.thumb is string && request.resource.data.thumb.size() < 120000
+          && request.resource.data.drive is list && request.resource.data.drive.size() <= 3
+          && request.resource.data.done is bool;
+        allow delete: if (isOwner(uid) && extOpen(chap)) || isTeacher();
+
+        match /img/{i} {
+          allow read: if rostered() || canView();
+          allow create, update: if isOwner(uid) && rostered() && extOpen(chap) && i in ['0', '1', '2']
+            && request.resource.data.keys().hasOnly(['data', 'updated'])
+            && request.resource.data.data is string && request.resource.data.data.size() < 1000000;
+          allow delete: if (isOwner(uid) && extOpen(chap)) || isTeacher();
+        }
+      }
+
+      match /grades/{uid} {
+        allow read: if canView() || (isOwner(uid) && resource.data.show == true);
+        allow create, update: if isTeacher()
+          && request.resource.data.keys().hasOnly(['s', 'comment', 'show', 'by', 'updated'])
+          && request.resource.data.s is map
+          && request.resource.data.comment is string && request.resource.data.comment.size() <= 1000
+          && request.resource.data.show is bool;
+        allow delete: if isTeacher();
+      }
+
+      match /peer/{pid} {
+        allow get: if canView() || (signedIn() && pid.split('_')[1] == request.auth.uid);
+        allow list: if canView();
+        allow create, update: if rostered()
+          && pid == request.resource.data.target + '_' + request.auth.uid
+          && request.resource.data.keys().hasOnly(['target', 'rater', 'name', 'stars', 'comment', 'updated'])
+          && request.resource.data.rater == request.auth.uid
+          && request.resource.data.target != request.auth.uid
+          && request.resource.data.name == myRoster().get('name', '')
+          && request.resource.data.stars is int && request.resource.data.stars >= 1 && request.resource.data.stars <= 3
+          && request.resource.data.comment is string && request.resource.data.comment.size() <= 80
+          && exists(extDoc(chap)) && get(extDoc(chap)).data.get('now', '') == request.resource.data.target;
+        allow delete: if isTeacher();
+      }
+    }
+
     match /records/{uid} {
       allow read: if canView() || isOwner(uid);
       allow create, update: if isOwner(uid) && rostered()

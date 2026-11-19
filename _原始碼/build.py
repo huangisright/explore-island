@@ -162,6 +162,31 @@ def build_home(src_site, out):
         f.write(page)
 
 
+SEM_ID = {"七上": "g7a", "七下": "g7b", "八上": "g8a", "八下": "g8b", "九上": "g9a", "九下": "g9b"}
+
+
+def build_report(out):
+    """報告島：章後延伸報告（report.html 學生選題繳交、report-show.html 展示與報告現場）。
+    題庫 ext-questions.json 由學習單設計資料夾的 _原始碼/延伸題庫.json 複製過來（只含學生看得到的欄位，沒有教師備註）。"""
+    data = json.loads(read(os.path.join(HERE, "ext-questions.json")))
+    chaps = []
+    for c in data:
+        m = re.match(r"([七八九][上下])(\d+)$", c["code"])
+        assert m, c["code"]
+        chaps.append({"id": SEM_ID[m.group(1)] + "-" + m.group(2), "sem": m.group(1), "code": c["code"], "name": c["name"],
+                      "title": c["title"], "qs": [{k: q[k] for k in ("k", "t", "c", "s", "show")} for q in c["qs"]]})
+        assert len(c["qs"]) == 6, c["code"]
+    js = json.dumps(chaps, ensure_ascii=False).replace("</", "<\\/")
+    for tpl, name in [("report.tpl.html", "report.html"), ("report-show.tpl.html", "report-show.html")]:
+        page = read(os.path.join(HERE, tpl))
+        assert page.count("/*DATA*/[]") == 1
+        with open(os.path.join(out, name), "w", encoding="utf8") as f:
+            f.write(page.replace("/*DATA*/[]", js))
+    for f in ["report-lib.js", "report.css"]:
+        shutil.copy(os.path.join(HERE, f), os.path.join(out, f))
+    return len(chaps)
+
+
 def build_teacher(out):
     tpl = read(os.path.join(HERE, "teacher.tpl.html"))
     page = tpl.replace("/*CFGS*/[]", json.dumps([{k: v for k, v in c.items() if k not in ("patches", "restructure")} for c in BUILT], ensure_ascii=False))
@@ -180,6 +205,7 @@ if __name__ == "__main__":
     for f in ["island-cloud.js", "firebase-config.js", "island-map.js", "upload.html"]:
         shutil.copy(os.path.join(HERE, f), os.path.join(out, f))
     build_teacher(out)
+    build_report(out)
     build_home(src, out)
     open(os.path.join(out, ".nojekyll"), "w").close()
     n, b = build_passport(src, out)

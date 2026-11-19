@@ -1,0 +1,84 @@
+/* 報告島（report.html／report-show.html）共用外觀：沿用入口地圖的手繪紙本風 */
+:root{
+  color-scheme:light;
+  --paper:#fdfcf8; --ink:#1d1d1d; --ink-2:#555; --ink-3:#8a8a8a;
+  --sand:#f1e4c3; --sand-2:#e6d3a3; --grass:#cfe3bf; --sea:#9fbbd1; --red:#c8321e; --blue:#24489a;
+  --green:#3f7a4f; --orange:#b85c1e; --card:#fffefa; --edge:#b9b5aa; --edge-soft:#e4dfd2;
+  --hand:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif;
+  --sans:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--hand);line-height:1.65;font-size:16px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 70px}
+a{color:var(--blue)}
+header.top{padding:26px 0 4px;text-align:center;position:relative}
+header.top h1{font-size:clamp(36px,6vw,54px);margin:0;letter-spacing:.12em}
+header.top .say{font-size:clamp(15px,2.2vw,19px);color:var(--ink-2);margin:4px 0 0}
+.back{position:absolute;left:0;top:14px;font-size:15px;text-decoration:none}
+.navr{position:absolute;right:0;top:14px;font-size:15px;text-decoration:none}
+@media (max-width:700px){.back,.navr{position:static;display:inline-block;margin:0 8px 6px}}
+button,select,input,textarea{font:inherit;color:var(--ink)}
+button{font-size:15px;font-weight:700;padding:6px 15px;border:2px solid var(--ink);border-radius:255px 14px 225px 14px/14px 225px 14px 255px;background:var(--card);cursor:pointer}
+button.p{background:var(--ink);color:var(--card)}
+button.ghost{border-width:1.5px;border-color:var(--edge);font-weight:600}
+button:disabled{opacity:.4;cursor:default}
+input[type=text],input[type=url],textarea,select{font-size:15.5px;padding:7px 10px;border:1.5px solid var(--edge);border-radius:6px;background:#fff;width:100%}
+select{width:auto}
+textarea{min-height:70px;resize:vertical}
+.sketch{border:2px solid var(--ink);border-radius:14px 225px 14px 255px/255px 14px 225px 14px;background:var(--card);padding:14px 18px;margin:0 0 16px}
+.sketch2{border:2px solid var(--ink);border-radius:255px 14px 225px 14px/14px 225px 14px 255px;background:var(--card);padding:14px 18px;margin:0 0 16px}
+.muted{color:var(--ink-3);font-size:14px}
+.warn{color:var(--orange);font-weight:700}
+.ok{color:var(--green);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
+.steps div{border:2px solid var(--ink);border-radius:14px 225px 14px 255px/255px 14px 225px 14px;padding:10px 16px;background:var(--card)}
+.steps b{font-size:18px;display:block}
+.steps p{margin:0;color:var(--ink-2);font-size:14.5px}
+.semtabs{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}
+.semtabs button{border-width:1.5px;font-weight:600;padding:4px 14px}
+.semtabs button.on{background:var(--sand);border-color:var(--ink)}
+.chaps{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:0 0 18px}
+.chaps button{text-align:left;border-width:1.5px;font-weight:500;padding:8px 14px;line-height:1.45}
+.chaps button b{display:block;font-size:16px}
+.chaps button.on{background:var(--grass);border-color:var(--ink);border-width:2px}
+.chaps .st{font-size:13px;color:var(--ink-3)}
+.chaps .st.done{color:var(--green);font-weight:700}
+.chaps .st.pick{color:var(--blue);font-weight:700}
+.chhead h2{margin:0;font-size:24px}
+.chhead .code{color:var(--ink-3);font-size:15px}
+.qs{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
+article.q{position:relative;border:1.8px solid var(--ink);border-radius:8px 18px 10px 16px/16px 8px 18px 10px;background:var(--card);padding:12px 16px 12px}
+article.q.mine{background:#f3f8ee;border-width:3px}
+article.q .dir{display:inline-block;font-size:13.5px;font-weight:700;border:1.5px solid var(--ink);border-radius:999px;padding:0 10px;background:var(--sand)}
+article.q h3{font-size:17.5px;margin:6px 0 6px;line-height:1.5}
+article.q .lbl{font-size:13px;color:var(--ink-3);margin-top:6px}
+article.q p,article.q ol{margin:2px 0;font-size:15px;color:var(--ink-2)}
+article.q ol{padding-left:22px}
+article.q .need{margin-top:8px;font-size:14.5px;background:#fbf6e7;border-radius:6px;padding:6px 10px}
+article.q .act{display:flex;align-items:center;gap:10px;margin-top:10px}
+article.q .cnt{font-size:13.5px;color:var(--ink-3)}
+details.more summary{cursor:pointer;color:var(--blue);font-size:14.5px;margin-top:4px}
+i.m{font-family:"Times New Roman",serif;font-style:italic}
+.imgs{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
+.imgs figure{margin:0;position:relative;width:150px}
+.imgs img{width:150px;height:150px;object-fit:cover;border:1.5px solid var(--ink);border-radius:6px;background:#fff;display:block}
+.imgs figure button{position:absolute;top:4px;right:4px;padding:0 8px;font-size:13px;border-width:1.5px}
+.imgs .add{width:150px;height:150px;border:2px dashed var(--edge);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);cursor:pointer;text-align:center;font-size:14px;padding:8px}
+.field{margin:10px 0}
+.field label{display:block;font-weight:700;font-size:15px;margin-bottom:3px}
+.field .muted{font-weight:400}
+.banner{border:2.5px solid var(--red);border-radius:10px;background:#fff4ef;padding:10px 16px;margin:0 0 14px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.banner b{color:var(--red)}
+.gradebox table{border-collapse:collapse;font-size:15px}
+.gradebox td{padding:3px 10px 3px 0}
+.pill{display:inline-block;font-size:13px;padding:0 9px;border-radius:999px;border:1.5px solid var(--edge);color:var(--ink-2);white-space:nowrap}
+.pill.ok{border-color:var(--green);color:var(--green)}
+.pill.no{border-color:var(--orange);color:var(--orange)}
+.pill.b{border-color:var(--blue);color:var(--blue)}
+.stars{display:flex;flex-wrap:wrap;gap:8px}
+.stars button{border-width:1.5px;font-weight:600}
+.stars button.on{background:#ffe9a8;border-color:var(--ink);border-width:2px}
+.isl-auth{font-family:var(--hand)!important}
+footer{margin-top:36px;text-align:center;color:var(--ink-3);font-size:14px}
+[hidden]{display:none!important}

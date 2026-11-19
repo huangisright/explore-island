@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>展示廳｜報告島｜數學探索島</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="report.css">
+<style>
+.ctl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:4px 0 12px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:2px solid var(--ink);margin:0 0 14px}
+.tabs button{border:0;border-radius:6px 6px 0 0;background:none;font-weight:600;padding:6px 14px;color:var(--ink-3)}
+.tabs button.on{background:var(--sand);color:var(--ink)}
+.tabs .go{margin-left:auto;margin-bottom:4px;border:2px solid var(--ink);border-radius:255px 14px 225px 14px/14px 225px 14px 255px;background:var(--red);color:#fff}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.card{border:1.8px solid var(--ink);border-radius:8px 18px 10px 16px/16px 8px 18px 10px;background:var(--card);padding:10px 12px;cursor:pointer;display:flex;flex-direction:column;gap:4px;position:relative}
+.card:hover{background:#f3f8ee}
+.card .cover{width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--edge);border-radius:5px;background:#f4f1e8}
+.card .nocover{width:100%;aspect-ratio:4/3;border:1px dashed var(--edge);border-radius:5px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:14px}
+.card .who{font-weight:700}
+.card .tt{font-size:14px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .cc{font-size:14.5px;border-left:3px solid var(--red);padding-left:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .ordno{position:absolute;top:-10px;left:-10px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px;font-family:var(--sans)}
+.tbl th,.tbl td{padding:6px 8px;border-bottom:1px solid var(--edge-soft);text-align:left;vertical-align:top}
+.tbl td:nth-child(-n+4),.tbl th{white-space:nowrap}
+.tbl th{font-size:12.5px;color:var(--ink-3);font-weight:600;background:var(--card);position:sticky;top:0}
+.scroll{overflow-x:auto}
+.qbar{display:grid;grid-template-columns:auto 1fr auto;gap:5px 10px;align-items:center;font-size:14px;font-family:var(--sans);margin:4px 0 10px}
+.qbar i{display:block;height:13px;border-radius:3px;background:var(--blue)}
+.ord{list-style:none;margin:0;padding:0;max-width:720px}
+.ord li{display:flex;align-items:center;gap:10px;border:1.5px solid var(--ink);border-radius:8px;background:var(--card);padding:7px 10px;margin:0 0 7px;cursor:grab;font-family:var(--sans);font-size:15px}
+.ord li.drag{opacity:.4}
+.ord li.over{border-color:var(--red);border-width:2.5px}
+.ord li .n{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.ord li .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2);font-size:14px}
+.ord li button{padding:0 10px;font-size:14px;border-width:1.5px}
+.rub{display:grid;grid-template-columns:auto auto;gap:4px 12px;align-items:center;font-size:15px}
+.rub .lv{display:flex;gap:4px}
+.rub .lv button{padding:1px 10px;font-size:14px;border-width:1.5px;font-weight:600}
+.rub .lv button.on{background:var(--grass);border-color:var(--ink);border-width:2px}
+/* 放大看 */
+.ov{position:fixed;inset:0;background:rgba(20,20,20,.55);z-index:50;display:flex;align-items:center;justify-content:center;padding:18px}
+.ov .box{background:var(--paper);border:2px solid var(--ink);border-radius:12px;max-width:1100px;width:100%;max-height:100%;overflow:auto;padding:16px 20px;position:relative}
+.ov .x{position:sticky;top:0;float:right}
+.viewer{display:flex;flex-direction:column;gap:8px}
+.viewer img{max-width:100%;max-height:72vh;object-fit:contain;border:1.5px solid var(--ink);border-radius:6px;background:#fff;align-self:center}
+.viewer .strip{display:flex;gap:6px;justify-content:center}
+.viewer .strip button{padding:2px 12px;font-size:14px;border-width:1.5px}
+.viewer .strip button.on{background:var(--sand)}
+/* 報告模式 */
+#stage{position:fixed;inset:0;background:var(--paper);z-index:60;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);grid-template-rows:1fr auto;gap:0}
+#stage .pv{padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0;gap:8px;border-right:2px solid var(--ink)}
+#stage .pv img{max-width:100%;max-height:calc(100vh - 150px);object-fit:contain;border:2px solid var(--ink);border-radius:6px;background:#fff;cursor:zoom-in}
+#stage .pv img.big{position:fixed;inset:0;max-height:100vh;width:100vw;height:100vh;z-index:70;border:0;cursor:zoom-out;background:#fff}
+#stage .side{padding:18px 20px;overflow:auto;min-height:0}
+#stage .side h2{font-size:34px;margin:0}
+#stage .side .q{font-size:18px;margin:8px 0}
+#stage .side .cc{font-size:22px;font-weight:700;border-left:5px solid var(--red);padding:4px 0 4px 12px;margin:10px 0}
+#stage .nav{grid-column:1/3;border-top:2px solid var(--ink);display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 16px;background:var(--card)}
+#stage .nav .mid{font-size:18px;font-weight:700;margin:0 6px}
+.peerbox{border:2px dashed var(--ink);border-radius:10px;padding:10px 14px;margin:12px 0;background:var(--card)}
+.peerbox .big{font-size:30px;font-weight:700}
+.dist{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;align-items:center;font-size:14px}
+.dist i{display:block;height:14px;background:#f2c94c;border:1px solid var(--ink);border-radius:3px}
+.cm{list-style:none;padding:0;margin:6px 0 0;font-size:15.5px}
+.cm li{border-bottom:1px dashed var(--edge);padding:4px 0}
+@media (max-width:820px){#stage{grid-template-columns:1fr;grid-template-rows:auto auto auto;overflow:auto}#stage .pv{border-right:0;border-bottom:2px solid var(--ink)}#stage .nav{grid-column:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="back" href="report.html">← 報告島</a>
+  <span class="navr" id="tlink"></span>
+  <h1>展示廳</h1>
+  <p class="say">大家交上來的海報都在這裡。輪到誰上台，就在這一頁給他星星、寫一句話。</p>
+</header>
+<div id="main"></div>
+<div class="ctl"><label>章 <select id="chap"></select></label><label>班級 <select id="cls"></select></label><span class="muted" id="sum"></span></div>
+<div id="app"></div>
+<footer>黃士祐 老師（IsRight）</footer>
+</div>
+<div id="ovl"></div>
+<script>window.REPORT_DATA = /*DATA*/[];</script>
+<script src="firebase-config.js"></script>
+<script type="module">
+import { auth, db, login, logout, ROLES, staffRole, rosterOf, canSelfJoin, authBar, joinForm } from "./island-cloud.js";
+import { CH, chapById, SEMS, DIR_NOTE, RUBRIC, LEVEL, STARS, esc, rich, plain, fmtTime, chapLabel } from "./report-lib.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { doc, getDoc, getDocs, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+const $ = id => document.getElementById(id);
+const bar = authBar($("main"));
+let user = null, me = null, staff = "", chap = "", cls = "", tab = "gal";
+let subs = {}, ext = {}, roster = [], grades = {}, peers = {}, myPeer = null, unsubs = [];
+let stage = null;            // 報告模式 { list, i, img, showCm }
+const imgCache = {};
+
+/* ---------- 登入 ---------- */
+function paintBar() {
+  if (!user) {
+    bar.innerHTML = '<span>登入之後才看得到同學的海報。</span><button class="p">用 Google 登入</button>';
+    bar.querySelector("button").onclick = () => login().catch(() => {});
+  } else if (staff) {
+    bar.innerHTML = '<span>' + ROLES[staff] + '帳號 <b>' + esc(user.email) + '</b></span><button>登出</button>';
+    bar.querySelector("button").onclick = () => logout();
+  } else if (!me) {
+    bar.innerHTML = '<span class="warn">這個帳號不在名單上</span><span>' + esc(user.email) + '</span><button>換帳號</button>';
+    bar.querySelector("button").onclick = () => logout();
+  } else {
+    bar.innerHTML = '<span><b>' + esc(me.name) + '</b>（' + esc(me.cls) + ' 班 ' + esc(me.seat) + ' 號）</span><button>登出</button>';
+    bar.querySelector("button").onclick = () => logout();
+  }
+  $("tlink").innerHTML = staff ? '<a href="teacher.html" style="text-decoration:none">老師頁面 →</a>' : "";
+}
+onAuthStateChanged(auth, async u => {
+  user = u; me = null; staff = ""; roster = [];
+  if (!u) { paintBar(); stop(); $("app").innerHTML = ""; return; }
+  bar.innerHTML = "<span>確認名單中…</span>";
+  let r = await rosterOf(u);
+  staff = r ? "" : await staffRole(u);
+  if (user !== u) return;
+  if (!r && !staff && canSelfJoin(u)) {
+    r = await new Promise(res => joinForm(bar, u, res, () => { res(null); logout(); }));
+    if (!r || user !== u) return;
+  }
+  me = r; paintBar();
+  if (!me && !staff) { $("app").innerHTML = ""; return; }
+  if (staff) {
+    const rs = await getDocs(collection(db, "roster"));
+    rs.forEach(d => roster.push({ email: d.id, ...d.data() }));
+    roster.sort((a, b) => String(a.cls).localeCompare(String(b.cls)) || (+a.seat || 0) - (+b.seat || 0));
+  } else cls = me.cls;
+  drawCtl(); openChap();
+});
+
+/* ---------- 選章、選班 ---------- */
+function classes() {
+  const s = new Set(roster.map(r => r.cls).filter(Boolean));
+  Object.values(subs).forEach(x => x.cls && s.add(x.cls));
+  if (me && me.cls) s.add(me.cls);
+  return [...s].sort();
+}
+function drawCtl() {
+  $("chap").innerHTML = SEMS.map(s => '<optgroup label="' + s + '">' + CH.filter(c => c.sem === s).map(c => '<option value="' + c.id + '">' + esc(c.code + " " + c.name + "《" + c.title + "》") + "</option>").join("") + "</optgroup>").join("");
+  if (!chapById(chap)) chap = chapById(location.hash.slice(1)) ? location.hash.slice(1) : (localStorage.getItem("rpt:chap") || CH[0].id);
+  if (!chapById(chap)) chap = CH[0].id;
+  $("chap").value = chap;
+  drawCls();
+}
+function drawCls() {
+  const cs = classes();
+  if (staff && !cls && cs.length === 1) cls = cs[0];
+  $("cls").innerHTML = '<option value="">全部</option>' + cs.map(c => '<option' + (c === cls ? " selected" : "") + ">" + esc(c) + "</option>").join("");
+  $("cls").value = cls;
+}
+$("chap").onchange = () => { chap = $("chap").value; try { localStorage.setItem("rpt:chap", chap); } catch (e) {} history.replaceState(null, "", "#" + chap); openChap(); };
+$("cls").onchange = () => { cls = $("cls").value; draw(); };
+window.addEventListener("hashchange", () => { if (chapById(location.hash.slice(1)) && location.hash.slice(1) !== chap) { chap = location.hash.slice(1); $("chap").value = chap; openChap(); } });
+
+/* 老師正在評分（有展開的那一位）時，資料更新不要重畫，免得打到一半的評語不見 */
+const quiet = () => staff && tab === "gr" && !!document.querySelector("#pane details[open]");
+function stop() { unsubs.forEach(f => f()); unsubs = []; }
+function openChap() {
+  stop(); subs = {}; ext = {}; grades = {}; peers = {}; myPeer = null;
+  $("app").innerHTML = '<p class="muted">載入中…</p>';
+  const id = chap;
+  unsubs.push(onSnapshot(doc(db, "ext", id), d => {
+    const before = ext.now;
+    ext = d.exists() ? d.data() : {};
+    if (me && ext.now !== before) { pc = { t: ext.now, v: "", n: 0 }; loadMyPeer(); }
+    if (stage) updateLive();
+    draw();
+  }, () => {}));
+  unsubs.push(onSnapshot(collection(db, "ext", id, "subs"), s => {
+    subs = {}; s.forEach(d => subs[d.id] = d.data());
+    drawCls(); if (!quiet()) draw();
+  }, e => { $("app").innerHTML = '<p class="warn">讀不到資料（' + esc(e.code || e.message) + "）</p>"; }));
+  if (staff) {
+    unsubs.push(onSnapshot(collection(db, "ext", id, "grades"), s => { grades = {}; s.forEach(d => grades[d.id] = d.data()); if (!quiet()) draw(); }, () => {}));
+    unsubs.push(onSnapshot(collection(db, "ext", id, "peer"), s => {
+      peers = {}; s.forEach(d => { const x = d.data(); (peers[x.target] = peers[x.target] || []).push(x); });
+      if (stage) updateLive();
+      if (tab !== "ord" && !quiet()) draw();
+    }, () => {}));
+  }
+}
+async function loadMyPeer() {
+  myPeer = null;
+  if (!ext.now || !me) return;
+  try { const d = await getDoc(doc(db, "ext", chap, "peer", ext.now + "_" + user.uid)); myPeer = d.exists() ? d.data() : null; } catch (e) {}
+  draw();
+}
+
+/* ---------- 名單整理 ---------- */
+const inCls = x => !cls || x.cls === cls;
+const done = () => Object.entries(subs).filter(([u, x]) => x.done && inCls(x));
+function ordered(list) {
+  const ord = (ext.order && cls && ext.order[cls]) || [];
+  const pos = u => { const i = ord.indexOf(u); return i < 0 ? 1e6 : i; };
+  return list.slice().sort((a, b) => pos(a[0]) - pos(b[0]) || String(a[1].cls).localeCompare(String(b[1].cls)) || (+a[1].seat || 0) - (+b[1].seat || 0));
+}
+const peerStat = uid => {
+  const l = peers[uid] || [];
+  const n = l.length, avg = n ? l.reduce((s, x) => s + x.stars, 0) / n : 0;
+  return { n, avg, l };
+};
+const total = g => g && g.s ? RUBRIC.reduce((s, r, i) => s + (+g.s["r" + i] || 0), 0) : 0;
+const scored = g => g && g.s && RUBRIC.some((r, i) => g.s["r" + i]);
+const qOf = x => { const c = chapById(chap); return c && c.qs[x.q]; };
+
+/* ---------- 畫面 ---------- */
+function draw() {
+  if (!user || (!me && !staff)) return;
+  const d = done();
+  $("sum").textContent = "已交 " + d.length + " 份" + (staff ? "／選題 " + Object.values(subs).filter(inCls).length + " 人" : "") + (ext.lock ? "　（已截止收件）" : "");
+  let h = "";
+  if (me) h += liveCard();
+  if (staff) {
+    const tabs = [["gal", "展示"], ["st", "繳交狀況"], ["ord", "報告順序"], ["gr", "評分與互評"]];
+    h += '<div class="tabs">' + tabs.map(t => '<button data-t="' + t[0] + '"' + (t[0] === tab ? ' class="on"' : "") + ">" + t[1] + "</button>").join("") +
+      (staff !== "viewer" ? '<button class="go" id="go">▶ 報告模式</button>' : "") + "</div>";
+  }
+  h += '<div id="pane"></div>';
+  $("app").innerHTML = h;
+  $("app").querySelectorAll(".tabs button[data-t]").forEach(b => b.onclick = () => { tab = b.dataset.t; draw(); });
+  if ($("go")) $("go").onclick = openStage;
+  wireLive();
+  const t = staff ? tab : "gal";
+  if (t === "gal") drawGallery(); else if (t === "st") drawStatus(); else if (t === "ord") drawOrder(); else drawGrades();
+}
+
+function drawGallery() {
+  const list = ordered(done());
+  const hasOrd = cls && ext.order && ext.order[cls] && ext.order[cls].length;
+  if (!list.length) { $("pane").innerHTML = '<p class="muted">這一章' + (cls ? " " + esc(cls) + " 班" : "") + "還沒有人交。</p>"; return; }
+  $("pane").innerHTML = '<div class="gal">' + list.map(([u, x], i) => {
+    const q = qOf(x);
+    return '<div class="card" data-u="' + u + '">' + (hasOrd ? '<span class="ordno">' + (i + 1) + "</span>" : "") +
+      (x.thumb ? '<img class="cover" src="' + x.thumb + '" alt="" loading="lazy">' : '<div class="nocover">' + (x.link ? "海報在連結裡" : "沒有照片") + "</div>") +
+      '<div class="row" style="justify-content:space-between"><span class="who">' + esc(x.name) + '</span><span class="muted">' + esc(x.cls) + "－" + esc(x.seat) + "</span></div>" +
+      '<div><span class="pill b">' + esc(x.k) + '</span> <span class="tt">' + (q ? rich(q.t) : esc(x.title)) + "</span></div>" +
+      '<div class="cc">' + esc(x.concl) + "</div>" + (u === ext.now ? '<span class="pill no">台上</span>' : "") + "</div>";
+  }).join("") + "</div>";
+  $("pane").querySelectorAll(".card").forEach(c => c.onclick = () => showOne(c.dataset.u));
+}
+
+/* 放大看一份 */
+async function imagesOf(u) {
+  const x = subs[u]; if (!x || !x.n) return [];
+  const key = chap + "/" + u + "/" + x.updated;
+  if (imgCache[key]) return imgCache[key];
+  const out = [];
+  for (let i = 0; i < x.n; i++) { try { const d = await getDoc(doc(db, "ext", chap, "subs", u, "img", String(i))); if (d.exists()) out.push(d.data().data); } catch (e) {} }
+  return imgCache[key] = out;
+}
+function viewerHtml(imgs, k) {
+  if (!imgs.length) return '<p class="muted">沒有照片。</p>';
+  return '<div class="viewer"><img src="' + imgs[k] + '" alt="海報">' + (imgs.length > 1 ? '<div class="strip">' + imgs.map((s, i) => '<button data-k="' + i + '"' + (i === k ? ' class="on"' : "") + ">第 " + (i + 1) + " 張</button>").join("") + "</div>" : "") + "</div>";
+}
+async function showOne(u) {
+  const x = subs[u], q = qOf(x);
+  $("ovl").innerHTML = '<div class="ov"><div class="box"><button class="x ghost">✕ 關閉</button><h2 style="margin:0">' + esc(x.name) + ' <span class="muted">' + esc(x.cls) + "－" + esc(x.seat) + "</span></h2>" +
+    '<p style="margin:6px 0"><span class="pill b">' + esc(x.k) + "</span>　" + (q ? rich(q.t) : esc(x.title)) + "</p>" +
+    '<p style="font-size:19px;font-weight:700;border-left:4px solid var(--red);padding-left:10px">' + esc(x.concl) + "</p>" +
+    (x.link ? '<p><a href="' + esc(x.link) + '" target="_blank" rel="noopener">打開海報連結 →</a></p>' : "") +
+    '<div id="vw"><p class="muted">照片載入中…</p></div>' + (staff ? '<div id="gbox"></div>' : "") + "</div></div>";
+  const close = () => { $("ovl").innerHTML = ""; document.removeEventListener("keydown", esck); };
+  const esck = e => { if (e.key === "Escape") close(); };
+  document.addEventListener("keydown", esck);
+  $("ovl").querySelector(".x").onclick = close;
+  $("ovl").querySelector(".ov").onclick = e => { if (e.target.classList.contains("ov")) close(); };
+  if (staff) gradeForm($("gbox"), u);
+  const imgs = await imagesOf(u);
+  const paint = k => { const v = $("vw"); if (!v) return; v.innerHTML = viewerHtml(imgs, k); v.querySelectorAll("button[data-k]").forEach(b => b.onclick = () => paint(+b.dataset.k)); };
+  paint(0);
+}
+
+/* ---------- 學生：台上那一位 ---------- */
+function liveCard() {
+  if (!ext.now || (ext.nowCls && me.cls !== ext.nowCls)) return "";
+  const x = subs[ext.now];
+  if (!x) return "";
+  if (ext.now === user.uid) return '<div class="banner"><b>輪到你上台了！</b><span>同學正在給你星星和建議。</span></div>';
+  const q = qOf(x);
+  if (pc.t !== ext.now) pc = { t: ext.now, v: "", n: 0 };
+  const st = pc.n || (myPeer ? myPeer.stars : 0);
+  return '<div class="sketch2" style="border-color:var(--red);border-width:3px"><div class="row"><b style="color:var(--red);font-size:18px">現在台上：' + esc(x.name) + "</b>" +
+    '<span class="pill b">' + esc(x.k) + "</span></div>" + '<p style="margin:4px 0" class="muted">' + (q ? rich(q.t) : esc(x.title)) + "</p>" +
+    '<div class="field"><label>給幾顆星？</label><div class="stars" id="stars">' + [1, 2, 3].map(n => '<button data-n="' + n + '"' + (n === st ? ' class="on"' : "") + ">" + "★".repeat(n) + " " + STARS[n] + "</button>").join("") + "</div></div>" +
+    '<div class="field"><label for="pc">一句話 <span class="muted">（最喜歡的地方，或最想問的問題；80 字以內）</span></label><input type="text" id="pc" maxlength="80" value="' + esc(pc.v || (myPeer ? myPeer.comment : "")) + '"></div>' +
+    '<div class="row"><button class="p" id="psend">' + (myPeer ? "更新" : "送出") + '</button><span class="muted" id="pmsg">' + (myPeer ? "✓ 已送出，報告結束前都可以改" : "") + "</span></div></div>";
+}
+let pickStar = 0, pc = { t: "", v: "", n: 0 };   // 台下正在寫的星星與一句話（重畫畫面時保留）
+function wireLive() {
+  const s = $("stars"); if (!s) return;
+  pickStar = pc.n || (myPeer ? myPeer.stars : 0);
+  $("pc").oninput = e => { pc.v = e.target.value; };
+  s.querySelectorAll("button").forEach(b => b.onclick = () => { pickStar = pc.n = +b.dataset.n; s.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); });
+  $("psend").onclick = async () => {
+    if (!pickStar) { $("pmsg").textContent = "先選星星"; return; }
+    const target = ext.now;
+    const d = { target, rater: user.uid, name: me.name ?? "", stars: pickStar, comment: $("pc").value.trim().slice(0, 80), updated: new Date().toISOString() };
+    $("psend").disabled = true;
+    try { await setDoc(doc(db, "ext", chap, "peer", target + "_" + user.uid), d); myPeer = d; pc = { t: target, v: "", n: 0 }; $("pmsg").textContent = "✓ 已送出，報告結束前都可以改"; $("psend").textContent = "更新"; }
+    catch (e) { $("pmsg").textContent = e.code === "permission-denied" ? "這一位已經報告完了，不能再送" : "沒有送成功：" + (e.code || e.message); }
+    $("psend").disabled = false;
+  };
+}
+
+/* ---------- 老師：繳交狀況 ---------- */
+function drawStatus() {
+  const c = chapById(chap);
+  const ros = roster.filter(inCls);
+  const byEmailName = {};
+  const subList = Object.entries(subs).filter(([u, x]) => inCls(x));
+  // 名單上的人：用 班級＋座號 對到繳交
+  const key = x => x.cls + "-" + x.seat;
+  const subByKey = {}; subList.forEach(([u, x]) => subByKey[key(x)] = [u, x]);
+  const rows = ros.map(r => ({ r, s: subByKey[key(r)] }));
+  subList.forEach(([u, x]) => { if (!ros.some(r => key(r) === key(x))) rows.push({ r: { name: x.name, cls: x.cls, seat: x.seat }, s: [u, x] }); });
+  const cnt = [0, 0, 0, 0, 0, 0]; subList.forEach(([u, x]) => cnt[x.q]++);
+  const mx = Math.max(1, ...cnt);
+  const nNo = rows.filter(r => !r.s).length;
+  let h = '<div class="row" style="margin-bottom:10px">' +
+    (staff !== "viewer" ? '<button id="lock">' + (ext.lock ? "重新開放收件" : "截止收件") + "</button>" : "") +
+    '<button id="csv">匯出 CSV</button><span class="muted">還沒選題 ' + nNo + " 人</span></div>" +
+    '<div class="qbar">' + c.qs.map((x, i) => '<span><span class="pill b">' + esc(x.k) + '</span></span><span title="' + esc(plain(x.t)) + '"><i style="width:' + (cnt[i] / mx * 100) + '%;min-width:' + (cnt[i] ? 4 : 0) + 'px"></i></span><span>' + cnt[i] + " 人</span>").join("") + "</div>" +
+    '<div class="scroll"><table class="tbl"><thead><tr><th>班級</th><th>座號</th><th>姓名</th><th>狀態</th><th>題目</th><th>一句話結論</th><th>交件</th><th>原圖</th><th>老師</th><th>同學★</th></tr></thead><tbody>' +
+    rows.map(({ r, s }) => {
+      if (!s) return "<tr><td>" + esc(r.cls) + "</td><td>" + esc(r.seat) + "</td><td>" + esc(r.name) + '</td><td><span class="pill">未選</span></td><td colspan="6"></td></tr>';
+      const [u, x] = s, g = grades[u], p = peerStat(u);
+      return "<tr><td>" + esc(x.cls) + "</td><td>" + esc(x.seat) + "</td><td>" + esc(x.name) + "</td><td>" + (x.done ? '<span class="pill ok">已交</span>' : '<span class="pill no">已選未交</span>') + "</td>" +
+        '<td><span class="pill b">' + esc(x.k) + '</span> <span style="font-size:13px">' + esc(x.title) + "</span></td><td>" + esc(x.concl) + (x.link ? ' <a href="' + esc(x.link) + '" target="_blank" rel="noopener">連結</a>' : "") + "</td>" +
+        '<td class="muted">' + esc(fmtTime(x.doneAt)) + "</td><td>" + (x.drive || []).map((id, i) => '<a href="https://drive.google.com/file/d/' + encodeURIComponent(id) + '/view" target="_blank" rel="noopener">' + (i + 1) + "</a>").join(" ") + "</td>" +
+        "<td>" + (scored(g) ? total(g) + "／15" + (g.show ? "" : ' <span class="muted">未公開</span>') : "") + "</td><td>" + (p.n ? p.avg.toFixed(1) + "（" + p.n + "）" : "") + "</td></tr>";
+    }).join("") + "</tbody></table></div>";
+  $("pane").innerHTML = h;
+  if ($("lock")) $("lock").onclick = async () => {
+    if (!ext.lock && !confirm("截止之後，學生就不能再改選題、改海報。確定？")) return;
+    await setDoc(doc(db, "ext", chap), { lock: !ext.lock, updated: new Date().toISOString() }, { merge: true }).catch(e => alert(e.code || e.message));
+  };
+  $("csv").onclick = () => exportCsv(rows);
+}
+function exportCsv(rows) {
+  const c = chapById(chap);
+  const head = ["章", "班級", "座號", "姓名", "狀態", "方向", "題目", "一句話結論", "連結", "交件時間", ...RUBRIC, "老師總分", "老師評語", "評語公開", "同學評分人數", "同學平均星數", "同學的話"];
+  const lines = [head];
+  rows.forEach(({ r, s }) => {
+    if (!s) { lines.push([c.code, r.cls, r.seat, r.name, "未選"]); return; }
+    const [u, x] = s, g = grades[u] || {}, p = peerStat(u);
+    lines.push([c.code, x.cls, x.seat, x.name, x.done ? "已交" : "已選未交", x.k, x.title, x.concl, x.link, x.doneAt,
+      ...RUBRIC.map((t, i) => g.s && g.s["r" + i] ? g.s["r" + i] : ""), scored(g) ? total(g) : "", g.comment || "", g.show ? "是" : "",
+      p.n || "", p.n ? p.avg.toFixed(2) : "", p.l.map(y => y.name + "：" + "★".repeat(y.stars) + (y.comment ? " " + y.comment : "")).join("／")]);
+  });
+  const csv = "﻿" + lines.map(l => l.map(v => '"' + String(v ?? "").replace(/"/g, '""') + '"').join(",")).join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+  a.download = "章後延伸報告_" + c.code + (cls ? "_" + cls : "") + ".csv"; a.click();
+}
+
+/* ---------- 老師：報告順序 ---------- */
+let ordDraft = null;
+function drawOrder() {
+  if (!cls) { $("pane").innerHTML = '<p class="muted">先在上面選一個班級，再排這個班的報告順序。</p>'; return; }
+  const list = ordered(done());
+  if (!ordDraft || ordDraft.chap !== chap || ordDraft.cls !== cls) ordDraft = { chap, cls, ids: list.map(x => x[0]), dirty: false };
+  ordDraft.ids = ordDraft.ids.filter(u => subs[u] && subs[u].done && subs[u].cls === cls);
+  list.forEach(([u]) => { if (!ordDraft.ids.includes(u)) ordDraft.ids.push(u); });
+  const ro = staff === "viewer";
+  $("pane").innerHTML = '<div class="row" style="margin-bottom:10px">' + (ro ? "" : '<button id="rnd">🎲 隨機排</button><button id="bys">依座號</button><button class="p" id="sv"' + (ordDraft.dirty ? "" : " disabled") + ">存這個順序</button>") +
+    '<span class="muted">' + (ro ? "" : "拖拉或按 ↑↓ 調整；") + "只列已交的 " + ordDraft.ids.length + " 人。" + (ordDraft.dirty ? '<span class="warn">　還沒存</span>' : "") + "</span></div>" +
+    '<ol class="ord" id="ol">' + ordDraft.ids.map((u, i) => { const x = subs[u]; return '<li draggable="' + !ro + '" data-u="' + u + '"><span class="n">' + (i + 1) + "</span><b>" + esc(x.name) + '</b><span class="muted">' + esc(x.seat) + ' 號</span><span class="t"><span class="pill b">' + esc(x.k) + "</span> " + esc(x.title) + "</span>" + (ro ? "" : '<button data-m="-1">↑</button><button data-m="1">↓</button>') + "</li>"; }).join("") + "</ol>";
+  if (ro) return;
+  const set = ids => { ordDraft.ids = ids; ordDraft.dirty = true; drawOrder(); };
+  $("rnd").onclick = () => { const a = ordDraft.ids.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } set(a); };
+  $("bys").onclick = () => set(ordDraft.ids.slice().sort((a, b) => (+subs[a].seat || 0) - (+subs[b].seat || 0)));
+  $("sv").onclick = async () => {
+    const order = { ...(ext.order || {}), [cls]: ordDraft.ids };
+    try { await setDoc(doc(db, "ext", chap), { order, updated: new Date().toISOString() }, { merge: true }); ordDraft.dirty = false; drawOrder(); }
+    catch (e) { alert("沒有存成功：" + (e.code || e.message)); }
+  };
+  let dragU = null;
+  $("ol").querySelectorAll("li").forEach(li => {
+    li.querySelectorAll("button[data-m]").forEach(b => b.onclick = () => {
+      const a = ordDraft.ids.slice(), i = a.indexOf(li.dataset.u), j = i + +b.dataset.m;
+      if (j < 0 || j >= a.length) return; [a[i], a[j]] = [a[j], a[i]]; set(a);
+    });
+    li.ondragstart = e => { dragU = li.dataset.u; li.classList.add("drag"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", dragU); };
+    li.ondragend = () => li.classList.remove("drag");
+    li.ondragover = e => { e.preventDefault(); li.classList.add("over"); };
+    li.ondragleave = () => li.classList.remove("over");
+    li.ondrop = e => {
+      e.preventDefault(); li.classList.remove("over");
+      if (!dragU || dragU === li.dataset.u) return;
+      const a = ordDraft.ids.filter(u => u !== dragU);
+      a.splice(a.indexOf(li.dataset.u) + (ordDraft.ids.indexOf(dragU) < ordDraft.ids.indexOf(li.dataset.u) ? 1 : 0), 0, dragU);
+      set(a);
+    };
+  });
+}
+
+/* ---------- 老師：評分 ---------- */
+function gradeForm(box, u, compact) {
+  if (!box) return;
+  const ro = staff === "viewer";
+  const g = grades[u] || { s: {}, comment: "", show: false };
+  const s = { ...(g.s || {}) };
+  box.innerHTML = '<div class="sketch" style="margin-top:12px"><b>老師評分</b>　<span class="muted">批改看五件事，每項 1～3</span>' +
+    '<div class="rub" style="margin:8px 0">' + RUBRIC.map((r, i) => "<span>" + esc(r) + '</span><span class="lv" data-i="' + i + '">' + [1, 2, 3].map(n => '<button data-n="' + n + '"' + (s["r" + i] === n ? ' class="on"' : "") + (ro ? " disabled" : "") + ">" + n + " " + LEVEL[n] + "</button>").join("") + "</span>").join("") + "</div>" +
+    '<div class="row"><span>總分 <b class="tt">' + RUBRIC.reduce((a, r, i) => a + (s["r" + i] || 0), 0) + "</b>／15</span></div>" +
+    '<div class="field"><textarea class="cmt" placeholder="給學生的評語" maxlength="1000"' + (ro ? " disabled" : "") + ">" + esc(g.comment || "") + "</textarea></div>" +
+    (ro ? "" : '<div class="row"><label><input type="checkbox" class="shw"' + (g.show ? " checked" : "") + "> 學生看得到（報告島上他自己的那一章）</label><button class=\"p sv\">存評分</button><span class=\"muted m\"></span></div>") + "</div>";
+  if (ro) return;
+  box.querySelectorAll(".lv").forEach(lv => lv.querySelectorAll("button").forEach(b => b.onclick = () => {
+    const i = lv.dataset.i, n = +b.dataset.n;
+    s["r" + i] = s["r" + i] === n ? 0 : n;
+    if (!s["r" + i]) delete s["r" + i];
+    lv.querySelectorAll("button").forEach(x => x.classList.toggle("on", s["r" + i] === +x.dataset.n));
+    box.querySelector(".tt").textContent = RUBRIC.reduce((a, r, k) => a + (s["r" + k] || 0), 0);
+  }));
+  box.querySelector(".sv").onclick = async () => {
+    const d = { s, comment: box.querySelector(".cmt").value.trim(), show: box.querySelector(".shw").checked, by: user.email, updated: new Date().toISOString() };
+    try { await setDoc(doc(db, "ext", chap, "grades", u), d); grades[u] = d; box.querySelector(".m").textContent = "✓ 存好了"; }
+    catch (e) { box.querySelector(".m").textContent = "沒有存成功：" + (e.code || e.message); }
+  };
+}
+function drawGrades() {
+  const list = ordered(done());
+  if (!list.length) { $("pane").innerHTML = '<p class="muted">還沒有人交。</p>'; return; }
+  const ro = staff === "viewer";
+  $("pane").innerHTML = (ro ? "" : '<div class="row" style="margin-bottom:10px"><button id="pub">已評分的全部公開給學生</button><span class="muted">點一位同學展開評分；同學的話會列在下面（只有老師看得到是誰寫的）。</span></div>') +
+    list.map(([u, x]) => {
+      const g = grades[u], p = peerStat(u);
+      return '<details class="sketch2" data-u="' + u + '"><summary style="cursor:pointer"><b>' + esc(x.name) + '</b> <span class="muted">' + esc(x.cls) + "－" + esc(x.seat) + '</span>　<span class="pill b">' + esc(x.k) + "</span>　" +
+        (scored(g) ? '<span class="pill ok">' + total(g) + "／15" + (g.show ? "・已公開" : "") + "</span>" : '<span class="pill">未評分</span>') +
+        "　" + (p.n ? '<span class="pill">★ ' + p.avg.toFixed(1) + "（" + p.n + " 人）</span>" : "") + '</summary><p style="margin:8px 0 0"><b>結論：</b>' + esc(x.concl) + "</p>" +
+        '<div class="g"></div>' + (p.n ? '<div><b>同學的話</b><ul class="cm">' + p.l.map(y => "<li>" + "★".repeat(y.stars) + "　" + esc(y.comment || "（沒寫）") + ' <span class="muted">— ' + esc(y.name) + "</span></li>").join("") + "</ul></div>" : "") + "</details>";
+    }).join("");
+  $("pane").querySelectorAll("details").forEach(d => d.ontoggle = () => { if (d.open && !d.querySelector(".g").innerHTML) gradeForm(d.querySelector(".g"), d.dataset.u); });
+  if ($("pub")) $("pub").onclick = async () => {
+    const todo = list.filter(([u]) => scored(grades[u]) && !grades[u].show);
+    if (!todo.length) { alert("沒有要公開的。"); return; }
+    if (!confirm("把 " + todo.length + " 位已評分的公開給學生？")) return;
+    for (const [u] of todo) await setDoc(doc(db, "ext", chap, "grades", u), { ...grades[u], show: true, updated: new Date().toISOString() }).catch(() => {});
+  };
+}
+
+/* ---------- 報告模式（投影用） ---------- */
+async function openStage() {
+  if (!cls) { alert("先在上面選一個班級。"); return; }
+  const list = ordered(done()).map(x => x[0]);
+  if (!list.length) { alert("這個班還沒有人交。"); return; }
+  let i = Math.max(0, list.indexOf(ext.now));
+  stage = { list, i, img: 0, showCm: false, imgs: [] };
+  document.body.insertAdjacentHTML("beforeend", '<div id="stage"></div>');
+  try { await document.documentElement.requestFullscreen(); } catch (e) {}
+  await go(i);
+}
+async function setNow(u) {
+  await setDoc(doc(db, "ext", chap), { now: u || "", nowCls: u ? cls : "", updated: new Date().toISOString() }, { merge: true }).catch(e => alert("沒有切換成功：" + (e.code || e.message)));
+}
+async function go(i) {
+  stage.i = Math.max(0, Math.min(stage.list.length - 1, i)); stage.img = 0; stage.imgs = [];
+  const u = stage.list[stage.i];
+  drawStage();
+  await setNow(u);
+  stage.imgs = await imagesOf(u);
+  if (stage && stage.list[stage.i] === u) drawStage();
+}
+function drawStage() {
+  const el = $("stage"); if (!el || !stage) return;
+  const u = stage.list[stage.i], x = subs[u] || {}, q = qOf(x), p = peerStat(u);
+  const live = ext.now === u;
+  el.innerHTML = '<div class="pv">' + (stage.imgs.length ? '<img src="' + stage.imgs[stage.img] + '" alt="海報" id="simg">' + (stage.imgs.length > 1 ? '<div class="viewer"><div class="strip">' + stage.imgs.map((s, k) => '<button data-k="' + k + '"' + (k === stage.img ? ' class="on"' : "") + ">第 " + (k + 1) + " 張</button>").join("") + "</div></div>" : "")
+      : (x.n ? '<p class="muted">海報載入中…</p>' : '<p class="muted" style="font-size:20px">沒有上傳照片' + (x.link ? "，海報在連結裡" : "") + "</p>")) + "</div>" +
+    '<div class="side"><div class="muted">' + esc(chapLabel(chapById(chap))) + "</div><h2>" + esc(x.name || "") + ' <span class="muted" style="font-size:18px">' + esc(x.cls) + "－" + esc(x.seat) + "</span></h2>" +
+    '<div class="q"><span class="pill b">' + esc(x.k || "") + "</span>　" + (q ? rich(q.t) : esc(x.title)) + "</div>" +
+    '<div class="cc">' + esc(x.concl || "") + "</div>" + (x.link ? '<p><a href="' + esc(x.link) + '" target="_blank" rel="noopener">打開海報連結 →</a></p>' : "") +
+    '<div class="peerbox" id="pb"></div>' +
+    '<details id="gd"><summary style="cursor:pointer;font-weight:700">老師評分（點開）</summary><div id="sg"></div></details></div>' +
+    '<div class="nav"><button id="pv"' + (stage.i ? "" : " disabled") + '>← 上一位</button><span class="mid">第 ' + (stage.i + 1) + "／" + stage.list.length + ' 位</span><button class="p" id="nx"' + (stage.i < stage.list.length - 1 ? "" : " disabled") + '>下一位 →</button>' +
+    '<button class="ghost" id="tg"></button><span style="flex:1"></span><button id="end">結束報告</button></div>';
+  $("pv").onclick = () => go(stage.i - 1);
+  $("nx").onclick = () => go(stage.i + 1);
+  $("tg").onclick = () => setNow(ext.now === u ? "" : u);
+  updateLive();
+  $("end").onclick = closeStage;
+  el.querySelectorAll(".strip button").forEach(b => b.onclick = () => { stage.img = +b.dataset.k; drawStage(); });
+  const im = $("simg"); if (im) im.onclick = () => im.classList.toggle("big");
+  $("gd").ontoggle = () => { if ($("gd").open) gradeForm($("sg"), u); };
+}
+/* 只更新同學評分那一塊，不動老師正在打的評分 */
+function updateLive() {
+  const pb = $("pb"); if (!pb || !stage) return;
+  const u = stage.list[stage.i], p = peerStat(u), live = ext.now === u;
+  const dist = [3, 2, 1].map(n => { const c = p.l.filter(y => y.stars === n).length; return "<span>" + "★".repeat(n) + '</span><span><i style="width:' + (p.n ? c / p.n * 100 : 0) + '%;min-width:' + (c ? 4 : 0) + 'px"></i></span><span>' + c + "</span>"; }).join("");
+  pb.innerHTML = '<div class="row"><b>同學給的星星</b>' + (live ? '<span class="pill ok">評分中</span>' : '<span class="pill">評分暫停</span>') + '</div><div class="row"><span class="big">' + (p.n ? "★ " + p.avg.toFixed(1) : "—") + '</span><span class="muted">' + p.n + ' 人</span></div><div class="dist">' + dist + "</div>" +
+    '<div class="row" style="margin-top:6px"><button class="ghost" id="cmt">' + (stage.showCm ? "收起同學的話" : "顯示同學的話") + "</button></div>" +
+    (stage.showCm ? '<ul class="cm">' + p.l.filter(y => y.comment).map(y => "<li>" + "★".repeat(y.stars) + "　" + esc(y.comment) + "</li>").join("") + "</ul>" : "");
+  $("cmt").onclick = () => { stage.showCm = !stage.showCm; updateLive(); };
+  $("tg").textContent = live ? "暫停評分" : "開放評分";
+}
+async function closeStage() {
+  if (!confirm("結束報告？同學那邊會停止評分。")) return;
+  await setNow("");
+  stage = null; $("stage")?.remove();
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  draw();
+}
+document.addEventListener("keydown", e => {
+  if (!stage || ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+  if (e.key === "ArrowRight" || e.key === "PageDown") go(stage.i + 1);
+  if (e.key === "ArrowLeft" || e.key === "PageUp") go(stage.i - 1);
+});
+
+paintBar();
+</script>
+</body>
+</html>

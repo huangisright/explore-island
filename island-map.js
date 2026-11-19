@@ -96,6 +96,16 @@ function draw(cloud, opts) {
   if (!opts.book) s += '<a href="passport.html" aria-label="探索紀錄本"><path d="' + blob(bx + 20, by - 8, 16, 8, .08) + '" fill="#e6d3a3" stroke="#1d1d1d" stroke-width="2"/>' +
     line(bx + 2, by - 10, bx + 38, by - 10, 1.4) + "</a>";
   if (!opts.book) s += callout(bx + 40, by - 18, bx + 80, by - 60, "記你走過哪些島的本子。點這個箱子打開。", 11);
+  // 報告島（章後延伸報告）：島上立一塊海報架
+  const rx = 800, ry = 772;
+  s += '<a href="report.html" aria-label="報告島：章後延伸報告"><title>報告島：一章上完，選一題做海報、上台報告</title>' +
+    '<path class="isle" d="' + blob(rx, ry, 40, 12, .14) + '" fill="#f1e4c3" stroke="#1d1d1d" stroke-width="2.4"/>' +
+    '<rect x="' + (rx - 20) + '" y="' + (ry - 44) + '" width="40" height="30" fill="#fffefa" stroke="#1d1d1d" stroke-width="1.8" transform="rotate(-3 ' + rx + " " + (ry - 29) + ')"/>' +
+    line(rx - 13, ry - 36, rx + 11, ry - 37, 1.2) + line(rx - 13, ry - 29, rx + 6, ry - 30, 1) + line(rx - 13, ry - 23, rx + 9, ry - 24, 1) +
+    line(rx - 12, ry - 14, rx - 18, ry + 6, 1.6) + line(rx + 12, ry - 15, rx + 18, ry + 5, 1.6) + line(rx, ry - 14, rx, ry + 8, 1.4) +
+    '<circle cx="' + (rx + 30) + '" cy="' + (ry - 4) + '" r="5" fill="#fffefa" stroke="#1d1d1d" stroke-width="1.4"/>' + line(rx + 30, ry + 1, rx + 30, ry + 16, 1.5) + line(rx + 30, ry + 5, rx + 22, ry - 6, 1.3) +
+    '<text class="lab" text-anchor="middle" x="' + rx + '" y="' + (ry + 54) + '" style="font-size:18px;font-weight:700">報告島</text></a>';
+  s += callout(rx - 46, ry + 2, rx - 110, ry + 48, "一章上完，來這裡選一題做海報，上台說給大家聽。", 12, "end");
   // 燈塔（老師）
   const lx = 1110, ly = 850;
   s += '<a href="teacher.html" aria-label="老師頁面"><path d="M' + (lx - 12) + "," + ly + " L" + (lx - 7) + "," + (ly - 58) + " L" + (lx + 7) + "," + (ly - 58) + " L" + (lx + 12) + "," + ly + ' Z" fill="#fffefa" stroke="#1d1d1d" stroke-width="2"/>' +
