@@ -1101,6 +1101,7 @@ function qnorm(p) {           // 標準常態分位數（Acklam 近似）
   const CUM = [[50, 0], [60, 0.125], [70, 0.35], [80, 0.65], [90, 0.90], [100, 1.0]];
   const FRQ = [[55, 5], [65, 9], [75, 12], [85, 10], [95, 4]];
   let mode = "cum";
+  const heights = { cum: 50, freq: 7 };
 
   function cross(pts, h) {                 // 水平線 y=h 與折線的交點 x
     const out = [];
@@ -1114,26 +1115,27 @@ function qnorm(p) {           // 標準常態分位數（Acklam 近似）
     return out;
   }
   function draw() {
-    const raw = +sl.value;
+    heights[mode] = Number(sl.value);
     const pts = mode === "cum" ? CUM : FRQ;
     const yMax = mode === "cum" ? 1 : 14;
-    const h = raw / 100 * yMax;
-    sv.textContent = mode === "cum" ? num(h, 2) : num(h, 1);
+    const h = mode === "cum" ? heights.cum / 100 : heights.freq;
+    const ticks = mode === "cum" ? [0, 0.25, 0.50, 0.75, 1] : [0, 2, 4, 6, 8, 10, 12, 14];
+    sv.textContent = mode === "cum" ? num(h, 2) : String(h);
+    svg.setAttribute("aria-label", mode === "cum" ? "累積相對次數折線圖與水平線" : "次數分配折線圖與水平線");
     lab.firstChild.textContent = mode === "cum" ? "水平線高度 ＝ " : "水平線高度（次數）＝ ";
 
     const L = 66, R = 574, T = 46, B = 268;
     const fx = (v) => L + (v - 50) / 50 * (R - L);
     const fy = (p) => B - p / yMax * (B - T);
     clear(svg);
-    for (let k = 1; k <= 4; k++) {
-      const y = T + (B - T) * k / 4;
+    for (const tick of ticks.slice(0, -1)) {
+      const y = fy(tick);
       svg.appendChild(el("line", { x1: L, y1: y, x2: R, y2: y, stroke: css("--edge-soft"), "stroke-width": 1 }));
     }
     frame(svg, { L, R, T, B });
     for (let v = 50; v <= 100; v += 10) txt(svg, fx(v), B + 17, String(v));
-    for (let k = 0; k <= 4; k++) {
-      const p = yMax * k / 4;
-      txt(svg, L - 9, fy(p) + 4, mode === "cum" ? num(p, 2) : String(Math.round(p)), { a: "end" });
+    for (const tick of ticks) {
+      txt(svg, L - 9, fy(tick) + 4, mode === "cum" ? num(tick, 2) : String(tick), { a: "end" });
     }
     const col = mode === "cum" ? css("--green") : css("--indigo");
     let dstr = "";
@@ -1155,7 +1157,7 @@ function qnorm(p) {           // 標準常態分位數（Acklam 近似）
     $("g5stat").innerHTML =
       stat("交點個數", xs.length + " 個", xs.length === 1 ? "cool" : "hot") +
       stat("讀出來的分數", xs.length === 1 ? num(xs[0], 1) + " 分" : xs.length ? xs.map((x) => num(x, 1)).join("　和　") : "讀不到") +
-      (mode === "cum" ? stat("這條線的意思", "未滿它的佔 " + num(h * 100, 1) + "％") : stat("這條線的意思", "次數 ＝ " + num(h, 1)));
+      (mode === "cum" ? stat("這條線的意思", "未滿它的佔 " + num(h * 100, 1) + "％") : stat("這條線的意思", "次數 ＝ " + h));
 
     const m = $("g5msg");
     if (mode === "freq") {
@@ -1174,10 +1176,21 @@ function qnorm(p) {           // 標準常態分位數（Acklam 近似）
         "現在讀到的是：<b>成績未滿 " + num(xs[0], 1) + " 分的人，佔全班 " + num(h * 100, 1) + "％。</b>";
     }
   }
+  function setMode(next) {
+    mode = next;
+    sl.min = mode === "cum" ? 5 : 0;
+    sl.max = mode === "cum" ? 98 : 14;
+    sl.value = heights[mode];
+    draw();
+  }
+
   sl.addEventListener("input", draw);
-  segbind("g5seg", (v) => { mode = v; draw(); });
-  [].forEach.call(document.querySelectorAll("[data-g5]"), (b) => {
-    b.addEventListener("click", () => { sl.value = b.dataset.g5; if (mode !== "cum") { mode = "cum"; [].forEach.call($("g5seg").querySelectorAll(".seg"), (x, i) => x.classList.toggle("on", i === 0)); } draw(); });
+  segbind("g5seg", setMode);
+  [].forEach.call(document.querySelectorAll("[data-g5]"), (button) => {
+    button.addEventListener("click", () => {
+      heights.cum = Number(button.dataset.g5);
+      $("g5seg").querySelector('[data-v="cum"]').click();
+    });
   });
   draw();
 })();
