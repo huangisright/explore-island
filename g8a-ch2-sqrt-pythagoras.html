@@ -293,7 +293,7 @@ input[type=range]{accent-color:var(--ink)}
 
 <section id="s0">
   <p>這一章有兩個主角。前半是<b>開方</b>：平方把邊長變成面積，開方要把面積翻回邊長。後半是<b>畢氏定理</b>：它表面上在講三段長度，骨子裡在講三個正方形的面積。把這兩件事接起來的，是你上一章剛學完的 <span class="math">(a+b)</span><sup>2</sup>。</p>
-  <div class="note b"><span class="vt">這個網頁只做紙上做不到的事</span>下面每一站，都是為了讓你「看見一個過程」，而不是「得到一個答案」。答案課本上就有；過程只有在這裡看得到。</div>
+  <div class="note b"><span class="vt">動手看過程</span>拖動圖形或按下「下一步」，看看每一步怎麼接到下一步。</div>
 </section>
 
 <!-- ══════════ 1 ══════════ -->
@@ -373,9 +373,9 @@ input[type=range]{accent-color:var(--ink)}
 <!-- ══════════ 4 ══════════ -->
 <section id="s4">
   <h2>核心三<span class="tag">直式開方法就是 (a＋b)² 一位一位地用</span></h2>
-  <p>課本教的直式開方法看起來像口訣：「商乘以 2 寫在旁邊、試除、再往下拉兩位」。它其實就是 <span class="math">(a+b)</span><sup>2</sup> ＝ <span class="math">a</span><sup>2</sup>＋2<span class="math">ab</span>＋<span class="math">b</span><sup>2</sup> 拆成一位一位在用。</p>
+  <p>直式開方法看起來像口訣：「商乘以 2 寫在旁邊、試除、再往下拉兩位」。它其實就是 <span class="math">(a+b)</span><sup>2</sup> ＝ <span class="math">a</span><sup>2</sup>＋2<span class="math">ab</span>＋<span class="math">b</span><sup>2</sup> 拆成一位一位在用。</p>
 
-  <div class="lab" id="lab-long"><div class="lab-head"><span class="lab-no">4</span><div><p class="lab-title">把直式開方法畫成正方形</p><p class="lab-why">左邊是課本的直式，右邊是同一件事的圖。每按一次「下一位」，正方形就長大一圈，長出來的那一圈，正好是 2<span class="math">ab</span>＋<span class="math">b</span><sup>2</sup>。不是完全平方數的話，可以補 00 一直往小數位試下去；圈會越來越薄，所以圖每一步放大 10 倍、只看右上角，綠色虛線是 √n 真正的位置。</p></div></div><div class="lab-body">
+  <div class="lab" id="lab-long"><div class="lab-head"><span class="lab-no">4</span><div><p class="lab-title">把直式開方法畫成正方形</p><p class="lab-why">左邊是開方的直式，右邊是同一件事的圖。每按一次「下一位」，正方形就長大一圈，長出來的那一圈，正好是 2<span class="math">ab</span>＋<span class="math">b</span><sup>2</sup>。不是完全平方數的話，可以補 00 一直往小數位試下去；圈會越來越薄，所以圖每一步放大 10 倍、只看右上角，綠色虛線是 √n 真正的位置。</p></div></div><div class="lab-body">
     <div class="ctl">
       <label>要開方的數 <input type="number" id="lgN" value="1849" min="1" max="99999999" step="1"></label>
       <button id="lgNext">下一位</button>
@@ -816,7 +816,7 @@ input[type=range]{accent-color:var(--ink)}
         const parts = st.rows.length > 1
           ? `拆開看：a² ＝ ${aO * aO}，兩條 2ab ＝ 2×${aO}×${bO} ＝ ${2 * aO * bO}，b² ＝ ${bO * bO}；合計 ${aO * aO + 2 * aO * bO + bO * bO} ＝ ${n}。`
           : "";
-        msg = `<b class="ok">√${n} ＝ ${st.root}，整除。</b>${parts}橘色那兩條就是 2ab，沙色那一小塊就是 b²。課本要你「把商乘以 2 寫在旁邊」，那個 2 就是<b>兩條橘色長方形</b>。`;
+        msg = `<b class="ok">√${n} ＝ ${st.root}，整除。</b>${parts}橘色那兩條就是 2ab，沙色那一小塊就是 b²。直式裡要把商乘以 2，那個 2 對應的是<b>兩條橘色長方形</b>。`;
       } else if (k === m) msg = `<b>整數部分是 ${st.root}，餘 ${st.rem}。</b>${n} 不是完全平方數，還可以繼續：按「下一位」，在後面補一組 00，往小數第 1 位試下去。`;
       else if (k < m + MAXDEC) msg = `<b>√${n} ≈ ${sideOf(st.root, k)}…（到小數第 ${k - m} 位）</b>每多一位，正方形只多長一圈更薄的邊，所以畫面每一步放大 10 倍才看得到。試的方法完全一樣：補 00、寫商的兩倍、試 d。綠色虛線是 √${n} 真正的位置，正方形永遠追不上它。`;
       else msg = `<b>√${n} ≈ ${sideOf(st.root, k)}…，先停在小數第 ${MAXDEC} 位。</b>餘數永遠不會變成 0，這個方法可以一直做下去：√${n} 不是有限小數。`;
