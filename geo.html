@@ -4,544 +4,235 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>幾何拾光｜一線數光</title>
-<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;600;700&display=swap">
-
-<style>/* layout: full-bleed map, floating header card top-left, drawer right (bottom sheet on phones) */
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* 幾何拾光：八道光沿著一條柔和的弧線排開，一道光是一個單元；做完的節讓那道光更亮。
+   不用島嶼意象，畫面只有晨光、細塵和光點。 */
 :root{
-  --sea:#c3e4e6; --sea-deep:#94cbd0; --ink:#1d3a40; --ink-soft:#4f6a6e; --paper:#f6f8f4;
-  --sand:#e7dcc0; --land:#8fbf78; --land-hi:#b4d68e; --accent:#c4572e; --route:#2f6f86; --fog:#7d9599;
-  --card:#ffffffee; --line:#1d3a4022;
+  --bg1:#fbf8f1; --bg2:#f1ece0; --ink:#2b2a27; --ink-2:#6b665c; --ink-3:#9a948a;
+  --glow:255,196,110; --glow-2:255,236,200; --line:#e4dccb; --card:#fffdf8cc; --card-edge:#eadfca;
+  --accent:#b8772f; --done:#c98a35;
   --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti",serif;
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --sea:#0f2a33; --sea-deep:#0a1f27; --ink:#e3eeec; --ink-soft:#9fb7b8; --paper:#132830;
-  --sand:#7d7356; --land:#4f6d4c; --land-hi:#62845c; --accent:#e58a5f; --route:#7fc3d8; --fog:#58737a;
-  --card:#152c34ee; --line:#e3eeec22; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --sea:#0f2a33; --sea-deep:#0a1f27; --ink:#e3eeec; --ink-soft:#9fb7b8; --paper:#132830;
-  --sand:#7d7356; --land:#4f6d4c; --land-hi:#62845c; --accent:#e58a5f; --route:#7fc3d8; --fog:#58737a;
-  --card:#152c34ee; --line:#e3eeec22; color-scheme:dark}
-html,body{height:100%}
-body{background:var(--sea);color:var(--ink);font-family:var(--f-body);overflow:hidden}
-#stage{position:fixed;inset:0}
-.hud{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));
-  display:flex;flex-direction:column;gap:8px;z-index:5;max-width:calc(100% - 24px)}
-.brand{background:var(--card);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
-.brand h1{margin:0;font-family:var(--f-display);font-size:22px;letter-spacing:.04em;font-weight:700}
-.brand p{margin:2px 0 0;font-size:12px;color:var(--ink-soft)}
-.modes{display:flex;gap:6px;flex-wrap:wrap}
-.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px}
-.seg button{border:0;background:none;color:var(--ink-soft);font:600 13px var(--f-body);padding:6px 12px;border-radius:999px;cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-.seg button:focus-visible,.drawer button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.legend{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--ink-soft);display:flex;gap:12px;flex-wrap:wrap}
-.legend i{display:inline-block;width:18px;height:0;border-top:2px solid var(--ink);vertical-align:middle;margin-right:4px}
-.legend i.h{border-top:2px dashed var(--route)}
-.legend i.lh{width:8px;height:8px;border:0;border-radius:50%;background:var(--accent)}
-.drawer{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));
-  width:340px;max-width:calc(100% - 24px);background:var(--card);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;
-  z-index:6;display:flex;flex-direction:column;overflow:hidden;transition:transform .25s ease}
-.drawer[hidden]{display:none!important}
-.drawer header{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
-.drawer header .k{font-size:11px;letter-spacing:.12em;color:var(--accent);font-weight:700}
-.drawer header h2{margin:2px 0 0;font-family:var(--f-display);font-size:24px;line-height:1.2;text-wrap:balance}
-.drawer header .x{margin-left:auto;border:0;background:none;color:var(--ink-soft);font-size:22px;cursor:pointer;line-height:1}
-.drawer .body{padding:12px 16px 18px;overflow:auto;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.65}
-.tnote{border-left:3px solid var(--accent);padding:6px 10px;background:color-mix(in srgb,var(--accent) 8%,transparent);font-size:13px;color:var(--ink)}
-.tnote b{color:var(--accent)}
-.sec{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
-.sec .n{font:700 12px var(--f-body);color:var(--paper);background:var(--ink);border-radius:6px;padding:2px 6px;margin-top:3px;font-variant-numeric:tabular-nums}
-.sec h3{margin:0;font-family:var(--f-display);font-size:18px;font-weight:700}
-.sec .files{grid-column:2;display:flex;gap:6px;flex-wrap:wrap}
-.chip{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--ink-soft);background:none}
-.chip.off{opacity:.7;border-style:dashed}
-.topnav{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.topnav .home{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--ink);text-decoration:none;font:600 13px var(--f-body)}
-.topnav .home:hover{background:var(--paper)}
-.views{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px}
-.views a{color:var(--ink-soft);text-decoration:none;font:600 13px var(--f-body);padding:6px 14px;border-radius:999px}
-.views a[aria-current="page"]{background:var(--ink);color:var(--paper)}
-.topnav a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-a.chip{color:var(--ink);text-decoration:none;border-color:var(--ink)}
-a.chip:hover{background:var(--ink);color:var(--paper)}
-.modes[hidden]{display:none!important}
+@media (prefers-color-scheme:dark){:root{
+  --bg1:#1b1d24; --bg2:#14161c; --ink:#efe9dc; --ink-2:#b9b2a3; --ink-3:#7f796d;
+  --glow:255,190,105; --glow-2:255,225,180; --line:#2d2f37; --card:#22242bcc; --card-edge:#363841;
+  --accent:#e7ad62; --done:#f0b765; color-scheme:dark;
+}}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font:15px/1.7 var(--f-body);color:var(--ink);background:linear-gradient(170deg,var(--bg1) 0%,var(--bg2) 100%);min-height:100vh;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
 
-.sec button.go{all:unset;cursor:pointer}
-.rt{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:4px}
-.rt .lab{font-family:var(--f-display);font-size:17px}
-.rt small{color:var(--ink-soft)}
-.btn{align-self:flex-start;border:1px solid var(--ink);background:none;color:var(--ink);font:600 13px var(--f-body);border-radius:8px;padding:5px 10px;cursor:pointer}
-.btn.on{background:var(--ink);color:var(--paper)}
-.muted{color:var(--ink-soft);font-size:13px}
-.q{font-family:var(--f-display);font-size:19px;line-height:1.6}
-.who{display:flex;gap:8px;flex-wrap:wrap}
-.person{display:flex;flex-direction:column;align-items:flex-start;gap:0;border:1px solid var(--line);background:color-mix(in srgb,var(--sand) 35%,transparent);color:var(--ink);border-radius:10px;padding:6px 10px;cursor:pointer;font:inherit}
-.person b{font-family:var(--f-display);font-size:16px}
-.person span{font-size:11px;color:var(--ink-soft)}
-.label.bubble{position:absolute;transform:translate(-50%,-100%);background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);border-radius:12px;padding:5px 10px;font:15px var(--f-display);white-space:nowrap;pointer-events:none;box-shadow:0 2px 0 var(--line);transition:opacity .4s}
-.bubble::after{content:"";position:absolute;left:50%;bottom:-7px;width:10px;height:10px;background:var(--paper);border-right:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);transform:translateX(-50%) rotate(45deg)}
-.pname{font:600 11px var(--f-body);color:var(--ink);background:color-mix(in srgb,var(--paper) 80%,transparent);border-radius:4px;padding:0 4px}
-.label{position:absolute;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;font-family:var(--f-display);color:var(--ink);text-shadow:0 0 4px var(--sea),0 0 8px var(--sea)}
-.foot{position:fixed;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:4;font-size:12px;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 10px;max-width:calc(100% - 24px)}
-@media (max-width:700px){
-  .drawer{top:auto;left:max(8px,env(safe-area-inset-left,0px));right:max(8px,env(safe-area-inset-right,0px));width:auto;max-width:none;height:58%;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
-  .brand h1{font-size:19px}
-  .legend{display:none}
+/* 光束與細塵 */
+.rays{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.rays i{position:absolute;top:-30%;width:22vw;height:160%;left:var(--x);transform:rotate(-24deg);
+  background:linear-gradient(90deg,transparent,rgba(var(--glow-2),.28),transparent);filter:blur(18px);opacity:.7}
+#dust{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:22px 24px 40px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.home{font-size:14px;color:var(--ink-2);text-decoration:none;padding:6px 2px}
+.home:hover{color:var(--ink)}
+.modes{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--card)}
+.modes[hidden]{display:none}
+.modes button{border:0;background:none;font:500 13px var(--f-body);color:var(--ink-2);padding:4px 12px;border-radius:999px;cursor:pointer}
+.modes button[aria-pressed="true"]{background:var(--ink);color:var(--bg1)}
+
+header.hero{text-align:center;margin:28px 0 6px}
+header.hero h1{font:700 clamp(34px,6vw,52px)/1.15 var(--f-display);letter-spacing:.18em;margin:0;padding-left:.18em}
+header.hero p{margin:10px 0 0;color:var(--ink-2);font-size:15.5px}
+header.hero .count{margin-top:4px;font-size:13px;color:var(--ink-3)}
+
+/* 弧線上的八道光 */
+.field{position:relative;height:500px;margin-top:8px}
+.field svg.path{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.light{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:8px;
+  background:none;border:0;padding:6px;cursor:pointer;color:var(--ink);font:inherit;width:max-content}
+.light .txt{display:flex;flex-direction:column;align-items:center;gap:2px}
+.orb{position:relative;width:var(--s,54px);height:var(--s,54px);border-radius:50%;
+  background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.95) 0,rgba(var(--glow-2),.95) 22%,rgba(var(--glow),calc(.35 + var(--lit,0)*.55)) 52%,rgba(var(--glow),0) 72%);
+  box-shadow:0 0 calc(18px + var(--lit,0)*34px) calc(4px + var(--lit,0)*12px) rgba(var(--glow),calc(.18 + var(--lit,0)*.42));
+  transition:transform .5s ease, box-shadow .5s ease}
+.light:hover .orb,.light:focus-visible .orb,.light[aria-expanded="true"] .orb{transform:scale(1.12)}
+@media (prefers-reduced-motion:no-preference){ .orb{animation:breathe 6s ease-in-out infinite;animation-delay:var(--d,0s)} }
+@keyframes breathe{50%{filter:brightness(1.08);transform:scale(1.04)}}
+.light .no{font:500 12px var(--f-body);color:var(--ink-3);letter-spacing:.2em}
+.light .nm{font:700 18px/1.25 var(--f-display);letter-spacing:.06em;text-align:center;white-space:nowrap}
+.motes{display:flex;gap:5px;justify-content:center}
+.motes b{width:6px;height:6px;border-radius:50%;border:1px solid rgba(var(--glow),.8);background:transparent}
+.motes b.on{background:rgb(var(--glow));box-shadow:0 0 6px rgba(var(--glow),.9);border-color:transparent}
+
+/* 單元卡 */
+.panel{position:fixed;top:0;right:0;height:100%;width:min(420px,100%);z-index:5;background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-left:1px solid var(--card-edge);padding:28px 26px 30px;overflow:auto;transform:translateX(102%);transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.panel.open{transform:none}
+.panel .close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink-2);font-size:18px;cursor:pointer}
+.panel .eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--accent)}
+.panel h2{font:700 30px/1.25 var(--f-display);letter-spacing:.06em;margin:6px 0 4px}
+.panel .hook{font:400 17px/1.6 var(--f-display);color:var(--ink-2);margin:0 0 18px}
+.panel .tname{font-size:13px;color:var(--ink-3);margin:-10px 0 16px}
+.sec{display:flex;align-items:center;gap:14px;padding:14px 4px;border-top:1px solid var(--line);text-decoration:none}
+.sec:last-of-type{border-bottom:1px solid var(--line)}
+.sec .dot{flex:0 0 auto;width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(var(--glow),.9)}
+.sec.lit .dot{background:rgb(var(--glow));box-shadow:0 0 10px rgba(var(--glow),.9);border-color:transparent}
+.sec .t{flex:1;font:700 17px/1.35 var(--f-display)}
+.sec .t small{display:block;font:400 12.5px/1.5 var(--f-body);color:var(--ink-3);margin-top:2px}
+.sec .go{font-size:13.5px;color:var(--accent);white-space:nowrap}
+.sec:hover .t{color:var(--accent)}
+.panel .note{font-size:12.5px;color:var(--ink-3);margin-top:16px}
+.scrim{position:fixed;inset:0;z-index:4;background:rgba(0,0,0,.08);opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.on{opacity:1;pointer-events:auto}
+
+footer{text-align:center;color:var(--ink-3);font-size:13px;margin-top:26px}
+
+/* 窄螢幕：八道光改成直的一列 */
+@media (max-width:760px){
+  .page{padding:16px 16px 32px}
+  .field{height:auto;display:flex;flex-direction:column;gap:6px;margin-top:18px}
+  .field svg.path{display:none}
+  .light{position:static;transform:none;flex-direction:row;width:100%;justify-content:flex-start;gap:16px;padding:10px 6px;border-bottom:1px solid var(--line)}
+  .light .txt{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+  .light .nm{text-align:left}
+  .motes{justify-content:flex-start}
+  .panel{top:auto;bottom:0;height:auto;max-height:82%;width:100%;border-left:0;border-top:1px solid var(--card-edge);border-radius:20px 20px 0 0;transform:translateY(102%)}
 }
-@media (prefers-reduced-motion:reduce){.drawer{transition:none}}
+@media (prefers-reduced-motion:reduce){ .panel,.orb{transition:none} }
 </style>
 </head>
 <body>
-<div id="stage"></div>
-<div class="hud">
-  <nav class="topnav" aria-label="切換">
+<div class="rays" aria-hidden="true"><i style="--x:8%"></i><i style="--x:38%"></i><i style="--x:70%"></i></div>
+<canvas id="dust" aria-hidden="true"></canvas>
+<div class="page">
+  <div class="top">
     <a class="home" href="index.html">← 一線數光</a>
-  </nav>
-  <div class="brand"><h1>幾何拾光</h1><p id="sub"></p></div>
-  <div class="modes" hidden>
-    <div class="seg" role="group" aria-label="視角">
-      <button type="button" data-mode="student" aria-pressed="true">學生視角</button>
-      <button type="button" data-mode="teacher" aria-pressed="false">教師視角</button>
+    <div class="modes" role="group" aria-label="視角" hidden>
+      <button type="button" data-mode="student" aria-pressed="true">學生</button>
+      <button type="button" data-mode="teacher" aria-pressed="false">教師</button>
     </div>
   </div>
-  <div class="legend"><span><i></i>主航線（上課順序）</span><span><i class="h"></i>隱藏航線</span><span><i class="lh"></i>燈塔</span></div>
+  <header class="hero">
+    <h1>幾何拾光</h1>
+    <p>八道光，二十八個發現。點一道光，慢慢看。</p>
+    <div class="count" id="count"></div>
+  </header>
+  <main class="field" id="field" aria-label="八個單元"></main>
+  <footer>黃士祐 老師（IsRight）</footer>
 </div>
-<aside class="drawer" id="drawer" hidden aria-live="polite"></aside>
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="panel" aria-live="polite"></aside>
 
-<div class="foot">拖曳平移、滾輪縮放・黃士祐 老師（IsRight）</div>
-<script>// 幾何拾光：共用資料（2D 與 3D 兩版共用）
-// 學生視角只看 student / 節次標題；教師視角才看 teacher / 航線標籤。
-const COURSE = {
-  islands: [
-    { id: 1, num: '一', student: '不變島', teacher: '單元一　面積會加', core: '面積可加性：全課唯一的起手工具', chapters: '16、1 §1.2、5 §5.2',
-      pos: [170, 190], r: 78, hue: 0,
-      sections: [ ['1-1', '一個不會變的數'], ['1-2', '空白搬了家'], ['1-3', '三條線，交在一點'] ] },
-    { id: 2, num: '二', student: '捷徑島', teacher: '單元二　把折線拉直', core: '變換首次登場：反射與旋轉是動作', chapters: '2、24',
-      pos: [395, 120], r: 70,
-      sections: [ ['2-1', '光走的那一條'], ['2-2', '最短的那一圈'], ['2-3', '三條路接成一條'] ] },
-    { id: 3, num: '三', student: '比值群礁', teacher: '單元三　比的語言', core: '長度難比，改用比值；比值有乘法結構', chapters: '8、9、3 §3.1–3.2',
-      pos: [610, 200], r: 64,
-      sections: [ ['3-1', '離 A 是離 B 的兩倍'], ['3-2', '從頂點到底邊的那一條'], ['3-3', '切下來的那一塊'] ] },
-    { id: 4, num: '四', student: '交會島', teacher: '單元四　乘積等於一', core: '三比值相乘為 1；正負號決定共線或共點', chapters: '4、5、10、23 §23.2',
-      pos: [835, 150], r: 72,
-      sections: [ ['4-1', '又交在一點'], ['4-2', '一條線穿過去'], ['4-3', '三組對邊，交在一條線上'] ] },
-    { id: 5, num: '五', student: '九點島', teacher: '單元五　位似', core: '一個變換解釋一整串巧合', chapters: '11、15',
-      pos: [870, 420], r: 70,
-      sections: [ ['5-1', '三個點排成一列'], ['5-2', '九個點，一個圓'], ['5-3', '三個尖，一條線'] ] },
-    { id: 6, num: '六', student: '雙圓島', teacher: '單元六　圓的冪', core: '新的守恆量：點對圓的冪與位置無關', chapters: '13、7、22、21',
-      pos: [640, 500], r: 80,
-      sections: [ ['6-1', '乘起來還是那個數'], ['6-2', '站在兩個圓中間'], ['6-3', '中點兩邊一樣長'], ['6-4', '對角線乘起來'] ] },
-    { id: 7, num: '七', student: '迴旋島', teacher: '單元七　旋轉的合成', core: '兩旋轉合起來還是旋轉，接群論', chapters: '18、19、20（僅展示）',
-      pos: [400, 470], r: 80,
-      sections: [ ['7-1', '轉兩次'], ['7-2', '三個中心'], ['7-3', '中點又是正三角形'], ['7-4', '轉回原樣'] ] },
-    { id: 8, num: '八', student: '無尺島', teacher: '單元八　丟掉長度', core: '拿掉度量之後還剩什麼', chapters: '23 §23.3、25、26',
-      pos: [160, 450], r: 86,
-      sections: [ ['8-1', '畫出來的地板'], ['8-2', '一個數都不用算'], ['8-3', '圓上六個點'], ['8-4', '翻譯過來的句子'], ['8-5', '最後一題'] ] },
-  ],
-  // 隱藏航線：同一招在不同島再出現。學生視角預設看不到，教師可逐條「揭開」。
-  routes: [
-    { id: 'r1', from: '1-3', to: '4-1', cls: '切三塊 → 繞一圈乘起來', acad: '面積法證塞瓦（塞瓦是載體）→ 塞瓦本身成為工具', note: '兩節的分工不可對調：命名事件在單元一第 3 節。' },
-    { id: 'r2', from: '1-1', to: '2-3', cls: '一個不會變的數，又出現了', acad: '維維安尼 → 費馬點（解法 1 同時用維維安尼與拿破崙）', note: '書中第 16、18、24 章邏輯上是同一單元。' },
-    { id: 'r3', from: '2-1', to: '2-3', cls: '這兩招是同一招嗎？', acad: '反射拉直兩段 vs 旋轉 60° 拉直三段', note: '目的相同、動作不同：適合做 ★★ 任務。' },
-    { id: 'r4', from: '2-3', to: '7-1', cls: '轉出一個正三角形', acad: '旋轉 60° → 旋轉的合成（拿破崙）', note: '' },
-    { id: 'r5', from: '1-1', to: '4-2', cls: '讓正負號管構型', acad: '有向線段：維維安尼 ★（P 跑到外面）→ 梅氏的正負號', note: '' },
-    { id: 'r6', from: '4-3', to: '8-1', cls: '三組對邊，再訪', acad: '笛沙格 → 推廣到三維（證明比原定理還簡單）', note: '' },
-    { id: 'r7', from: '6-1', to: '6-2', cls: '乘積不會變', acad: '圓冪 → 兩圓的冪相等（根軸）', note: '' },
-  ],
-  // 貫串線「驗證 vs 理解」：三座燈塔
-  lighthouses: [
-    { island: 1, angle: -40, q: '勾股定理已知的證法超過 400 種。當你有 400 個理由時，「證明」是在做什麼？', t: '單元一末' },
-    { island: 4, angle: 30, q: '一個定理從提出到出現簡潔的證法，隔了 140 年。這 140 年裡，大家憑什麼相信它？', t: '單元四末：斯坦納–雷米歐司定理（§17.4 附反例）' },
-    { island: 8, angle: 200, q: '算出 30° 和畫出那一條線，差在哪裡？', t: '單元八末：第 27 章 Langley 型難題' },
-  ],
-  // 島上的數學家。say＝頭上冒出的泡泡（短）；quote＝面板上的名言與出處；story＝學生可讀的數學史（不出現工具名）；teacher＝教師備註
-  people: [
-    { id: 'liuhui', island: 1, name: '劉徽', years: '三世紀・魏晉', place: '中國', look: { robe: '#3d5a80', hat: 'box', hatColor: '#222' },
-      say: '析理以辭，解體用圖。', quote: '析理以辭，解體用圖。', src: '《九章算術注》序',
-      story: '他替一本已經流傳幾百年的算書寫註解，常常不只說「怎麼算」，還畫圖說「為什麼對」。他喜歡把圖形拆開、搬一搬、再拼回去。', teacher: '出入相補原理，與單元一第 2 節的拼圖同源；可接東西方島。' },
-    { id: 'viviani', island: 1, name: '維維安尼', years: '1622–1703', place: '義大利・佛羅倫斯', look: { robe: '#7a4b2a', hat: 'beret', hatColor: '#2b2b2b' },
-      say: '我是伽利略最後的學生。', quote: '', src: '',
-      story: '伽利略晚年失明，他當過伽利略的助手，後來寫了伽利略的第一本傳記。這座島上那個「不會變的數」，就以他命名。', teacher: '維維安尼定理（單元一第 1 節）。書中第 16 章。' },
-    { id: 'heron', island: 2, name: '希羅', years: '約一世紀', place: '埃及・亞歷山卓', look: { robe: '#e0c36a', hat: 'none', hatColor: '#fff' },
-      say: '光很懶，它挑最短的路走。', quote: '', src: '泡泡是改寫，不是原文',
-      story: '他發明過自動門、蒸汽轉球，也寫過一本談鏡子的書。他注意到光從鏡子彈回來時，走的剛好是最短的那條路。', teacher: '《反射光學》。海倫最短路徑，單元二第 1 節。' },
-    { id: 'fermat', island: 2, name: '費馬', years: '1607–1665', place: '法國・土魯斯', look: { robe: '#5b2a3c', hat: 'wig', hatColor: '#d9d2c3' },
-      say: '這裡空白太小，寫不下。', quote: '我發現了一個真正奇妙的證明，可惜這裡的空白太小，寫不下。', src: '寫在丟番圖《算術》的頁邊（約 1637，大意）',
-      story: '他的正職是法官，數學是業餘。他寫信問朋友：三角形裡哪一點到三個頂點的距離加起來最短？這封信難倒了不少人。', teacher: '費馬點（單元二第 3 節）。名言出自費馬最後定理，與本島無關，只是人物介紹。' },
-    { id: 'euclid', island: 3, name: '歐幾里得', years: '約西元前 300 年', place: '埃及・亞歷山卓', look: { robe: '#f2efe6', hat: 'none', hatColor: '#fff' },
-      say: '學幾何，沒有王者之路。', quote: '學幾何沒有王者之路。', src: '相傳是他回答國王的話（普羅克洛記載，真偽有爭議）',
-      story: '他的《幾何原本》從幾條最簡單的規定出發，一步一步推出幾百個結果，是史上印刷次數數一數二多的書。', teacher: '' },
-    { id: 'kepler', island: 3, name: '克卜勒', years: '1571–1630', place: '德國', look: { robe: '#2f4f4f', hat: 'tophat', hatColor: '#1a1a1a' },
-      say: '幾何有兩大寶藏。', quote: '幾何學有兩大寶藏：一是畢氏定理，一是把線段分成中末比。前者可比黃金，後者可比珠寶。', src: '常見引述，出自他的著作（譯文為大意）',
-      story: '他用了二十年對著觀測資料一直算，才發現行星的軌道不是圓，是橢圓。', teacher: '黃金分割（第 3 章 §3.1–3.2）。' },
-    { id: 'ceva', island: 4, name: '塞瓦', years: '1647–1734', place: '義大利・曼托瓦', look: { robe: '#4a6fa5', hat: 'beret', hatColor: '#7a1f1f' },
-      say: '六百年前就有人想過了？', quote: '', src: '',
-      story: '1678 年他出了一本講直線的書。後來的人發現，書裡最有名的那個結果，早在十一世紀西班牙薩拉戈薩的一位國王兼數學家穆塔曼的書裡就證過了。', teacher: '塞瓦定理（單元四）。伊本・胡德（al-Mu’taman ibn Hud）早已證明，可做東西方航線。' },
-    { id: 'menelaus', island: 4, name: '梅涅勞斯', years: '約 70–140', place: '亞歷山卓・羅馬', look: { robe: '#c9a96e', hat: 'none', hatColor: '#fff' },
-      say: '我其實在算星星。', quote: '', src: '',
-      story: '他研究的是畫在球面上的三角形，目的是為了天文。後來大家把他的結果搬回平面上用。', teacher: '梅氏定理，原在《球面學》。' },
-    { id: 'euler', island: 5, name: '歐拉', years: '1707–1783', place: '瑞士・俄羅斯・普魯士', look: { robe: '#6c4f8c', hat: 'turban', hatColor: '#f0e6d0' },
-      say: '我看不見了，還是一直算。', quote: '讀歐拉，讀歐拉，他是我們所有人的老師。', src: '拉普拉斯評歐拉（後人轉述）',
-      story: '史上產量最高的數學家之一。晚年雙眼幾乎全盲，靠口述讓別人抄寫，產量反而更多。', teacher: '歐拉線（單元五第 1 節）。' },
-    { id: 'feuerbach', island: 5, name: '費爾巴哈', years: '1800–1834', place: '德國', look: { robe: '#3b6e4e', hat: 'tophat', hatColor: '#222' },
-      say: '九個點，竟然在同一個圓上。', quote: '', src: '',
-      story: '1822 年，二十二歲的中學老師發表了一篇論文，裡面有一個經過九個點的圓，還發現它剛好和另外幾個圓相切。', teacher: '九點圓與費爾巴哈定理（單元五第 2 節）。' },
-    { id: 'ptolemy', island: 6, name: '托勒密', years: '約 100–170', place: '埃及・亞歷山卓', look: { robe: '#b5543c', hat: 'none', hatColor: '#fff' },
-      say: '仰望星空時，腳就離開了地面。', quote: '我知道自己終將一死、朝生暮死；但當我追索群星繞行的軌跡，雙腳便不再踏著大地。', src: '傳為托勒密所作的短詩，收於《希臘詩選》（譯文為大意）',
-      story: '他寫的天文書用了一千多年。為了算星星的位置，他做了一張「弦表」，裡面藏著一個關於圓內四邊形的漂亮等式。', teacher: '托勒密定理（單元六第 4 節）。' },
-    { id: 'wallace', island: 6, name: '華萊士', years: '1768–1843', place: '蘇格蘭', look: { robe: '#2e4057', hat: 'tophat', hatColor: '#111' },
-      say: '那條線，其實是我發表的。', quote: '', src: '',
-      story: '有一條線被冠上別人的名字，但在那位前輩的著作裡從來找不到它。1797 年發表它的，其實是他。數學史上，名字掛錯人的事很常見。', teacher: '西姆松線實為華萊士 1797 年發表。' },
-    { id: 'napoleon', island: 7, name: '拿破崙', years: '1769–1821', place: '法國', look: { robe: '#1f3a6b', hat: 'bicorne', hatColor: '#111' },
-      say: '數學和國家一起興盛。', quote: '數學的進步與完善，和國家的繁榮息息相關。', src: '相傳（常見引述）',
-      story: '他喜歡和數學家往來，也真的懂幾何。島上有個以他命名的結果，但到底是不是他發現的，歷史學家一直有疑問。', teacher: '拿破崙定理（單元七）；歸屬存疑。' },
-    { id: 'galois', island: 7, name: '伽羅瓦', years: '1811–1832', place: '法國', look: { robe: '#8b2f2f', hat: 'none', hatColor: '#fff' },
-      say: '我沒有時間了。', quote: '我沒有時間了。', src: '決鬥前一夜，寫在手稿頁邊',
-      story: '二十歲就過世。他研究「哪些操作湊在一起還是同一類操作」，這個想法後來長成了一整門數學。', teacher: '群論接口（單元七 → 群論教材）。' },
-    { id: 'pascal', island: 8, name: '帕斯卡', years: '1623–1662', place: '法國', look: { robe: '#222', hat: 'wig', hatColor: '#6b4a2b' },
-      say: '我十六歲時找到的。', quote: '心有其理，是理性所不知的。', src: '《思想錄》',
-      story: '十六歲寫出一篇只有一頁的論文，主角是圓上的六個點。他還做過一台機械計算機，幫當稅務官的爸爸算帳。', teacher: '帕斯卡定理（單元八第 3 節）。' },
-    { id: 'desargues', island: 8, name: '笛沙格', years: '1591–1661', place: '法國・里昂', look: { robe: '#5e6b3a', hat: 'beret', hatColor: '#333' },
-      say: '我是建築師，研究畫出來的地板。', quote: '', src: '',
-      story: '他想弄懂畫家怎麼把地板畫得有深度。他的書只印了很少本，幾乎失傳，兩百年後才有人找到抄本。', teacher: '笛沙格定理（單元四第 3 節、單元八第 1 節）。' },
-  ],
-  bottle: { island: 1, q: '牆上的謎：如果每一點的距離和都一樣，這個三角形一定是正三角形嗎？鑰匙你已經有了。', t: '逆定理 16.7。引理 1 用的正是「極端一點」，留給兩年後的他們摘下來。' },
-};
-
-const SECTION_INDEX = {};
-COURSE.islands.forEach(isl => isl.sections.forEach(([id, title], i) => {
-  SECTION_INDEX[id] = { id, title, island: isl, i };
-}));
-// 已經做成探索島紀錄版的節（build.py 產生時填入）；其他節還連到原本的動態頁
+<script>
+// 已經做成紀錄版的節（build.py 產生時填入）；其他節還連到原本的動態頁
 const GP_DONE = ["gp-u1-1", "gp-u1-2", "gp-u1-3", "gp-u2-1", "gp-u2-2", "gp-u2-3", "gp-u3-1", "gp-u3-2", "gp-u3-3", "gp-u4-1", "gp-u4-2", "gp-u4-3", "gp-u5-1", "gp-u5-2", "gp-u5-3", "gp-u6-1", "gp-u6-2", "gp-u6-3", "gp-u6-4", "gp-u7-1", "gp-u7-2", "gp-u7-3", "gp-u7-4", "gp-u8-1", "gp-u8-2", "gp-u8-3", "gp-u8-4", "gp-u8-5"];
-function pageURL(sec) {
-  const slug = `gp-u${sec.island.id}-${sec.id.split('-')[1]}`;
-  return GP_DONE.includes(slug) ? `${slug}.html` : `https://huangisright.github.io/GiftedMath/units/${slug}.html`;
+// 學生看到的單元名避開學術名（位似、圓的冪……），教師視角才顯示原單元名與每節的定理名。
+const UNITS = [
+  { n:1, zh:'一', name:'面積會加',   t:'面積會加',   hook:'切開來，再加回去。',
+    s:[['一個不會變的數','維維安尼'],['空白搬了家','勾股拼圖'],['三條線，交在一點','塞瓦（面積法的載體）']] },
+  { n:2, zh:'二', name:'把折線拉直', t:'把折線拉直', hook:'彎的路，翻一下就直了。',
+    s:[['光走的那一條','海倫最短路徑'],['最短的那一圈','法尼亞諾'],['三條路接成一條','費馬點']] },
+  { n:3, zh:'三', name:'比的語言',   t:'比的語言',   hook:'量不出來，就比一比。',
+    s:[['離 A 是離 B 的兩倍','阿氏圓'],['從頂點到底邊的那一條','斯圖爾特'],['切下來的那一塊','黃金比']] },
+  { n:4, zh:'四', name:'乘積等於一', t:'乘積等於一', hook:'繞一圈乘起來，剛好是 1。',
+    s:[['又交在一點','塞瓦當工具'],['一條線穿過去','梅涅勞斯'],['三組對邊，交在一條線上','笛沙格']] },
+  { n:5, zh:'五', name:'縮一半',     t:'位似',       hook:'從一個點看出去，全部縮一半。',
+    s:[['三個點排成一列','歐拉線'],['九個點，一個圓','九點圓'],['三個尖，一條線','蒙日定理']] },
+  { n:6, zh:'六', name:'乘起來不變', t:'圓的冪',     hook:'怎麼畫，乘起來都是那個數。',
+    s:[['乘起來還是那個數','圓冪'],['站在兩個圓中間','根軸與根心'],['中點兩邊一樣長','蝴蝶定理'],['對角線乘起來','托勒密（反演只示範）']] },
+  { n:7, zh:'七', name:'轉了又轉',   t:'旋轉的合成', hook:'做兩次，等於做一次什麼？',
+    s:[['轉兩次','旋轉接旋轉'],['三個中心','拿破崙'],['中點又是正三角形','愛可爾斯'],['轉回原樣','正三角形的六個動作']] },
+  { n:8, zh:'八', name:'丟掉長度',   t:'丟掉長度',   hook:'不量長度，還剩下什麼？',
+    s:[['畫出來的地板','透視的地板'],['一個數都不用算','笛沙格再訪'],['圓上六個點','帕斯卡與帕普斯'],['翻譯過來的句子','布里昂雄'],['最後一題','第 27 章角度題']] },
+];
+const store = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+// 教師視角的按鈕平常不出現；網址加 #teacher 開一次，這台電腦之後就會記得。
+if (location.hash === '#teacher') store.set('gp-teacher-ok', true);
+const teacherOK = store.get('gp-teacher-ok', false);
+let mode = teacherOK ? store.get('gp-mode', 'student') : 'student';
+const T = () => mode === 'teacher';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const slug = (u, i) => `gp-u${u.n}-${i + 1}`;
+const url = (u, i) => GP_DONE.includes(slug(u, i)) ? `${slug(u, i)}.html` : `https://huangisright.github.io/GiftedMath/units/${slug(u, i)}.html`;
+// 這台電腦上已經蓋章的節（登入時紀錄也會先存在本機）
+const stamped = (u, i) => { const r = store.get('isl:' + slug(u, i), null); return !!(r && r.stampAt); };
+const litCount = u => u.s.filter((_, i) => stamped(u, i)).length;
+
+// 八道光的位置：沿著一條柔和的弧線（0～1 的比例座標）
+const POS = [[.07,.62],[.2,.38],[.34,.24],[.48,.3],[.6,.52],[.72,.7],[.84,.56],[.94,.32]];
+function render(){
+  const f = $('#field');
+  f.innerHTML = `<svg class="path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="${POS.map((p, i) => (i ? 'L' : 'M') + (p[0] * 100).toFixed(1) + ' ' + (p[1] * 100).toFixed(1)).join(' ')}"
+        fill="none" stroke="rgba(var(--glow),.45)" stroke-width=".35" stroke-dasharray=".6 1.6" vector-effect="non-scaling-stroke" style="stroke-width:1.4px"/></svg>` +
+    UNITS.map((u, k) => {
+      const lit = litCount(u) / u.s.length;
+      return `<button type="button" class="light" data-u="${k}" aria-expanded="false" aria-controls="panel"
+        style="left:${POS[k][0] * 100}%;top:${POS[k][1] * 100}%;--lit:${lit.toFixed(2)};--d:${(k * .7).toFixed(1)}s;--s:${48 + u.s.length * 3}px">
+        <span class="orb"></span>
+        <span class="txt"><span class="no">${u.zh}</span><span class="nm">${esc(T() ? u.t : u.name)}</span>
+        <span class="motes">${u.s.map((_, i) => `<b class="${stamped(u, i) ? 'on' : ''}"></b>`).join('')}</span></span></button>`;
+    }).join('');
+  const total = UNITS.reduce((a, u) => a + u.s.length, 0), got = UNITS.reduce((a, u) => a + litCount(u), 0);
+  $('#count').textContent = got ? `這台電腦上，已經拾起 ${got}／${total} 道光` : '';
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
 }
-function fileBase(sec) {
-  return `幾何拾光 單元${sec.island.num}-${sec.id.split('-')[1]} ${sec.title}`;
+let openK = null;
+function open(k){
+  openK = k; const u = UNITS[k];
+  $('#panel').innerHTML = `<button type="button" class="close" aria-label="關上">×</button>
+    <div class="eyebrow">第 ${u.zh} 道光</div>
+    <h2>${esc(u.name)}</h2>
+    <p class="hook">${esc(u.hook)}</p>
+    ${T() && u.t !== u.name ? `<p class="tname">單元名：${esc(u.t)}</p>` : ''}
+    ${u.s.map(([title, thm], i) => {
+      const done = GP_DONE.includes(slug(u, i));
+      return `<a class="sec ${stamped(u, i) ? 'lit' : ''}" href="${url(u, i)}"${done ? '' : ' target="_blank" rel="noopener"'}>
+        <span class="dot"></span>
+        <span class="t">${esc(title)}${T() ? `<small>${esc(thm)}</small>` : `<small>第 ${i + 1} 節${stamped(u, i) ? '・已蓋章' : ''}</small>`}</span>
+        <span class="go">${done ? '走進去 →' : '打開動態頁 →'}</span></a>`;
+    }).join('')}
+    <p class="note">做完一節、蓋了章，這道光就亮一點。</p>`;
+  $('#panel').classList.add('open'); $('#scrim').classList.add('on');
+  document.querySelectorAll('.light').forEach(b => b.setAttribute('aria-expanded', String(+b.dataset.u === k)));
+  $('#panel .close').focus();
 }
+function close(){
+  $('#panel').classList.remove('open'); $('#scrim').classList.remove('on');
+  const b = openK != null && document.querySelector(`.light[data-u="${openK}"]`);
+  document.querySelectorAll('.light').forEach(x => x.setAttribute('aria-expanded', 'false'));
+  openK = null; if (b) b.focus();
+}
+$('#field').addEventListener('click', e => { const b = e.target.closest('.light'); if (b) open(+b.dataset.u); });
+$('#panel').addEventListener('click', e => { if (e.target.closest('.close')) close(); });
+$('#scrim').addEventListener('click', close);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && openK != null) close(); });
+if (teacherOK) $('.modes').hidden = false;
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+  mode = b.dataset.mode; store.set('gp-mode', mode); render(); if (openK != null) open(openK);
+}));
+render();
 
-// 共用介面：視角切換、抽屜面板、航線揭開狀態
-const UI = (() => {
-  const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-                  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
-  // 教師視角的按鈕平常不出現；網址加 #teacher 開一次，這台電腦之後就會記得。
-  if (location.hash === '#teacher') store.set('gp-teacher-ok', true);
-  const teacherOK = store.get('gp-teacher-ok', false);
-  const state = { mode: teacherOK ? store.get('gp-mode', 'student') : 'student', revealed: new Set(store.get('gp-revealed', [])), current: null };
-  const subs = [];
-  const emit = () => subs.forEach(f => f(state));
-  const $ = s => document.querySelector(s);
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const T = () => state.mode === 'teacher';
-
-  function setMode(m) {
-    state.mode = m; store.set('gp-mode', m);
-    document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
-    $('#sub').textContent = T() ? '教師視角：單元名、隱藏航線、燈塔出處都會顯示' : '學生視角：點一座島，看看上面有什麼';
-    emit(); if (state.current) open(state.current);
-  }
-  function toggleRoute(id) {
-    state.revealed.has(id) ? state.revealed.delete(id) : state.revealed.add(id);
-    store.set('gp-revealed', [...state.revealed]); emit(); if (state.current) open(state.current);
-  }
-  function visibleRoutes() { return COURSE.routes.filter(r => T() || state.revealed.has(r.id)); }
-
-  function sectionHTML(id) {
-    const s = SECTION_INDEX[id];
-    return `<div class="sec"><span class="n">${s.island.num}-${id.split('-')[1]}</span>
-      <div><h3>${esc(s.title)}</h3></div>
-      <div class="files"><a class="chip" href="${pageURL(s)}"${pageURL(s).startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${pageURL(s).startsWith('http') ? '打開動態頁 →' : '上島探索 →'}</a></div></div>`;
-  }
-  function routeHTML(r) {
-    const a = SECTION_INDEX[r.from], b = SECTION_INDEX[r.to];
-    const on = state.revealed.has(r.id);
-    return `<div class="rt"><span class="lab">${esc(a.island.student)} ${a.island.num}-${r.from.split('-')[1]} ⇢ ${esc(b.island.student)} ${b.island.num}-${r.to.split('-')[1]}</span>
-      ${T() ? `<small>課堂名：${esc(r.cls)}</small><small>教師備註：${esc(r.acad)}</small>${r.note ? `<small>${esc(r.note)}</small>` : ''}
-      <button class="btn ${on ? 'on' : ''}" data-reveal="${r.id}">${on ? '已向學生揭開（再按收回）' : '向學生揭開這條航線'}</button>`
-        : `<small>有人發現：這兩個地方用的是同一招。</small>`}</div>`;
-  }
-
-  function open(item) {
-    state.current = item;
-    const d = $('#drawer'); let k = '', h = '', body = '';
-    if (item.type === 'island') {
-      const isl = COURSE.islands.find(i => i.id === item.id);
-      k = `第 ${isl.num} 島`; h = isl.student;
-      if (T()) body += `<div class="tnote"><b>${esc(isl.teacher)}</b><br>${esc(isl.core)}<br><span class="muted">主要章次：${esc(isl.chapters)}</span></div>`;
-      const ppl = COURSE.people.filter(p => p.island === isl.id);
-      if (ppl.length) body += `<div class="who">${ppl.map(p => `<button class="person" data-person="${p.id}"><b>${esc(p.name)}</b><span>${esc(p.years)}</span></button>`).join('')}</div>`;
-      body += isl.sections.map(([id]) => sectionHTML(id)).join('');
-      const rs = visibleRoutes().filter(r => SECTION_INDEX[r.from].island === isl || SECTION_INDEX[r.to].island === isl);
-      if (rs.length) body += `<div class="muted" style="margin-top:6px">從這座島出發的隱藏航線</div>` + rs.map(routeHTML).join('');
-      else if (!T()) body += `<p class="muted">這座島和其他島之間，還沒有人發現新的航線。</p>`;
-    } else if (item.type === 'route') {
-      const r = COURSE.routes.find(x => x.id === item.id); k = '隱藏航線'; h = T() ? r.cls : '同一招，兩個地方';
-      body = routeHTML(r);
-    } else if (item.type === 'lighthouse') {
-      const L = COURSE.lighthouses[item.idx]; k = '燈塔'; h = '驗證還是理解？';
-      body = `<p class="q">${esc(L.q)}</p>` + (T() ? `<div class="tnote">${esc(L.t)}</div>` : '');
-    } else if (item.type === 'person') {
-      const P = COURSE.people.find(x => x.id === item.id); const isl = COURSE.islands.find(i => i.id === P.island);
-      k = `${isl.student}的居民`; h = P.name;
-      body = `<div class="muted">${esc(P.years)}・${esc(P.place)}</div>`;
-      if (P.quote) body += `<p class="q">「${esc(P.quote)}」</p><div class="muted">— ${esc(P.src)}</div>`;
-      body += `<p>${esc(P.story)}</p>`;
-      if (T() && P.teacher) body += `<div class="tnote">${esc(P.teacher)}</div>`;
-      body += `<button class="btn" data-isl="${isl.id}">去看${esc(isl.student)}</button>`;
-    } else if (item.type === 'bottle') {
-      k = '漂流瓶'; h = '牆上的謎'; body = `<p class="q">${esc(COURSE.bottle.q)}</p>` + (T() ? `<div class="tnote">${esc(COURSE.bottle.t)}</div>` : '');
-    }
-    d.innerHTML = `<header><div><div class="k">${esc(k)}</div><h2>${esc(h)}</h2></div><button class="x" aria-label="關閉">×</button></header><div class="body">${body}</div>`;
-    d.hidden = false;
-    d.querySelector('.x').onclick = close;
-    d.querySelectorAll('[data-reveal]').forEach(b => b.onclick = () => toggleRoute(b.dataset.reveal));
-    d.querySelectorAll('[data-person]').forEach(b => b.onclick = () => open({ type: 'person', id: b.dataset.person }));
-    d.querySelectorAll('[data-isl]').forEach(b => b.onclick = () => open({ type: 'island', id: +b.dataset.isl }));
-    emit();
-  }
-  function close() { state.current = null; $('#drawer').hidden = true; emit(); }
-
-  function init() {
-    if (teacherOK) document.querySelector('.modes').hidden = false;
-    document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => setMode(b.dataset.mode));
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
-    setMode(state.mode);
-  }
-  return { state, init, open, close, onChange: f => subs.push(f), visibleRoutes, isTeacher: T };
-})();
-</script>
-<script>// 2D 海圖版：SVG，平移縮放，點島開面板
-(() => {
-  const NS = 'http://www.w3.org/2000/svg';
-  const W = 1040, H = 620;
-  const svg = document.createElementNS(NS, 'svg');
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', '幾何拾光海圖');
-  svg.style.cssText = 'width:100%;height:100%;display:block;touch-action:none;cursor:grab';
-  document.getElementById('stage').appendChild(svg);
-  const el = (tag, attrs, parent) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); (parent || svg).appendChild(n); return n; };
-
-  // seeded noise
-  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  const blob = (cx, cy, r, k, ph) => {
-    const pts = []; for (let i = 0; i < 72; i++) {
-      const a = i / 72 * Math.PI * 2;
-      const rr = r * k * (1 + 0.12 * Math.sin(3 * a + ph[0]) + 0.08 * Math.sin(5 * a + ph[1]) + 0.05 * Math.sin(9 * a + ph[2]));
-      pts.push([cx + rr * Math.cos(a), cy + rr * 0.82 * Math.sin(a)]);
-    }
-    return 'M' + pts.map(p => p.map(v => v.toFixed(1)).join(',')).join('L') + 'Z';
-  };
-
-  const world = el('g', {});
-  // chart details: graticule + soundings + compass
-  const grid = el('g', { stroke: 'var(--ink)', 'stroke-opacity': .08, fill: 'none' }, world);
-  for (let x = 0; x <= W; x += 80) el('line', { x1: x, y1: 0, x2: x, y2: H }, grid);
-  for (let y = 0; y <= H; y += 80) el('line', { x1: 0, y1: y, x2: W, y2: y }, grid);
-  const snd = el('g', { fill: 'var(--ink-soft)', 'font-size': 9, 'font-family': 'var(--f-body)', opacity: .55 }, world);
-  for (let i = 0; i < 70; i++) { const t = el('text', { x: (rnd() * W).toFixed(0), y: (rnd() * H).toFixed(0) }, snd); t.textContent = Math.floor(rnd() * 40 + 3); }
-  const comp = el('g', { transform: `translate(${W - 70},${H - 80})`, stroke: 'var(--ink)', fill: 'none', opacity: .5 }, world);
-  el('circle', { r: 30 }, comp); el('circle', { r: 24, 'stroke-dasharray': '2 3' }, comp);
-  el('path', { d: 'M0,-38 L5,0 L0,38 L-5,0Z M-38,0 L0,5 L38,0 L0,-5Z', fill: 'var(--ink)', 'fill-opacity': .25 }, comp);
-  const nT = el('text', { y: -42, 'text-anchor': 'middle', fill: 'var(--ink)', stroke: 'none', 'font-size': 11 }, comp); nT.textContent = '北';
-  const scale = el('g', { transform: `translate(${W - 230},${H - 24})`, fill: 'var(--ink-soft)', 'font-size': 10 }, world);
-  el('path', { d: 'M0,0h100M0,-4v8M50,-3v6M100,-4v8', stroke: 'var(--ink-soft)' }, scale);
-  const sT = el('text', { x: 50, y: -8, 'text-anchor': 'middle' }, scale); sT.textContent = '比例尺　一節 ≈ 一堂課';
-
-  const layerRoutes = el('g', {}, world);
-  const layerIslands = el('g', {}, world);
-  const layerHidden = el('g', {}, world);
-  const layerMarks = el('g', {}, world);
-
-  // island geometry + section anchor positions
-  const secPos = {};
-  COURSE.islands.forEach(isl => {
-    const [cx, cy] = isl.pos, r = isl.r; const ph = [rnd() * 6, rnd() * 6, rnd() * 6];
-    const g = el('g', { class: 'isl', tabindex: 0, role: 'button', 'aria-label': isl.student, style: 'cursor:pointer' }, layerIslands);
-    el('path', { d: blob(cx, cy, r, 1.55, ph), fill: 'none', stroke: 'var(--ink)', 'stroke-opacity': .18, 'stroke-dasharray': '1 4' }, g);
-    el('path', { d: blob(cx, cy, r, 1.3, ph), fill: 'var(--paper)', 'fill-opacity': .35, stroke: 'none' }, g);
-    el('path', { d: blob(cx, cy, r, 1.0, ph), fill: 'var(--sand)', stroke: 'var(--ink)', 'stroke-width': 1.2 }, g);
-    el('path', { d: blob(cx, cy, r, 0.82, ph), fill: 'var(--land)' }, g);
-    el('path', { d: blob(cx, cy - 4, r, 0.45, [ph[1], ph[2], ph[0]]), fill: 'var(--land-hi)' }, g);
-    const lab = el('text', { x: cx, y: cy + r * 0.82 + 22, 'text-anchor': 'middle', 'font-family': 'var(--f-display)', 'font-size': 20, 'font-weight': 700, fill: 'var(--ink)', 'paint-order': 'stroke', stroke: 'var(--sea)', 'stroke-width': 5 }, g);
-    lab.textContent = isl.student; isl._lab = lab;
-    const tl = el('text', { x: cx, y: cy + r * 0.82 + 38, 'text-anchor': 'middle', 'font-size': 11, fill: 'var(--accent)', 'paint-order': 'stroke', stroke: 'var(--sea)', 'stroke-width': 4 }, g);
-    isl._tlab = tl; tl.textContent = isl.teacher;
-    const n = isl.sections.length;
-    isl.sections.forEach(([id], i) => {
-      const a = -Math.PI / 2 + (i - (n - 1) / 2) * (Math.PI * 2 / Math.max(n, 3)) * 0.9;
-      const rr = n === 1 ? 0 : r * 0.48;
-      const x = cx + rr * Math.cos(a) * 1.15, y = cy + rr * Math.sin(a) * 0.9 + 4;
-      secPos[id] = [x, y];
-      const m = el('g', { transform: `translate(${x},${y})` }, g);
-      el('circle', { r: 10, fill: 'var(--paper)', stroke: 'var(--ink)', 'stroke-width': 1.2 }, m);
-      const t = el('text', { 'text-anchor': 'middle', y: 4, 'font-size': 11, 'font-weight': 700, fill: 'var(--ink)' }, m); t.textContent = id.split('-')[1];
-    });
-    const go = () => UI.open({ type: 'island', id: isl.id });
-    g.addEventListener('click', e => { if (!dragged) go(); });
-    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
-    isl._g = g;
-  });
-
-  // main route (course order)：只走海上。每座島外圍留一圈水道（橢圓，比淺灘再大一點），
-  // 航線從前一座島的水道出發、到下一座島的水道為止，經過中間的島時沿著水道繞過去，不會開上島。
-  const ISL = COURSE.islands;
-  const ring = isl => ({ cx: isl.pos[0], cy: isl.pos[1], rx: isl.r * 1.42, ry: isl.r * 1.42 * 0.82 });
-  const angTo = (a, b) => Math.atan2((b.pos[1] - a.pos[1]) / 0.82, b.pos[0] - a.pos[0]);
-  const onRing = (isl, t) => { const e = ring(isl); return [e.cx + e.rx * Math.cos(t), e.cy + e.ry * Math.sin(t)]; };
-  const f = v => v.toFixed(1);
-  let d = '';
-  for (let i = 0; i < ISL.length - 1; i++) {
-    const a = ISL[i], b = ISL[i + 1];
-    const out = onRing(a, angTo(a, b)), inn = onRing(b, angTo(b, a));
-    if (i === 0) d = `M${f(out[0])},${f(out[1])}`;
-    else {   // 沿著 a 的水道，從進港的角度繞到出港的角度（走短的那一邊）
-      const e = ring(a), tin = angTo(a, ISL[i - 1]), tout = angTo(a, b);
-      let dt = tout - tin; while (dt > Math.PI) dt -= 2 * Math.PI; while (dt < -Math.PI) dt += 2 * Math.PI;
-      d += ` A${f(e.rx)},${f(e.ry)} 0 0 ${dt > 0 ? 1 : 0} ${f(out[0])},${f(out[1])}`;
-    }
-    const mx = (out[0] + inn[0]) / 2, my = (out[1] + inn[1]) / 2, dx = inn[0] - out[0], dy = inn[1] - out[1];
-    d += ` Q${f(mx - dy * 0.12)},${f(my + dx * 0.12)} ${f(inn[0])},${f(inn[1])}`;
-  }
-  const main = el('path', { d, fill: 'none', stroke: 'var(--ink)', 'stroke-width': 2, 'stroke-opacity': .55, 'stroke-dasharray': '10 6' }, layerRoutes);
-  main.id = 'mainroute';
-  // ferry
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const ferry = el('g', {}, layerMarks);
-  el('path', { d: 'M-9,-2 L9,-2 L6,4 L-6,4Z', fill: 'var(--accent)' }, ferry);
-  el('rect', { x: -3, y: -8, width: 6, height: 6, fill: 'var(--paper)', stroke: 'var(--ink)', 'stroke-width': .8 }, ferry);
-  const L = main.getTotalLength(); let t0 = performance.now();
-  const tick = now => { const s = reduce ? 0.06 : ((now - t0) / 60000) % 1; const p = main.getPointAtLength(s * L); ferry.setAttribute('transform', `translate(${p.x},${p.y})`); if (!reduce) requestAnimationFrame(tick); };
-  requestAnimationFrame(tick);
-
-  // lighthouses + bottle
-  COURSE.lighthouses.forEach((lh, idx) => {
-    const isl = COURSE.islands.find(i => i.id === lh.island); const a = lh.angle * Math.PI / 180;
-    const x = isl.pos[0] + Math.cos(a) * isl.r * 1.05, y = isl.pos[1] + Math.sin(a) * isl.r * 0.86;
-    const g = el('g', { transform: `translate(${x},${y})`, style: 'cursor:pointer', tabindex: 0, role: 'button', 'aria-label': '燈塔' }, layerMarks);
-    el('circle', { r: 16, fill: 'var(--accent)', opacity: .18, class: 'beam' }, g);
-    el('path', { d: 'M-4,8 L-2.5,-8 L2.5,-8 L4,8Z', fill: 'var(--paper)', stroke: 'var(--ink)', 'stroke-width': 1 }, g);
-    el('path', { d: 'M-3.4,2 h6.8 M-3,-3 h6', stroke: 'var(--accent)', 'stroke-width': 2 }, g);
-    el('circle', { cy: -10, r: 3, fill: 'var(--accent)' }, g);
-    const go = () => UI.open({ type: 'lighthouse', idx });
-    g.addEventListener('click', () => { if (!dragged) go(); }); g.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
-  });
-  {
-    const isl = COURSE.islands[0]; const x = isl.pos[0] - isl.r * 1.55, y = isl.pos[1] + isl.r * 0.9;
-    const g = el('g', { transform: `translate(${x},${y}) rotate(-25)`, style: 'cursor:pointer', tabindex: 0, role: 'button', 'aria-label': '漂流瓶' }, layerMarks);
-    el('rect', { x: -9, y: -4, width: 16, height: 8, rx: 3, fill: 'var(--route)', 'fill-opacity': .5, stroke: 'var(--ink)', 'stroke-width': .8 }, g);
-    el('rect', { x: 7, y: -2, width: 4, height: 4, fill: 'var(--sand)', stroke: 'var(--ink)', 'stroke-width': .6 }, g);
-    const go = () => UI.open({ type: 'bottle' });
-    g.addEventListener('click', () => { if (!dragged) go(); }); g.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
-  }
-  const style = document.createElement('style');
-  style.textContent = `@keyframes beam{0%,100%{opacity:.08}50%{opacity:.35}} .beam{animation:beam 3s ease-in-out infinite} @media (prefers-reduced-motion:reduce){.beam{animation:none}}
-  .isl:hover path:nth-child(3), .isl:focus-visible path:nth-child(3){stroke:var(--accent);stroke-width:2.4} .isl{outline:none}
-  .hr{cursor:pointer} .hr:hover .vis{stroke-width:3.2}`;
-  document.head.appendChild(style);
-
-  function drawHidden() {
-    layerHidden.innerHTML = '';
-    UI.visibleRoutes().forEach(r => {
-      const [x0, y0] = secPos[r.from], [x1, y1] = secPos[r.to];
-      const mx = (x0 + x1) / 2, my = (y0 + y1) / 2, dx = x1 - x0, dy = y1 - y0, len = Math.hypot(dx, dy) || 1;
-      const bow = Math.min(90, len * 0.35) + 30;
-      const cx = mx + (-dy / len) * bow, cy = my + (dx / len) * bow;
-      const g = el('g', { class: 'hr', tabindex: 0, role: 'button', 'aria-label': '隱藏航線' }, layerHidden);
-      const dd = `M${x0},${y0} Q${cx},${cy} ${x1},${y1}`;
-      el('path', { d: dd, fill: 'none', stroke: 'transparent', 'stroke-width': 14 }, g);
-      el('path', { d: dd, class: 'vis', fill: 'none', stroke: 'var(--route)', 'stroke-width': 2, 'stroke-dasharray': '4 5', 'stroke-linecap': 'round' }, g);
-      const cur = UI.state.current; const near = cur && ((cur.type === 'route' && cur.id === r.id) || (cur.type === 'island' && (SECTION_INDEX[r.from].island.id === cur.id || SECTION_INDEX[r.to].island.id === cur.id)));
-      if (UI.isTeacher() && near) {
-        const t = el('text', { x: (mx + cx) / 2, y: (my + cy) / 2, 'text-anchor': 'middle', 'font-size': 11, fill: 'var(--route)', 'paint-order': 'stroke', stroke: 'var(--sea)', 'stroke-width': 4, 'font-family': 'var(--f-display)' }, g);
-        t.textContent = r.cls + (UI.state.revealed.has(r.id) ? '' : '（未揭開）');
-      }
-      g.addEventListener('click', e => { e.stopPropagation(); if (!dragged) UI.open({ type: 'route', id: r.id }); });
-    });
-    COURSE.islands.forEach(isl => isl._tlab.style.display = UI.isTeacher() ? '' : 'none');
-  }
-  UI.onChange(drawHidden);
-
-  // mathematicians walking around
-  const layerPeople = el('g', {}, world);
-  const hat2d = (type, color, g) => {
-    if (type === 'box') el('rect', { x: -4.5, y: -21, width: 9, height: 5, fill: color }, g);
-    else if (type === 'beret') el('ellipse', { cx: -1, cy: -18, rx: 6, ry: 2.6, fill: color }, g);
-    else if (type === 'wig') { el('circle', { cx: -4, cy: -13, r: 4.5, fill: color }, g); el('circle', { cx: 4, cy: -13, r: 4.5, fill: color }, g); el('ellipse', { cx: 0, cy: -17, rx: 6, ry: 3, fill: color }, g); }
-    else if (type === 'tophat') { el('rect', { x: -3.5, y: -26, width: 7, height: 8, fill: color }, g); el('rect', { x: -6.5, y: -18.5, width: 13, height: 1.8, fill: color }, g); }
-    else if (type === 'turban') el('ellipse', { cx: 0, cy: -18, rx: 6, ry: 4, fill: color, stroke: 'var(--ink)', 'stroke-width': .5 }, g);
-    else if (type === 'bicorne') el('path', { d: 'M-8,-17 Q0,-26 8,-17Z', fill: color }, g);
-    else el('path', { d: 'M-5,-15 Q0,-21 5,-15Z', fill: '#3a2a1f' }, g);
-  };
-  const walkers = COURSE.people.map((P, k) => {
-    const isl = COURSE.islands.find(i => i.id === P.island); const [cx, cy] = isl.pos, r = isl.r;
-    const rp = () => { const a = Math.random() * Math.PI * 2, d = Math.sqrt(Math.random()) * r * .6; return [cx + Math.cos(a) * d * 1.1, cy + Math.sin(a) * d * .75]; };
-    const g = el('g', { style: 'cursor:pointer', tabindex: 0, role: 'button', 'aria-label': P.name }, layerPeople);
-    const body = el('g', {}, g);
-    el('ellipse', { cx: 0, cy: 1, rx: 6, ry: 2, fill: 'var(--ink)', opacity: .18 }, body);
-    el('path', { d: 'M-6,0 L0,-12 L6,0Z', fill: P.look.robe, stroke: 'var(--ink)', 'stroke-width': .8 }, body);
-    el('circle', { cy: -14, r: 4.6, fill: '#f1c9a5', stroke: 'var(--ink)', 'stroke-width': .8 }, body);
-    hat2d(P.look.hat, P.look.hatColor, body);
-    el('circle', { cx: 1.6, cy: -14.5, r: .8, fill: '#1b1b1b', class: 'eye' }, body);
-    const nm = el('text', { y: 11, 'text-anchor': 'middle', 'font-size': 9, 'font-weight': 600, fill: 'var(--ink)', 'paint-order': 'stroke', stroke: 'var(--sea)', 'stroke-width': 3 }, g); nm.textContent = P.name;
-    const go = () => UI.open({ type: 'person', id: P.id });
-    g.addEventListener('click', e => { e.stopPropagation(); if (!dragged) go(); });
-    g.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
-    const p0 = rp();
-    return { P, g, body, pos: p0, target: rp(), wait: Math.random() * 2, rp, phase: k, dir: 1 };
-  });
-  const bub = el('g', { 'pointer-events': 'none', opacity: 0 }, layerPeople);
-  const bubRect = el('rect', { rx: 8, fill: 'var(--paper)', stroke: 'var(--ink)', 'stroke-width': 1.2 }, bub);
-  const bubTail = el('path', { fill: 'var(--paper)', stroke: 'var(--ink)', 'stroke-width': 1.2 }, bub);
-  const bubText = el('text', { 'font-size': 13, 'font-family': 'var(--f-display)', fill: 'var(--ink)', 'text-anchor': 'middle' }, bub);
-  let bubWho = null, nextBub = 1.5, last = performance.now();
-  function stepPeople(now) {
-    const dt = Math.min(.05, (now - last) / 1000), t = now / 1000; last = now;
-    walkers.forEach(w => {
-      let bob = 0;
-      if (w.wait > 0) w.wait -= dt;
-      else {
-        const dx = w.target[0] - w.pos[0], dy = w.target[1] - w.pos[1], L = Math.hypot(dx, dy);
-        if (L < 1) { w.wait = 1 + Math.random() * 3; w.target = w.rp(); }
-        else { const s = Math.min(L, dt * 9); w.pos[0] += dx / L * s; w.pos[1] += dy / L * s; w.dir = dx >= 0 ? 1 : -1; bob = Math.abs(Math.sin(t * 9 + w.phase)) * 1.6; }
-      }
-      w.g.setAttribute('transform', `translate(${w.pos[0].toFixed(1)},${w.pos[1].toFixed(1)})`);
-      w.body.setAttribute('transform', `translate(0,${-bob.toFixed(2)}) scale(${w.dir * 1.45},1.45)`);
-    });
-    nextBub -= dt;
-    if (nextBub <= 0) {
-      bubWho = walkers[Math.floor(Math.random() * walkers.length)]; bubText.textContent = bubWho.P.say;
-      const bw = bubWho.P.say.length * 13 + 18; bubRect.setAttribute('width', bw); bubRect.setAttribute('height', 22); bubRect.setAttribute('x', -bw / 2); bubRect.setAttribute('y', -22);
-      bubTail.setAttribute('d', 'M-5,-1 L0,6 L5,-1'); bubText.setAttribute('y', -6.5);
-      bub.setAttribute('opacity', 1); nextBub = 4.5;
-    }
-    if (bubWho) bub.setAttribute('transform', `translate(${bubWho.pos[0].toFixed(1)},${(bubWho.pos[1] - 42).toFixed(1)})`);
-    if (!reduce) requestAnimationFrame(stepPeople);
-  }
-  requestAnimationFrame(stepPeople);
-
-  // pan / zoom on viewBox
-  let vb = innerWidth > 700 ? { x: -250, y: -20, w: W + 270, h: H + 40 } : { x: 0, y: 0, w: W, h: H }, drag = null, dragged = false;
-  const setVB = () => svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
-  const toSvg = (cx, cy) => { const r = svg.getBoundingClientRect(); const s = Math.max(vb.w / r.width, vb.h / r.height); const ox = (r.width * s - vb.w) / 2, oy = (r.height * s - vb.h) / 2; return [vb.x + (cx - r.left) * s - ox, vb.y + (cy - r.top) * s - oy, s]; };
-  const pointers = new Map(); let pinch = null;
-  svg.addEventListener('pointerdown', e => { pointers.set(e.pointerId, e); dragged = false; if (pointers.size === 1) drag = { x: e.clientX, y: e.clientY, vb: { ...vb } }; else if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinch = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), vb: { ...vb } }; } });
-  svg.addEventListener('pointermove', e => {
-    if (!pointers.has(e.pointerId)) return; pointers.set(e.pointerId, e);
-    if (pointers.size === 2 && pinch) { const [a, b] = [...pointers.values()]; const d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); zoomAt((a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2, pinch.d / d, pinch.vb); dragged = true; return; }
-    if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 4) { dragged = true; svg.setPointerCapture(e.pointerId); svg.style.cursor = 'grabbing'; }
-    if (dragged) { const [, , s] = toSvg(0, 0); vb.x = drag.vb.x - dx * s; vb.y = drag.vb.y - dy * s; setVB(); }
-  });
-  const up = e => { pointers.delete(e.pointerId); if (pointers.size < 2) pinch = null; if (!pointers.size) { drag = null; svg.style.cursor = 'grab'; setTimeout(() => dragged = false, 0); } };
-  svg.addEventListener('pointerup', up); svg.addEventListener('pointercancel', up);
-  function zoomAt(cx, cy, f, base) { const b = base || vb; const [px, py] = toSvg(cx, cy); const nw = Math.min(W * 1.6, Math.max(W / 5, b.w * f)); const k = nw / b.w; vb = { x: px - (px - b.x) * k, y: py - (py - b.y) * k, w: nw, h: b.h * k }; setVB(); }
-  setVB();
-  svg.addEventListener('wheel', e => { e.preventDefault(); zoomAt(e.clientX, e.clientY, e.deltaY > 0 ? 1.12 : 1 / 1.12); }, { passive: false });
-
-  UI.init();
+// 細塵：慢慢往上飄的光點
+(function dust(){
+  const cv = $('#dust'), g = cv.getContext('2d'), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W, H, P = [];
+  const size = () => { const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    P = Array.from({ length: Math.round(W * H / 26000) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: .6 + Math.random() * 1.6, v: .06 + Math.random() * .18, a: .15 + Math.random() * .45, ph: Math.random() * 6 })); };
+  const glow = getComputedStyle(document.documentElement).getPropertyValue('--glow').trim();
+  const draw = t => { g.clearRect(0, 0, W, H);
+    for (const p of P) { if (!reduce) { p.y -= p.v; p.x += Math.sin(t / 4000 + p.ph) * .12; if (p.y < -4) { p.y = H + 4; p.x = Math.random() * W; } }
+      g.beginPath(); g.fillStyle = `rgba(${glow},${p.a})`; g.arc(p.x, p.y, p.r, 0, 7); g.fill(); }
+    if (!reduce) requestAnimationFrame(draw); };
+  addEventListener('resize', size); size(); requestAnimationFrame(draw);
 })();
 </script>
 </body>
