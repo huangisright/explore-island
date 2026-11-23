@@ -4,6 +4,7 @@
 
 - `index.html`：入口地圖
 - `passport.html`：探索紀錄本（同一張地圖，標出走完的島）
+- `geo.html`、`geo-stars.html`：幾何拾光（群島海圖／星座圖兩種看法，各節連到 GiftedMath 的動態頁）；網址加 `#teacher` 開一次，這台電腦才會出現教師視角按鈕。原檔在 `_原始碼/`，build 時原樣複製
 - `g*.html`：30 章單元頁（七上到九下）
 - `teacher.html`：老師頁面（跨章總表、單章紀錄、學生名單；可篩班級、匯出 CSV）
 - `upload.html`：教材上傳（只有管理者能用）

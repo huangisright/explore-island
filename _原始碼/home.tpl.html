@@ -43,6 +43,14 @@ svg.map a:focus-visible .isle{stroke:var(--blue);stroke-width:3.5}
 .how a{color:var(--blue)}
 footer{margin-top:36px;text-align:center;color:var(--ink-3);font-size:14px}
 .isl-auth{font-family:var(--hand)!important}
+.sea2{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:22px;border:2.5px solid var(--ink);border-radius:14px 255px 14px 225px/225px 14px 255px 14px;background:var(--card);padding:16px 22px;color:var(--ink);text-decoration:none}
+.sea2:hover{background:#f6f1e2}
+.sea2:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.sea2 svg{flex:0 0 auto;width:96px;height:64px}
+.sea2 b{font-size:24px;display:block;letter-spacing:.06em}
+.sea2 p{margin:2px 0 0;color:var(--ink-2);font-size:15.5px}
+.sea2 .go{margin-left:auto;color:var(--blue);font-size:17px;white-space:nowrap}
+
 </style>
 </head>
 <body>
@@ -59,6 +67,11 @@ footer{margin-top:36px;text-align:center;color:var(--ink-3);font-size:14px}
 </div>
 <div id="main"></div>
 <p class="swipe">← 地圖可以左右滑 →</p><div class="mapbox"><svg class="map" id="map" viewBox="0 0 1200 900" role="img" aria-label="數學探索島地圖"></svg></div>
+<a class="sea2" href="geo.html">
+  <svg viewBox="0 0 96 64" aria-hidden="true" fill="none" stroke="#1d1d1d" stroke-width="2" stroke-linecap="round"><path d="M6 52 C20 46 30 56 44 50 S70 46 90 52"/><path d="M16 44 L34 14 L52 44 Z"/><circle cx="34" cy="34" r="2.2" fill="#c8321e" stroke="none"/><path d="M66 22 l2 5 5 1 -4 3 1 5 -4-3 -4 3 1-5 -4-3 5-1z"/><path d="M80 12 l1 3 3 .5 -2 2 .5 3 -2.5-1.5 -2.5 1.5 .5-3 -2-2 3-.5z"/></svg>
+  <div><b>另一片海：幾何拾光</b><p>八座島、二十八個發現。可以看群島海圖，也可以看星座圖：同一招在哪幾節又出現。</p></div>
+  <span class="go">出海 →</span>
+</a>
 
 
 

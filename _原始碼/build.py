@@ -202,7 +202,7 @@ if __name__ == "__main__":
     os.makedirs(out, exist_ok=True)
     for c in BUILT:
         build_unit(src, out, c, content_dir)
-    for f in ["island-cloud.js", "firebase-config.js", "island-map.js", "upload.html"]:
+    for f in ["island-cloud.js", "firebase-config.js", "island-map.js", "upload.html", "geo.html", "geo-stars.html"]:
         shutil.copy(os.path.join(HERE, f), os.path.join(out, f))
     build_teacher(out)
     build_report(out)
