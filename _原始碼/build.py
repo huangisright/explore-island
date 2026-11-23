@@ -141,7 +141,7 @@ def build_unit(src_site, out, cfg, content_dir=None):
     inject = ('<style id="island">\n' + css + "</style>\n<script>window.ISLAND=" + data + ";</script>\n<script>\n" + js + "</script>\n" + CLOUD_TAIL)
     assert s.count("</body>") == 1
     s = s.replace("</body>", inject + "</body>")
-    s = re.sub(r"<title>(.*?)</title>", lambda m: "<title>" + m.group(1) + "｜數學探索島</title>", s, count=1)
+    s = re.sub(r"<title>(.*?)</title>", lambda m: "<title>" + m.group(1) + "｜一線數光</title>", s, count=1)
     slug = cfg["slug"]
     if not is_gated(slug):
         with open(os.path.join(out, slug + ".html"), "w", encoding="utf8") as f:

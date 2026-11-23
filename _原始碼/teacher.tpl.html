@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>老師頁面｜數學探索島</title>
+<title>老師頁面｜一線數光</title>
 <style>
 :root{
   color-scheme:light dark;
@@ -66,7 +66,7 @@ th{font-size:12.5px;color:var(--ink-3);letter-spacing:.06em;position:sticky;top:
 </head>
 <body>
 <div class="wrap">
-<header><h1>老師頁面</h1><span class="muted">數學探索島</span><span class="who" id="who"></span></header>
+<header><h1>老師頁面</h1><span class="muted">一線數光</span><span class="who" id="who"></span></header>
 <div id="app"><p class="gate muted">載入中…</p></div>
 </div>
 <script>window.ISLAND_UNITS = /*CFGS*/[];</script>
@@ -271,7 +271,7 @@ function exportSummary() {
     U.forEach(u => { const x = m[u.slug]; row.push(x ? x.nd + "／" + x.n : "", x ? x.qd + "／" + x.q : "", x && x.stampAt ? fmt(x.stampAt, 1) : ""); });
     rows.push(row);
   });
-  downloadCSV("探索島_跨章總表" + (cls ? "_" + cls : "") + "_" + today() + ".csv", rows);
+  downloadCSV("一線數光_跨章總表" + (cls ? "_" + cls : "") + "_" + today() + ".csv", rows);
   $("smsg").textContent = "✓ 已下載 " + (rows.length - 1) + " 人";
 }
 
@@ -436,7 +436,7 @@ function exportUnit() {
     C.quiz.forEach((q, i) => { const t = qz[i] && qz[i].tried; row.push(t && t.length ? q.opts[t[0]] + (t[0] === q.ans ? "（對）" : "") : ""); });
     rows.push(row);
   });
-  downloadCSV("探索島_" + UL[i0] + "_" + C.title + (cls ? "_" + cls : "") + "_" + today() + ".csv", rows);
+  downloadCSV("一線數光_" + UL[i0] + "_" + C.title + (cls ? "_" + cls : "") + "_" + today() + ".csv", rows);
   $("rmsg").textContent = "✓ 已下載 " + (rows.length - 1) + " 人";
 }
 function bars(rows, n) {

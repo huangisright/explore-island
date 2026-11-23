@@ -1,4 +1,4 @@
-# 交接說明：把幾何拾光 28 節做成數學探索島的紀錄版
+# 交接說明：把幾何拾光 28 節做成一線數光的紀錄版
 
 > 給接手的 AI（ChatGPT／Codex）與黃士祐老師。這份說明放在 `huangisright/explore-island` 根目錄，照著做即可。
 > 寫於 2026-11-23。做完一批就在最後的〈進度〉打勾。
@@ -7,7 +7,7 @@
 
 ## 0. 一句話目標
 
-數學探索島目前有 30 章正課，每章有「先猜 → 動手 → 寫紀錄 → 判斷題 → 蓋章」的流程，登入後紀錄存到 Firebase。
+一線數光目前有 30 章正課，每章有「先猜 → 動手 → 寫紀錄 → 判斷題 → 蓋章」的流程，登入後紀錄存到 Firebase。
 **幾何拾光**是另一門課（八個單元、28 節），每節有一個「動態頁」，現在只是給老師投影用的操作頁，沒有紀錄功能。
 要做的：**把 28 個動態頁也改成探索島的紀錄版**，學生能先猜、操作、寫紀錄、做判斷題、蓋章，老師頁看得到。
 
@@ -57,7 +57,7 @@ python3 _原始碼/build.py /tmp/gm .
 ### 3.1 產生器 `_原始碼/build.py`
 
 - `BUILT`：自動載入 `_原始碼/units_*.py` 的 `CFG`，依檔名排序。**一章一個設定檔**。
-- `build_unit()`：讀 `<GiftedMath>/units/<slug>.html` → 可選的 `restructure` → 換掉「回目錄」連結 → 套 `patches`（每個 old 字串必須剛好出現一次，否則 assert 失敗）→ 把 `island.css`、`island.js`、`window.ISLAND=<CFG>`、雲端模組注入 `</body>` 前 → `<title>` 後面加「｜數學探索島」→ 寫成 `<slug>.html`。
+- `build_unit()`：讀 `<GiftedMath>/units/<slug>.html` → 可選的 `restructure` → 換掉「回目錄」連結 → 套 `patches`（每個 old 字串必須剛好出現一次，否則 assert 失敗）→ 把 `island.css`、`island.js`、`window.ISLAND=<CFG>`、雲端模組注入 `</body>` 前 → `<title>` 後面加「｜一線數光」→ 寫成 `<slug>.html`。
 - `units_from_index()`：從 GiftedMath 的 `index.html` 抓卡片（`<a class="unit" href="units/<slug>.html" data-grade="…" data-kind="…">`），**只收 `GRADES` 裡的年級**。幾何拾光的卡片 `data-grade="幾何拾光"`，目前被濾掉。
 - `build_passport()`、`build_home()`、`build_teacher()`：用上面的清單畫紀錄本、首頁地圖、老師頁。
 
