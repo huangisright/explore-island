@@ -386,13 +386,25 @@ const UI = (() => {
     isl._g = g;
   });
 
-  // main route (course order) as a smooth path between island edges
-  const pts = COURSE.islands.map(i => i.pos);
-  let d = `M${pts[0][0]},${pts[0][1]}`;
-  for (let i = 1; i < pts.length; i++) {
-    const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
-    const mx = (x0 + x1) / 2, my = (y0 + y1) / 2, dx = x1 - x0, dy = y1 - y0;
-    d += ` Q${(mx - dy * 0.18).toFixed(1)},${(my + dx * 0.18).toFixed(1)} ${x1},${y1}`;
+  // main route (course order)：只走海上。每座島外圍留一圈水道（橢圓，比淺灘再大一點），
+  // 航線從前一座島的水道出發、到下一座島的水道為止，經過中間的島時沿著水道繞過去，不會開上島。
+  const ISL = COURSE.islands;
+  const ring = isl => ({ cx: isl.pos[0], cy: isl.pos[1], rx: isl.r * 1.42, ry: isl.r * 1.42 * 0.82 });
+  const angTo = (a, b) => Math.atan2((b.pos[1] - a.pos[1]) / 0.82, b.pos[0] - a.pos[0]);
+  const onRing = (isl, t) => { const e = ring(isl); return [e.cx + e.rx * Math.cos(t), e.cy + e.ry * Math.sin(t)]; };
+  const f = v => v.toFixed(1);
+  let d = '';
+  for (let i = 0; i < ISL.length - 1; i++) {
+    const a = ISL[i], b = ISL[i + 1];
+    const out = onRing(a, angTo(a, b)), inn = onRing(b, angTo(b, a));
+    if (i === 0) d = `M${f(out[0])},${f(out[1])}`;
+    else {   // 沿著 a 的水道，從進港的角度繞到出港的角度（走短的那一邊）
+      const e = ring(a), tin = angTo(a, ISL[i - 1]), tout = angTo(a, b);
+      let dt = tout - tin; while (dt > Math.PI) dt -= 2 * Math.PI; while (dt < -Math.PI) dt += 2 * Math.PI;
+      d += ` A${f(e.rx)},${f(e.ry)} 0 0 ${dt > 0 ? 1 : 0} ${f(out[0])},${f(out[1])}`;
+    }
+    const mx = (out[0] + inn[0]) / 2, my = (out[1] + inn[1]) / 2, dx = inn[0] - out[0], dy = inn[1] - out[1];
+    d += ` Q${f(mx - dy * 0.12)},${f(my + dx * 0.12)} ${f(inn[0])},${f(inn[1])}`;
   }
   const main = el('path', { d, fill: 'none', stroke: 'var(--ink)', 'stroke-width': 2, 'stroke-opacity': .55, 'stroke-dasharray': '10 6' }, layerRoutes);
   main.id = 'mainroute';
