@@ -260,7 +260,7 @@ def build_report(out):
 def build_geo(out):
     """幾何拾光的群島／星座圖：已經做好探索島版的節，連到 gp-uN-M.html；其他節仍連 GiftedMath 的動態頁。"""
     done = [c["slug"] for c in BUILT if c["slug"].startswith("gp-")]
-    for f in ["geo.html", "geo-stars.html"]:
+    for f in ["geo.html"]:          # geo-stars.html（星座圖）2026-11-23 先拿掉，原檔留在 _原始碼/
         page = read(os.path.join(HERE, f))
         assert page.count("/*GP_DONE*/[]") == 1, f
         with open(os.path.join(out, f), "w", encoding="utf8") as fh:
