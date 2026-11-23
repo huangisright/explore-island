@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="zh-Hant" data-exploration="pearl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>又交在一點｜數學探索島</title>
+</head>
+<body class="gp">
+
+<style id="backnav">
+.bk-top{
+  max-width:1080px; margin:0 auto; padding:14px 20px 0;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif; font-size:14px;
+}
+.bk-top a{color:#2E5A88; text-decoration:none; font-weight:600}
+.bk-top a:hover{text-decoration:underline}
+.bk-top .bk-sep{color:#B8AE9C; margin:0 10px}
+.bk-fab{
+  position:fixed; right:16px; bottom:16px; z-index:9999;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 15px; border-radius:24px;
+  background:#FFFDF8; border:1px solid #DFD6C4; color:#2E5A88;
+  font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  font-size:14px; font-weight:600; text-decoration:none;
+  box-shadow:0 2px 4px rgba(72,60,40,.10), 0 10px 26px rgba(72,60,40,.16);
+}
+.bk-fab:hover{border-color:#2E5A88}
+.bk-fab:focus-visible{outline:2px solid #2E5A88; outline-offset:2px}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .bk-top a{color:#82ADDC}
+  :root:not([data-theme="light"]) .bk-fab{
+    background:#1F252B; border-color:#333C45; color:#82ADDC;
+    box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+  }
+  :root:not([data-theme="light"]) .bk-fab:hover{border-color:#82ADDC}
+}
+:root[data-theme="dark"] .bk-top a{color:#82ADDC}
+:root[data-theme="dark"] .bk-fab{
+  background:#1F252B; border-color:#333C45; color:#82ADDC;
+  box-shadow:0 2px 4px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.45);
+}
+@media print{ .bk-top, .bk-fab{display:none !important} }
+@media (max-width:520px){ .bk-fab{right:12px; bottom:12px; padding:8px 13px; font-size:13px} }
+</style>
+<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Crimson+Text:ital,wght@0,600;1,400;1,600&display=swap">
+<style>
+:root{
+  --paper:#F5F2E8; --grid:rgba(46,90,136,.07); --card:#FFFDF8; --edge:#DFD6C4; --edge-soft:#EBE3D4;
+  --ink:#23282D; --ink-2:#5C554A; --ink-3:#847B6C;
+  --indigo:#2E5A88; --orange:#C1652F; --green:#4A7C59; --green-soft:#E7F0E9; --crimson:#B23A3A;
+  --s1:#2E5A88; --s2:#4A7C59; --s3:#A8701E; --s4:#7A4E8C; --s5:#2D7F86;
+  --shape-fill:rgba(46,90,136,.05);
+  --serif:"Noto Serif TC","Songti TC","Times New Roman",serif;
+  --sans:"PingFang TC","Noto Sans TC","Microsoft JhengHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --math:"Crimson Text","Times New Roman",Georgia,serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#161A1E; --grid:rgba(127,169,214,.07); --card:#1F252B; --edge:#333C45; --edge-soft:#2A323A;
+    --ink:#E7E2D6; --ink-2:#B3AC9E; --ink-3:#8B857A;
+    --indigo:#82ADDC; --orange:#E08A54; --green:#7FB08D; --green-soft:#1E2A22; --crimson:#E07A7A;
+    --s1:#82ADDC; --s2:#7FB08D; --s3:#D9A55A; --s4:#B892CC; --s5:#6FC0C6;
+    --shape-fill:rgba(130,173,220,.07);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#161A1E; --grid:rgba(127,169,214,.07); --card:#1F252B; --edge:#333C45; --edge-soft:#2A323A;
+  --ink:#E7E2D6; --ink-2:#B3AC9E; --ink-3:#8B857A;
+  --indigo:#82ADDC; --orange:#E08A54; --green:#7FB08D; --green-soft:#1E2A22; --crimson:#E07A7A;
+  --s1:#82ADDC; --s2:#7FB08D; --s3:#D9A55A; --s4:#B892CC; --s5:#6FC0C6;
+  --shape-fill:rgba(130,173,220,.07);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.6;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+.wrap{max-width:1120px; margin:0 auto; padding-inline:20px; padding-block:26px 40px}
+header{margin-bottom:16px}
+.eyebrow{font-size:13px; letter-spacing:.14em; color:var(--indigo); font-weight:600}
+h1{font-family:var(--serif); font-size:clamp(28px,4.6vw,40px); margin:4px 0 6px; line-height:1.25; text-wrap:balance}
+.lede{margin:0; color:var(--ink-2); font-size:16px}
+.main{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:18px; align-items:start}
+@media (max-width:820px){.main{grid-template-columns:1fr}}
+.panel{background:var(--card); border:1px solid var(--edge); border-radius:12px; padding:14px}
+.stage{padding:8px}
+#stage{width:100%; height:auto; display:block; touch-action:none; cursor:crosshair; user-select:none}
+#stage:focus-visible{outline:2px solid var(--indigo); outline-offset:3px; border-radius:8px}
+.shape{fill:var(--shape-fill); stroke:var(--ink); stroke-width:2.2; stroke-linejoin:round}
+.vlab{font-family:var(--math); font-style:italic; font-size:20px; fill:var(--ink-2)}
+.plab{font-family:var(--math); font-style:italic; font-size:21px; fill:var(--ink); font-weight:600}
+.foot{stroke-width:2.2; stroke-dasharray:6 4}
+.ext{stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:3 5; fill:none}
+.pdot{fill:var(--orange); stroke:var(--card); stroke-width:3}
+.hint{font-size:13px; color:var(--ink-3); margin:4px 6px 0}
+.rows{display:grid; gap:8px}
+.row{display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; font-size:17px}
+.sw{width:12px; height:12px; border-radius:3px}
+.row .val{font-family:var(--math); font-size:26px; font-variant-numeric:tabular-nums; min-width:5ch; text-align:right}
+.row .val.neg{color:var(--crimson)}
+.sum{display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+  margin-top:10px; padding-top:10px; border-top:1px solid var(--edge)}
+.sum .k{font-size:17px; font-weight:600}
+.sum .v{font-family:var(--math); font-size:clamp(46px,7vw,64px); line-height:1; color:var(--orange);
+  font-variant-numeric:tabular-nums; font-weight:600}
+.strip-wrap{margin-top:14px}
+.strip-cap{font-size:13px; color:var(--ink-3); margin-bottom:4px}
+#strip{width:100%; height:auto; display:block}
+.tick{font-family:var(--math); font-size:12px; fill:var(--ink-3)}
+.controls{display:grid; gap:12px; margin-top:14px}
+.seg{display:flex; flex-wrap:wrap; border:1px solid var(--edge); border-radius:8px; overflow:hidden; width:fit-content; max-width:100%}
+.seg button{font:inherit; font-size:14px; padding:7px 12px; border:0; border-right:1px solid var(--edge-soft);
+  background:var(--card); color:var(--ink-2); cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--indigo); color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:#161A1E}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:#161A1E} }
+.btns{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.btn{font:inherit; font-size:15px; padding:8px 14px; border-radius:8px; border:1px solid var(--edge);
+  background:var(--card); color:var(--ink); cursor:pointer}
+.btn.primary{border-color:var(--orange); color:var(--orange); font-weight:600}
+.btn:hover{border-color:var(--indigo)}
+.btn:disabled{opacity:.5; cursor:default}
+.btn:focus-visible,.seg button:focus-visible{outline:2px solid var(--indigo); outline-offset:2px}
+.check{display:flex; gap:8px; align-items:center; font-size:15px; color:var(--ink-2); cursor:pointer}
+.stat{font-size:15px; color:var(--ink-2); min-height:1.6em}
+.stat b{font-family:var(--math); font-size:19px; color:var(--ink); font-variant-numeric:tabular-nums}
+.stat.same{color:var(--green)}
+.stat.same b{color:var(--green)}
+details{border-top:1px dashed var(--edge); padding-top:10px}
+summary{cursor:pointer; font-size:13px; color:var(--ink-3)}
+details .btns{margin-top:8px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<style>
+[hidden]{display:none!important}
+.side{stroke:var(--ink); stroke-width:2.2; fill:var(--shape-fill); stroke-linejoin:round}
+.extl{stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:4 5}
+.cev{stroke:var(--indigo); stroke-width:2}
+.inc{stroke:var(--ink-3); stroke-width:1.4; fill:none}
+.foot{fill:var(--indigo)}
+.meet{fill:var(--orange)}
+.gp-lab{font-family:var(--math); font-style:italic; font-size:20px; fill:var(--ink)}
+.lab2{font-family:var(--math); font-style:italic; font-size:17px; fill:var(--ink-2)}
+.drag{fill:var(--orange); stroke:var(--card); stroke-width:3; cursor:grab}
+.hit{fill:transparent; cursor:grab}
+.q{font-size:15px; color:var(--indigo); margin:4px 0 0; font-weight:600}
+.where{font-size:15px; color:var(--ink-2)}
+</style><style id="exploration-theme">
+:root {
+  --paper: #f7f3ec;
+  --card: #fffdf8;
+  --edge: #dbd2c8;
+  --edge-soft: #e9e0d7;
+  --ink: #252034;
+  --ink-2: #4e465c;
+  --ink-3: #675d70;
+  --indigo: #5939a4;
+  --indigo-soft: #eee7fa;
+  --green: #326648;
+  --green-soft: #e4efe4;
+  --orange: #9d3327;
+  --orange-soft: #fbe7de;
+  --shadow: 0 5px 18px #3828530b;
+  --shadow-lift: 0 12px 32px #38285316;
+  --sans: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --serif: "Noto Serif TC", "Songti TC", "Microsoft JhengHei", serif;
+  --accent: var(--indigo);
+  --accent-soft: var(--indigo-soft);
+  --focus: #673ac1;
+  --hero-start: #292139;
+  --hero-end: #403056;
+  --hero-ink: #fff8ee;
+  --hero-muted: #e5daf7;
+  --hero-line: #e9def260;
+  --grid: transparent;
+  --lilac-sheet: #e6dcf8;
+  --lilac-ink: #2d2044;
+  --red-ink: #a53224;
+  --art-red: #dd5b47;
+  --art-yellow: #f5ce76;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #1c1726;
+    --card: #2a2235;
+    --edge: #62556b;
+    --edge-soft: #45394f;
+    --ink: #fff6eb;
+    --ink-2: #e7daed;
+    --ink-3: #c3b3cc;
+    --indigo: #cbb1ff;
+    --indigo-soft: #3e3054;
+    --green: #a3d3af;
+    --green-soft: #293d34;
+    --orange: #ffae99;
+    --orange-soft: #50312f;
+    --focus: #cbb1ff;
+    --shadow: 0 5px 18px #0002;
+    --shadow-lift: 0 12px 32px #0004;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1c1726;
+  --card: #2a2235;
+  --edge: #62556b;
+  --edge-soft: #45394f;
+  --ink: #fff6eb;
+  --ink-2: #e7daed;
+  --ink-3: #c3b3cc;
+  --indigo: #cbb1ff;
+  --indigo-soft: #3e3054;
+  --green: #a3d3af;
+  --green-soft: #293d34;
+  --orange: #ffae99;
+  --orange-soft: #50312f;
+  --focus: #cbb1ff;
+  --shadow: 0 5px 18px #0002;
+  --shadow-lift: 0 12px 32px #0004;
+}
+:root[data-exploration="pearl"] {
+  color-scheme: light dark;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+}
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+.wrap > header {
+  margin-top: 18px;
+  margin-bottom: 24px;
+  padding: clamp(22px, 4vw, 42px);
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  background: var(--card);
+}
+.wrap > header h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.45rem);
+  letter-spacing: .025em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.wrap > header .eyebrow {
+  color: var(--accent);
+  font-size: .875rem;
+  letter-spacing: .10em;
+}
+.wrap > header .lede,
+.wrap > header p.sub {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.wrap > header .thesis {
+  border-color: var(--accent);
+}
+:where([data-exploration="lesson"], [data-exploration="island-unit"]) .lab {
+  border: 1px solid var(--edge);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+.lab .lab-head {
+  background: var(--accent-soft);
+  border-radius: 17px 17px 0 0;
+}
+.lab .lab-title { font-size: 1.25rem; }
+.lab .lab-foot { border-radius: 0 0 17px 17px; }
+:is([data-exploration="lesson"], [data-exploration="island-unit"]) .wrap nav {
+  border-color: var(--edge);
+  scrollbar-width: thin;
+}
+:is([data-exploration="lesson"], [data-exploration="island-unit"]) nav a,
+[data-exploration="pearl"] :is(button, summary) {
+  min-height: 40px;
+  align-content: center;
+}
+[data-exploration="pearl"] .wrap > header {
+  padding: 22px 0 26px;
+  border: 0;
+  border-bottom: 2px solid var(--ink);
+  border-radius: 0;
+  background: transparent;
+}
+[data-exploration="pearl"] .wrap > header h1 { max-width: 18ch; text-wrap: initial; }
+[data-exploration="pearl"] .wrap > header .lede { max-width: 52ch; }
+[data-exploration="pearl"] .main {
+  gap: clamp(12px, 2.4vw, 28px);
+  margin-bottom: 24px;
+}
+@media (min-width: 820px) {
+  [data-exploration="pearl"] .wrap > .main {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  }
+}
+[data-exploration="pearl"] .main > .panel {
+  border-radius: 6px;
+  padding: clamp(10px, 2vw, 22px);
+  min-width: 0;
+}
+[data-exploration="pearl"] .main > .stage {
+  background-color: var(--accent-soft);
+  background-image:
+    linear-gradient(var(--edge) 1px, transparent 1px),
+    linear-gradient(90deg, var(--edge) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border-color: var(--accent);
+}
+[data-exploration="pearl"] .stage .hint {
+  padding: 10px 12px;
+  margin: 8px 0 0;
+  background: var(--card);
+  border-radius: 4px;
+}
+[data-exploration="pearl"] .panel:not(.stage) .sum {
+  border-radius: 4px;
+  border: 0;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+}
+[data-exploration="pearl"] :is(.hint, summary) { font-size: .875rem; }
+[data-exploration="pearl"] .main .btn.primary:not([aria-pressed]) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--card);
+}
+.bk-top a, .bk-fab {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: .2em;
+}
+.bk-fab {
+  background: var(--card);
+  border-color: var(--edge);
+  box-shadow: var(--shadow-lift);
+}
+@media (max-width: 540px) {
+  .wrap > header { margin-top: 12px; }
+}
+@media print {
+  .wrap > header, .lab, .main > .panel { box-shadow: none !important; }
+}
+</style>
+
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">幾何拾光　單元四　第 1 節</div>
+    <h1>又交在一點</h1>
+    <p class="lede">從三個頂點各畫一條線。換一組畫法、拖動三角形，看三條線怎麼走。</p>
+  </header>
+
+  <div class="lab" id="lab1"><div class="lab-head"><span class="lab-no">1</span><div><p class="lab-title">四組線</p><p class="lab-why"></p></div></div><div class="lab-body"><div class="main">
+    <div class="panel stage">
+      <svg id="stage" viewBox="0 0 440 380" role="img" aria-label="可拖動頂點的三角形與三條線" tabindex="0"></svg>
+      <p class="hint">拖動橘色的頂點 <i>A</i>、<i>B</i>、<i>C</i>。單位 mm；預設和學習單第 1 頁一樣：<i>BC</i> ＝ 80、<i>CA</i> ＝ 70、<i>AB</i> ＝ 90。</p>
+    </div>
+
+    <div class="panel">
+      <div class="seg" role="group" aria-label="畫哪一組線">
+        <button type="button" data-f="med" aria-pressed="false">中線</button>
+        <button type="button" data-f="bis" aria-pressed="false">角平分線</button>
+        <button type="button" data-f="alt" aria-pressed="false">高</button>
+        <button type="button" data-f="ger" aria-pressed="true">連到切點</button>
+      </div>
+      <div class="rows" style="margin-top:12px">
+        <div class="row"><span class="sw" style="background:var(--orange)"></span><span>交點在三角形</span><span class="val" id="vIn" style="font-size:20px"></span></div>
+      </div>
+      <div class="sum"><span class="k">兩兩交點最遠相距（mm）</span><span class="v" id="vGap" style="font-size:clamp(30px,5vw,44px)"></span></div>
+      <div class="rows" id="ratios" hidden style="margin-top:10px">
+        <div class="row"><span class="sw" style="background:var(--indigo)"></span><span><i>AF</i> ÷ <i>FB</i></span><span class="val" id="r1"></span></div>
+        <div class="row"><span class="sw" style="background:var(--indigo)"></span><span><i>BD</i> ÷ <i>DC</i></span><span class="val" id="r2"></span></div>
+        <div class="row"><span class="sw" style="background:var(--indigo)"></span><span><i>CE</i> ÷ <i>EA</i></span><span class="val" id="r3"></span></div>
+        <div class="row" id="prodRow" hidden><span class="sw" style="background:var(--orange)"></span><span><b>三個乘起來</b></span><span class="val" id="r4" style="color:var(--orange)"></span></div>
+      </div>
+
+      <div class="controls">
+        <div class="btns">
+          <button type="button" class="btn primary" id="run">隨機換 1000 個三角形</button>
+          <button type="button" class="btn" id="home">回到學習單的圖</button>
+        </div>
+        <div class="stat" id="stat" aria-live="polite"></div>
+        <p class="q" id="ask" hidden>一千個三角形都交在一點。第一千零一個呢？</p>
+        
+      </div>
+    </div>
+  </div></div></div><div class="lab" id="lab2"><div class="lab-head"><span class="lab-no">2</span><div><p class="lab-title">三個比</p><p class="lab-why"></p></div></div><div class="lab-body"><div class="gp-more" id="more">
+          <div class="btns">
+            <button type="button" class="btn" id="showR" aria-pressed="false">顯示三個比</button>
+            <button type="button" class="btn" id="showP" aria-pressed="false">乘起來</button>
+          </div>
+        </div></div></div><div id="end" class="gp-end"></div>
+</div>
+
+<script>
+(function(){
+  const NS = "http://www.w3.org/2000/svg", $ = (id) => document.getElementById(id);
+  const svg = $("stage");
+  const AX = (8100 - 4900 + 6400) / 160;
+  const HOME = { A: [AX, Math.sqrt(8100 - AX*AX)], B: [0, 0], C: [80, 0] };
+  let s = JSON.parse(JSON.stringify(HOME)), fam = "ger", showR = false, showP = false, running = false, drag = null;
+  const K = 3.6, O = [76, 320];
+  const X = (p) => [O[0] + p[0]*K, O[1] - p[1]*K];
+  const W = (q) => [(q[0] - O[0]) / K, (O[1] - q[1]) / K];
+  function el(tag, a){ const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); svg.appendChild(e); return e; }
+  function txt(x, y, t, cls){ const e = el("text", { x, y, class: cls, "text-anchor": "middle", "dominant-baseline": "middle" }); e.textContent = t; return e; }
+  const dist = (a, b) => Math.hypot(a[0]-b[0], a[1]-b[1]);
+  const lerp = (p, q, t) => [p[0] + (q[0]-p[0])*t, p[1] + (q[1]-p[1])*t];
+  const cross = (o, p, q) => (p[0]-o[0])*(q[1]-o[1]) - (p[1]-o[1])*(q[0]-o[0]);
+  function foot(P, U, V){ const ux = V[0]-U[0], uy = V[1]-U[1], t = ((P[0]-U[0])*ux + (P[1]-U[1])*uy) / (ux*ux + uy*uy); return [U[0]+t*ux, U[1]+t*uy]; }
+  function inter(P1, P2, P3, P4){ const d = (P1[0]-P2[0])*(P3[1]-P4[1]) - (P1[1]-P2[1])*(P3[0]-P4[0]); if (Math.abs(d) < 1e-12) return null;
+    const t = ((P1[0]-P3[0])*(P3[1]-P4[1]) - (P1[1]-P3[1])*(P3[0]-P4[0])) / d; return [P1[0]+t*(P2[0]-P1[0]), P1[1]+t*(P2[1]-P1[1])]; }
+  // 有向比 PX/XQ
+  function sr(P, Xp, Q){ const v = [Q[0]-P[0], Q[1]-P[1]], t = ((Xp[0]-P[0])*v[0] + (Xp[1]-P[1])*v[1]) / (v[0]*v[0] + v[1]*v[1]); return t / (1 - t); }
+  function feet(A, B, C, f){
+    const a = dist(B, C), b = dist(C, A), c = dist(A, B), sp = (a + b + c) / 2;
+    if (f === "med") return [lerp(B, C, .5), lerp(C, A, .5), lerp(A, B, .5)];
+    if (f === "bis") return [lerp(B, C, c/(b+c)), lerp(C, A, a/(a+c)), lerp(A, B, b/(a+b))];
+    if (f === "alt") return [foot(A, B, C), foot(B, C, A), foot(C, A, B)];
+    return [lerp(B, C, (sp-b)/a), lerp(C, A, (sp-c)/b), lerp(A, B, (sp-a)/c)];
+  }
+  function measure(A, B, C, f){
+    const [D, E, F] = feet(A, B, C, f);
+    const p1 = inter(A, D, B, E), p2 = inter(B, E, C, F), p3 = inter(C, F, A, D);
+    if (!p1 || !p2 || !p3) return null;
+    const gap = Math.max(dist(p1, p2), dist(p2, p3), dist(p3, p1));
+    const M = [(p1[0]+p2[0]+p3[0])/3, (p1[1]+p2[1]+p3[1])/3];
+    const sg = Math.sign(cross(A, B, C)), inside = [cross(A, B, M), cross(B, C, M), cross(C, A, M)].every(v => v * sg > 0);
+    return { D, E, F, M, gap, inside };
+  }
+  const fmtGap = (g) => g < 1e-6 ? "＜ 0.000001" : (g < 0.01 ? g.toExponential(1) : g.toFixed(2));
+
+  function draw(){
+    svg.innerHTML = "";
+    const { A, B, C } = s, m = measure(A, B, C, fam);
+    const a = dist(B, C), b = dist(C, A), c = dist(A, B), sp = (a + b + c) / 2;
+    if (fam === "ger"){ const I = [(a*A[0] + b*B[0] + c*C[0]) / (a+b+c), (a*A[1] + b*B[1] + c*C[1]) / (a+b+c)];
+      const r = Math.abs(cross(A, B, C)) / 2 / sp, q = X(I); el("circle", { cx: q[0], cy: q[1], r: r*K, class: "inc" }); }
+    const pa = X(A), pb = X(B), pc = X(C);
+    el("polygon", { points: [pa, pb, pc].map(p => p.join(",")).join(" "), class: "side" });
+    if (m){
+      // 垂足落在延長線上：把那一邊延長畫虛線
+      [[B, C, m.D], [C, A, m.E], [A, B, m.F]].forEach(([U, V, Q]) => { const t = sr(U, Q, V); if (t < 0){
+        const near = dist(Q, U) < dist(Q, V) ? U : V, pn = X(near), pq = X(Q); el("line", { x1: pn[0], y1: pn[1], x2: pq[0], y2: pq[1], class: "extl" }); } });
+      // 三條線：畫出涵蓋頂點、垂足、交點的那一段
+      [[A, m.D], [B, m.E], [C, m.F]].forEach(([V, Q]) => {
+        const u = [Q[0]-V[0], Q[1]-V[1]], tt = [0, 1, ((m.M[0]-V[0])*u[0] + (m.M[1]-V[1])*u[1]) / (u[0]*u[0] + u[1]*u[1])];
+        const p1 = X(lerp(V, Q, Math.min(...tt))), p2 = X(lerp(V, Q, Math.max(...tt)));
+        el("line", { x1: p1[0], y1: p1[1], x2: p2[0], y2: p2[1], class: "cev" });
+      });
+      [m.D, m.E, m.F].forEach(Q => { const q = X(Q); el("circle", { cx: q[0], cy: q[1], r: 3.6, class: "foot" }); });
+      const mm = X(m.M); el("circle", { cx: mm[0], cy: mm[1], r: 5, class: "meet" });
+      const Gc = [(A[0]+B[0]+C[0])/3, (A[1]+B[1]+C[1])/3];
+      [["D", m.D], ["E", m.E], ["F", m.F]].forEach(([t, Q]) => { const v = [Q[0]-Gc[0], Q[1]-Gc[1]], L = Math.hypot(...v) || 1, q = X([Q[0] + v[0]/L*5, Q[1] + v[1]/L*5]); txt(q[0], q[1], t, "lab2"); });
+      $("vGap").textContent = fmtGap(m.gap); $("vIn").textContent = m.inside ? "裡面" : "外面";
+      if (showR){ const r1 = dist(A, m.F)/dist(m.F, B), r2 = dist(B, m.D)/dist(m.D, C), r3 = dist(C, m.E)/dist(m.E, A);
+        $("r1").textContent = r1.toFixed(3); $("r2").textContent = r2.toFixed(3); $("r3").textContent = r3.toFixed(3); $("r4").textContent = (r1*r2*r3).toFixed(3); }
+    }
+    const Gc = [(A[0]+B[0]+C[0])/3, (A[1]+B[1]+C[1])/3];
+    [["A", A], ["B", B], ["C", C]].forEach(([t, V]) => { const v = [V[0]-Gc[0], V[1]-Gc[1]], L = Math.hypot(...v) || 1, q = X([V[0] + v[0]/L*6.5, V[1] + v[1]/L*6.5]); txt(q[0], q[1], t, "gp-lab"); });
+    [["A", pa], ["B", pb], ["C", pc]].forEach(([id, p]) => { el("circle", { cx: p[0], cy: p[1], r: 18, class: "hit", "data-h": id }); el("circle", { cx: p[0], cy: p[1], r: 8, class: "drag", "data-h": id }); });
+    $("ratios").hidden = !showR; $("prodRow").hidden = !showP;
+  }
+  function svgPt(ev){ const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const q = pt.matrixTransform(svg.getScreenCTM().inverse()); return [q.x, q.y]; }
+  svg.addEventListener("pointerdown", (ev) => { const h = ev.target.getAttribute && ev.target.getAttribute("data-h"); if (!h || running) return; drag = h; svg.setPointerCapture(ev.pointerId); ev.preventDefault(); });
+  svg.addEventListener("pointermove", (ev) => { if (!drag) return; const w = W(svgPt(ev)); const t = { ...s, [drag]: w };
+    if (Math.abs(cross(t.A, t.B, t.C)) < 40) return; s[drag] = w; clearStat(); draw(); });
+  const end = () => { drag = null; }; svg.addEventListener("pointerup", end); svg.addEventListener("pointercancel", end);
+  function clearStat(){ $("stat").textContent = ""; $("ask").hidden = true; }
+  document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => { if (running) return; fam = b.dataset.f;
+    document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); clearStat(); draw(); }));
+  $("home").addEventListener("click", () => { if (running) return; s = JSON.parse(JSON.stringify(HOME)); clearStat(); draw(); });
+  $("showR").addEventListener("click", () => { showR = !showR; if (!showR) showP = false; $("showR").setAttribute("aria-pressed", String(showR)); $("showP").setAttribute("aria-pressed", String(showP)); draw(); });
+  $("showP").addEventListener("click", () => { showP = !showP; if (showP) showR = true; $("showR").setAttribute("aria-pressed", String(showR)); $("showP").setAttribute("aria-pressed", String(showP)); draw(); });
+  $("run").addEventListener("click", () => {
+    if (running) return; clearStat(); running = true; $("run").disabled = true;
+    const keep = JSON.parse(JSON.stringify(s)), N = 1000, reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches, step = reduce ? N : 25;
+    let done = 0, worst = 0, out = 0;
+    const rnd = () => [-10 + Math.random()*110, -5 + Math.random()*85];
+    function tick(){
+      for (let i = 0; i < step && done < N; i++){
+        let T; do { T = { A: rnd(), B: rnd(), C: rnd() }; } while (Math.abs(cross(T.A, T.B, T.C)) < 300);
+        const m = measure(T.A, T.B, T.C, fam); if (!m) continue; done++; worst = Math.max(worst, m.gap); if (!m.inside) out++; s = T;
+      }
+      draw(); $("stat").innerHTML = `換了 <b>${done}</b> 個三角形`;
+      if (done < N) requestAnimationFrame(tick);
+      else { running = false; $("run").disabled = false; s = keep; draw();
+        $("stat").innerHTML = `${done} 個三角形，兩兩交點最遠相距 <b>${fmtGap(worst)}</b> mm；交點在三角形外面 <b>${out}</b> 次`;
+        $("ask").hidden = false; }
+    }
+    requestAnimationFrame(tick);
+  });
+  svg.addEventListener("keydown", (ev) => { const mv = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[ev.key]; if (!mv) return;
+    ev.preventDefault(); s.A = [s.A[0] + mv[0], s.A[1] + mv[1]]; draw(); });
+  draw();
+})();
+</script>
+
+<a class="bk-fab" href="passport.html" aria-label="回到探索紀錄本">← 紀錄本</a>
+<style id="island">
+/* ===== 探索島：預測／紀錄／判斷題／單元章 ===== */
+.isl-box{margin:0;padding:16px 22px;border-bottom:1px solid var(--edge-soft);background:var(--indigo-soft)}
+.isl-box .isl-k{font-size:12.5px;letter-spacing:.14em;font-weight:700;color:var(--indigo);margin-bottom:6px}
+.isl-box .isl-q{font-size:15.5px;color:var(--ink);margin:0 0 10px;max-width:none}
+.isl-obs{background:var(--orange-soft);border-top:1px solid var(--edge-soft);border-bottom:0}
+.isl-obs .isl-k{color:var(--orange)}
+.isl-opts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.isl-opts label{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;
+  padding:5px 12px;border:1px solid var(--edge);border-radius:999px;background:var(--card);cursor:pointer}
+.isl-opts label:has(input:checked){border-color:var(--indigo);color:var(--indigo);font-weight:600}
+.isl-opts input{accent-color:var(--indigo);margin:0}
+.isl-ta{width:100%;min-height:62px;resize:vertical;font:inherit;font-size:15px;line-height:1.6;
+  padding:9px 12px;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink)}
+.isl-ta:focus{outline:2px solid var(--indigo);outline-offset:1px}
+.isl-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.isl-btn{font:inherit;font-size:14.5px;font-weight:600;padding:7px 16px;border-radius:5px;cursor:pointer;
+  border:1px solid var(--indigo);background:var(--indigo);color:var(--card)}
+.isl-btn:disabled{opacity:.4;cursor:not-allowed}
+.isl-btn.ghost{background:var(--card);color:var(--indigo)}
+.isl-hint{font-size:13px;color:var(--ink-3)}
+.isl-hint.warn{color:var(--orange);font-weight:600}
+.isl-rule{font-size:13.5px;color:var(--ink-2);margin:6px 0 0;max-width:none}
+.isl-mine{font-size:14.5px;color:var(--ink-2);margin:0;max-width:none}
+.isl-mine b{color:var(--indigo)}
+.isl-wait{padding:26px 22px;text-align:center;color:var(--ink-3);font-size:14.5px;
+  background:repeating-linear-gradient(45deg,transparent 0 10px,var(--edge-soft) 10px 11px)}
+.isl-done-tag{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--green);letter-spacing:.08em}
+.lab-foot.isl-reveal::before{content:"對照看看";display:block;font-size:12px;letter-spacing:.14em;
+  font-weight:700;color:var(--green);margin-bottom:2px}
+.isl-gate{margin:20px 0;padding:14px 18px;border:1px dashed var(--edge);border-radius:5px;
+  color:var(--ink-3);font-size:14px;text-align:center}
+
+/* 進度列 */
+.isl-prog{margin:0 0 6px;padding:12px 16px;border:1px solid var(--edge);border-radius:5px;background:var(--card);
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:14px}
+.isl-prog .t{font-weight:700;color:var(--ink-2);letter-spacing:.06em}
+.isl-dots{display:flex;gap:6px;flex-wrap:wrap}
+.isl-dots a{width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;
+  font-size:12.5px;font-weight:700;text-decoration:none;border:1.5px solid var(--edge);color:var(--ink-3);background:var(--paper)}
+.isl-dots a.half{border-color:var(--indigo);color:var(--indigo)}
+.isl-dots a.ok{border-color:var(--green);background:var(--green);color:var(--card)}
+.isl-prog .q{color:var(--ink-3)}
+.isl-prog .q.ok{color:var(--green);font-weight:700}
+
+/* 判斷題 */
+#isl-quiz{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-qcard{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);
+  padding:18px 22px;margin:16px 0}
+.isl-qcard .isl-qn{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--orange)}
+.isl-qcard p.isl-qt{font-size:16px;margin:4px 0 12px;max-width:none}
+.isl-choice{display:block;width:100%;text-align:left;font:inherit;font-size:15px;line-height:1.55;
+  padding:9px 14px;margin:0 0 8px;border:1px solid var(--edge);border-radius:5px;background:var(--paper);
+  color:var(--ink);cursor:pointer}
+.isl-choice:hover:not(:disabled){border-color:var(--indigo)}
+.isl-choice.no{border-color:var(--orange);background:var(--orange-soft);color:var(--ink-2);text-decoration:line-through}
+.isl-choice.yes{border-color:var(--green);background:var(--green-soft);font-weight:600}
+.isl-choice:disabled{cursor:default}
+.isl-fb{margin-top:6px;padding:10px 14px;border-radius:4px;font-size:14.5px;border:1px solid var(--edge)}
+.isl-fb.bad{border-color:var(--orange);background:var(--orange-soft)}
+.isl-fb.good{border-color:var(--green);background:var(--green-soft)}
+
+/* 紀錄與章 */
+#isl-record{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-sheet{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);padding:22px 24px}
+.isl-sheet-head{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--edge-soft);padding-bottom:14px;margin-bottom:6px}
+.isl-sheet-head h3{margin:0;font-size:22px}
+.isl-sheet-head .isl-sub{font-size:13.5px;color:var(--ink-3)}
+.isl-name{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.isl-name input{font:inherit;font-size:15px;padding:5px 10px;width:10em;border:1px solid var(--edge);
+  border-radius:5px;background:var(--paper);color:var(--ink)}
+.isl-tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
+.isl-tbl th,.isl-tbl td{border-bottom:1px solid var(--edge-soft);padding:9px 8px;vertical-align:top;text-align:left}
+.isl-tbl th{font-size:12.5px;letter-spacing:.1em;color:var(--ink-3);font-weight:700}
+.isl-tbl td.n{white-space:nowrap;font-weight:600;color:var(--ink-2);width:9.5em}
+.isl-tbl td .empty{color:var(--ink-3)}
+.isl-stamp-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:18px}
+.isl-stamp{width:150px;height:150px;flex:none}
+.isl-stamp.off{opacity:.18;filter:grayscale(1)}
+.isl-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.isl-clear{font-size:13px;color:var(--ink-3);background:none;border:0;text-decoration:underline;cursor:pointer;font:inherit}
+@media (max-width:600px){
+  .isl-tbl, .isl-tbl tbody, .isl-tbl tr, .isl-tbl td{display:block;width:auto}
+  .isl-tbl thead{display:none}
+  .isl-tbl td{border:0;padding:3px 0}
+  .isl-tbl tr{border-bottom:1px solid var(--edge-soft);padding:10px 0}
+  .isl-tbl td[data-h]::before{content:attr(data-h)"　";font-size:12px;color:var(--ink-3);font-weight:700}
+}
+@media print{
+  body.isl-print .wrap > *:not(#isl-record), body.isl-print .bk-top, body.isl-print .bk-fab,
+  body.isl-print .isl-tools, body.isl-print nav, body.isl-print #isl-record > .isl-hint{display:none !important}
+  body.isl-print{background:#fff}
+  body.isl-print .isl-sheet{box-shadow:none;border:1px solid #999}
+  body.isl-print .isl-name input{border:0;border-bottom:1px solid #999;border-radius:0}
+}
+/* 單元頁的手繪主題對所有 button 用了 !important，這裡要用更高的權重蓋回來 */
+button.isl-choice{background:var(--paper)!important;color:var(--ink)!important;opacity:1}
+button.isl-choice:disabled{color:var(--ink-2)!important}
+button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--green)!important;color:var(--ink)!important}
+button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
+button.isl-btn:disabled{opacity:.35}
+button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
+</style>
+<script>window.ISLAND={"slug": "gp-u4-1", "chap": "拾光四-1", "title": "又交在一點", "topic": "三線共點", "plain": "這座島上，從三個頂點各拉一條線；換了四種拉法，三條線還是交在一點。", "stations": {"lab1": {"mode": "predict", "why": "按「中線」「角平分線」「高」「連到切點」，一組一組看；拖動頂點，再按「隨機換 1000 個三角形」。", "q": "從三個頂點各畫一條線，共有四組畫法。你猜哪幾組的三條線會交在同一點？", "opts": ["三條中線", "三條角平分線", "三條高", "三個頂點連到內切圓的切點"], "multi": true, "obs": "四組各交在哪裡？把 ∠A 拉成鈍角，哪一組的交點跑到三角形外面？哪一組最讓你意外？"}, "lab2": {"mode": "predict", "why": "按「顯示三個比」，再按「乘起來」，四組都試試。", "q": "螢幕換了一千個三角形，四組線每一次都交在一點。這樣算不算已經說明「一定交在一點」？", "opts": ["算", "不算"], "multi": false, "obs": "四組線的三個比，乘起來各是多少？為什麼只要乘起來是 1，三條線就一定交在一點？（想想：先讓兩條線交在一點，再看第三條。）"}}, "gates": [{"hide": "#lab2", "after": "lab1"}], "quiz": [{"q": "BD : DC ＝ 2 : 3，CE : EA ＝ 3 : 4。F 要放在 AB 上哪裡，AD、BE、CF 才會交在一點？", "opts": ["AF : FB ＝ 2 : 1", "AF : FB ＝ 1 : 2", "AF : FB ＝ 1 : 1", "AF : FB ＝ 3 : 4"], "ans": 0, "why": ["", "倒過來了，代進去乘乘看。", "代進去：1 × 2/3 × 3/4 不是 1。", "代進去：3/4 × 2/3 × 3/4 不是 1。"], "exp": "三個比乘起來要是 1：AF/FB × 2/3 × 3/4 ＝ 1，AF/FB ＝ 2，所以 AF : FB ＝ 2 : 1。"}, {"q": "把 ∠A 拉成鈍角，哪一組的交點跑到三角形外面？", "opts": ["三條高", "三條中線", "三條角平分線", "連到切點的三條線"], "ans": 0, "why": ["", "中線的交點一定在三角形裡面。", "角平分線的交點是內切圓的圓心，一定在裡面。", "切點都在邊上，三條線的交點在裡面。"], "exp": "鈍角三角形的三條高（延長之後）交在三角形外面；其他三組的交點都還在裡面。"}, {"q": "用今天的方法，三條中線為什麼交在一點？", "opts": ["三個比都是 1，乘起來是 1", "三條中線一樣長", "中線把三角形分成一樣大的兩塊", "三條中線互相垂直"], "ans": 0, "why": ["", "中線通常不一樣長。", "這是真的，但它說明的是面積，不是交在一點。", "中線通常不垂直。"], "exp": "中點把邊分成一樣長的兩段，三個比都是 1，乘起來是 1，所以三條中線交在一點。"}]};</script>
+<script>
+/* ===== 探索島：預測／紀錄／判斷題／單元章 =====
+   沒登入：紀錄只存在這台裝置的瀏覽器（localStorage）。
+   登入且在名單上：island-cloud.js 透過 window.ISLAND_API 接手，另存一份到雲端。 */
+(function () {
+  const C = window.ISLAND;
+  let KEY = "isl:" + C.slug;
+  let NAMEKEY = "isl:name";
+  let nameLocked = false;
+  const mem = {};
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return mem[k] ?? null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } },
+  };
+  let S;
+  try { S = JSON.parse(store.get(KEY)) || {}; } catch (e) { S = {}; }
+  S.st = S.st || {}; S.quiz = S.quiz || {};
+  const save = () => {
+    S.updated = new Date().toISOString();
+    S.n = ids.length; S.nd = ids.filter(id => S.st[id] && S.st[id].done).length;
+    S.q = C.quiz.length; S.qd = C.quiz.filter((_, i) => S.quiz[i] && S.quiz[i].ok).length;
+    store.set(KEY, JSON.stringify(S));
+    if (API.onSave) API.onSave(S);
+  };
+  const API = window.ISLAND_API = window.ISLAND_API || {};
+
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const ids = Object.keys(C.stations);
+  const MIN_OBS = 1;   // 寫一個字（例如一個數字）就算
+
+  const st = id => (S.st[id] = S.st[id] || { opts: [], pred: "", locked: false, obs: "", done: false });
+  const predText = (cfg, s) => {
+    const parts = [];
+    if (cfg.opts && s.opts.length) parts.push(s.opts.map(i => cfg.opts[i]).join("、"));
+    else if (cfg.opts && cfg.multi) parts.push("一個都沒選");
+    if (s.pred.trim()) parts.push(s.pred.trim());
+    return parts.join("；");
+  };
+  const stationDone = id => !!st(id).done;
+  const quizDone = i => !!(S.quiz[i] && S.quiz[i].ok);
+  const allStations = () => ids.every(stationDone);
+  const allQuiz = () => C.quiz.every((_, i) => quizDone(i));
+
+  /* ---------- 每一站 ---------- */
+  ids.forEach(id => {
+    const cfg = C.stations[id];
+    const lab = document.getElementById(id);
+    if (!lab) return;
+    let s = st(id);
+    const head = lab.querySelector(".lab-head");
+    const body = lab.querySelector(".lab-body");
+    const foot = lab.querySelector(".lab-foot");
+    const no = lab.querySelector(".lab-no").textContent.trim();
+    if (cfg.why) lab.querySelector(".lab-why").innerHTML = esc(cfg.why);
+    const tag = el("span", "isl-done-tag", "");
+    head.appendChild(tag);
+
+    /* 預測 */
+    let pbox = null, wait = null;
+    if (cfg.mode === "predict") {
+      pbox = el("div", "isl-box");
+      head.after(pbox);
+      wait = el("div", "isl-wait", "先寫下你的預測，這一站才會打開。");
+      body.before(wait);
+    }
+    const renderPred = () => {
+      if (!pbox) return;
+      if (s.locked) {
+        pbox.innerHTML = '<div class="isl-k">我的預測</div><p class="isl-mine">' + esc(cfg.q) + "<br><b>" + esc(predText(cfg, s)) + "</b></p>";
+        return;
+      }
+      const type = cfg.multi ? "checkbox" : "radio";
+      let h = '<div class="isl-k">先預測，再動手</div><p class="isl-q">' + esc(cfg.q) + "</p>";
+      if (cfg.opts) {
+        h += '<div class="isl-opts">' + cfg.opts.map((o, i) =>
+          '<label><input type="' + type + '" name="o-' + id + '" value="' + i + '"' + (s.opts.includes(i) ? " checked" : "") + "> " + esc(o) + "</label>").join("") + "</div>";
+      }
+      h += '<textarea class="isl-ta" placeholder="' + (cfg.opts ? "為什麼這樣猜？（寫一句就好）" : "寫下你的答案和理由") + '">' + esc(s.pred) + "</textarea>";
+      const rule = !cfg.opts ? "寫下你的答案就能送出，一個數字也可以。"
+        : cfg.multi ? "勾選你覺得對的（可以都不勾），再寫一句為什麼，就能送出。"
+        : "選一個答案，再寫一句為什麼，就能送出。";
+      h += '<p class="isl-rule">' + rule + '</p>';
+      h += '<div class="isl-row"><button class="isl-btn primary">預測寫好了，開始操作</button><span class="isl-hint"></span></div>';
+      pbox.innerHTML = h;
+      const ta = pbox.querySelector("textarea"), btn = pbox.querySelector("button"), hint = pbox.querySelector(".isl-hint");
+      const ok = () => {
+        s.opts = [...pbox.querySelectorAll("input:checked")].map(x => +x.value);
+        s.pred = ta.value;
+        const needOpt = cfg.opts && !cfg.multi && s.opts.length === 0;
+        const needText = s.pred.trim().length === 0;
+        btn.disabled = needOpt || needText;
+        hint.classList.toggle("warn", btn.disabled);
+        hint.textContent = needOpt && needText ? "還差：選一個答案、寫一句為什麼。"
+          : needOpt ? "還差：選一個答案。"
+          : needText ? (cfg.opts ? "還差：寫一句為什麼。" : "還差：寫下你的答案。")
+          : "送出後就不能改。猜錯沒關係，等一下對照才有東西看。";
+      };
+      pbox.addEventListener("input", () => { ok(); save(); });
+      pbox.addEventListener("change", () => { ok(); save(); });
+      ok();
+      btn.addEventListener("click", () => {
+        ok();
+        if (btn.disabled) return;
+        s.locked = true; s.lockedAt = new Date().toISOString(); s.pt = predText(cfg, s); save();
+        renderAll(); body.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    /* 觀察紀錄 */
+    const obox = el("div", "isl-box isl-obs");
+    body.after(obox);
+    const renderObs = () => {
+      let h = '<div class="isl-k">我看到的</div><p class="isl-q">' + esc(cfg.obs) + "</p>";
+      h += '<textarea class="isl-ta" placeholder="把你看到的寫下來">' + esc(s.obs) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn' + (s.done ? "" : " primary") + '">' + (s.done ? "更新紀錄" : "記下來，看對照") + '</button><span class="isl-hint">' + (s.done ? "" : "寫下你看到的（一句話就好），就能記錄。") + '</span></div>';
+      obox.innerHTML = h;
+      const ta = obox.querySelector("textarea"), btn = obox.querySelector("button"), hint = obox.querySelector(".isl-hint");
+      const chk = () => { btn.disabled = ta.value.trim().length < MIN_OBS; };
+      ta.addEventListener("input", () => {
+        s.obs = ta.value; save(); chk();
+        hint.textContent = s.done ? "已自動儲存" : btn.disabled ? "寫下你看到的（一句話就好），就能記錄。" : "";
+      });
+      chk();
+      btn.addEventListener("click", () => {
+        s.obs = ta.value; if (s.obs.trim().length < MIN_OBS) return;
+        const first = !s.done;
+        s.done = true; s.doneAt = s.doneAt || new Date().toISOString(); save();
+        renderAll();
+        if (first && foot) foot.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    lab._islRender = () => {
+      s = st(id);
+      if (s.locked && s.pt == null) s.pt = predText(cfg, s);   // 紀錄本要顯示預測的文字（那一頁沒有選項內容）
+      const open = cfg.mode !== "predict" || s.locked;
+      renderPred();
+      if (wait) wait.hidden = open;
+      body.hidden = !open;
+      obox.hidden = !open;
+      if (open) renderObs();
+      if (foot) { foot.hidden = !s.done; foot.classList.add("isl-reveal"); }
+      tag.textContent = s.done ? "✓ 已記錄" : "";
+    };
+  });
+
+  /* ---------- 會先講出答案的段落 ---------- */
+  const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
+    const sec = document.querySelector(g.sel);
+    if (!sec) return null;
+    const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
+    sec.appendChild(note);
+    return { g, kids, note };
+  }).filter(Boolean);
+
+  /* ---------- 進度列 ---------- */
+  const prog = el("div", "isl-prog");
+  document.querySelector("header").after(prog);
+
+  /* ---------- 判斷題 ---------- */
+  const quiz = el("section", "", "");
+  quiz.id = "isl-quiz";
+  const endSec = document.getElementById("end");
+  (endSec || document.querySelector(".wrap").lastElementChild).before(quiz);
+  const renderQuiz = () => {
+    let h = '<div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>過關前的 ' + C.quiz.length + ' 題</div>' +
+      "<h2>選一個，答錯可以再選</h2>";
+    quiz.innerHTML = h;
+    C.quiz.forEach((q, i) => {
+      const r = S.quiz[i] = S.quiz[i] || { tried: [], ok: false };
+      const card = el("div", "isl-qcard");
+      card.innerHTML = '<div class="isl-qn">第 ' + (i + 1) + " 題</div><p class=\"isl-qt\">" + esc(q.q) + "</p>";
+      q.opts.forEach((o, j) => {
+        const b = el("button", "isl-choice", esc(o));
+        if (r.tried.includes(j)) b.classList.add(j === q.ans ? "yes" : "no");
+        if (r.ok || r.tried.includes(j)) b.disabled = true;
+        b.addEventListener("click", () => {
+          r.tried.push(j);
+          if (j === q.ans) { r.ok = true; r.okAt = new Date().toISOString(); }
+          save(); renderAll();
+        });
+        card.appendChild(b);
+      });
+      const last = r.tried[r.tried.length - 1];
+      if (r.ok) card.appendChild(el("div", "isl-fb good", "<b>對。</b>" + esc(q.exp)));
+      else if (last != null) card.appendChild(el("div", "isl-fb bad", "<b>再想想。</b>" + esc(q.why[last])));
+      quiz.appendChild(card);
+    });
+  };
+
+  /* ---------- 紀錄與章 ---------- */
+  const rec = el("section", "", "");
+  rec.id = "isl-record";
+  document.querySelector(".wrap").appendChild(rec);
+  const stamp = (on, date) => {
+    const d = date ? date.slice(0, 10).replace(/-/g, ".") : "";
+    return '<svg class="isl-stamp' + (on ? "" : " off") + '" viewBox="0 0 150 150" role="img" aria-label="單元章">' +
+      '<g transform="rotate(-8 75 75)" style="fill:none;stroke:var(--crimson)">' +
+      '<circle cx="75" cy="75" r="66" stroke-width="4"/><circle cx="75" cy="75" r="57" stroke-width="1.5"/>' +
+      '<text x="75" y="52" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 13px var(--sans);letter-spacing:2px">' + esc(C.chap) + "　探索完成</text>" +
+      '<text x="75" y="84" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 21px var(--serif)">' + esc(C.title) + "</text>" +
+      '<line x1="34" y1="96" x2="116" y2="96" stroke-width="1.2"/>' +
+      '<text x="75" y="114" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:600 12px var(--sans)">' + (d || "　") + "</text></g></svg>";
+  };
+  let clearArmed = false;
+  const renderRecord = () => {
+    const done = allStations() && allQuiz();
+    const firstOK = C.quiz.filter((q, i) => S.quiz[i] && S.quiz[i].tried[0] === q.ans).length;
+    let h = '<div class="pillar-tag" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>我的探索紀錄</div>';
+    h += '<div class="isl-sheet"><div class="isl-sheet-head"><div><h3>' + esc(C.chap) + "　" + esc(C.title) + '</h3><div class="isl-sub">' + esc(C.topic) + '</div></div>' +
+      '<label class="isl-name">姓名 <input type="text" maxlength="20" value="' + esc(store.get(NAMEKEY) || "") + '"' + (nameLocked ? " readonly" : "") + '></label></div>';
+    h += '<table class="isl-tbl"><thead><tr><th>站</th><th>我的預測</th><th>我看到的</th></tr></thead><tbody>';
+    ids.forEach(id => {
+      const cfg = C.stations[id], s = st(id);
+      const lab = document.getElementById(id);
+      const name = lab ? lab.querySelector(".lab-no").textContent.trim() + "　" + lab.querySelector(".lab-title").textContent.trim() : id;
+      const p = cfg.mode === "predict" ? (s.locked ? esc(predText(cfg, s)) : '<span class="empty">還沒寫</span>') : '<span class="empty">（這站直接操作）</span>';
+      const o = s.done ? esc(s.obs.trim()) : '<span class="empty">還沒寫</span>';
+      h += '<tr><td class="n">' + esc(name) + '</td><td data-h="預測">' + p + '</td><td data-h="看到">' + o + "</td></tr>";
+    });
+    h += "</tbody></table>";
+    h += '<div class="isl-stamp-wrap">' + stamp(done, S.stampAt) + "<div>" +
+      (done ? "<b>這一章探索完成。</b><br>判斷題第一次就答對 " + firstOK + " ／ " + C.quiz.length + " 題。"
+            : "全部 " + ids.length + " 站都記錄完、" + C.quiz.length + " 題判斷題都答對，就會蓋上這個章。<br>目前：" +
+              ids.filter(stationDone).length + " ／ " + ids.length + " 站，" +
+              C.quiz.filter((_, i) => quizDone(i)).length + " ／ " + C.quiz.length + " 題。") +
+      "</div></div></div>";
+    h += '<div class="isl-tools"><button class="isl-btn primary" data-a="print">列印這份紀錄</button>' +
+      '<a class="isl-btn ghost" style="text-decoration:none" href="passport.html">看我的探索紀錄本</a>' +
+      '<button class="isl-clear" data-a="clear">' + (clearArmed ? "確定要清掉？再按一次" : "清除這一章的紀錄") + "</button></div>";
+    h += '<p class="isl-hint" style="margin-top:10px">' + (window.ISLAND_GATE ? "" : "沒登入時，紀錄只存在這台電腦的瀏覽器裡；") + '登入名單上的帳號，紀錄會存到雲端。在共用電腦上用完記得登出。</p>';
+    rec.innerHTML = h;
+    rec.querySelector(".isl-name input").addEventListener("input", e => store.set(NAMEKEY, e.target.value));
+    rec.querySelector('[data-a="print"]').addEventListener("click", () => {
+      document.body.classList.add("isl-print"); window.print();
+      setTimeout(() => document.body.classList.remove("isl-print"), 500);
+    });
+    rec.querySelector('[data-a="clear"]').addEventListener("click", () => {
+      if (!clearArmed) { clearArmed = true; renderRecord(); setTimeout(() => { clearArmed = false; renderRecord(); }, 4000); return; }
+      if (API.onClear) { API.onClear(); return; }
+      store.del(KEY); location.reload();
+    });
+  };
+
+  function renderAll() {
+    if (allStations() && allQuiz() && !S.stampAt) { S.stampAt = new Date().toISOString(); save(); }
+    ids.forEach(id => { const lab = document.getElementById(id); lab && lab._islRender && lab._islRender(); });
+    gates.forEach(({ g, kids, note }) => {
+      const open = g.after === "ALL" ? allStations() : stationDone(g.after);
+      kids.forEach(k => { if (k !== note) k.hidden = !open; });
+      note.hidden = open;
+    });
+    const nq = C.quiz.filter((_, i) => quizDone(i)).length;
+    prog.innerHTML = '<span class="t">探索紀錄</span><span class="isl-dots">' + ids.map(id => {
+      const s = st(id), cfg = C.stations[id];
+      const n = document.querySelector("#" + id + " .lab-no").textContent.trim();
+      const cls = s.done ? "ok" : (cfg.mode === "predict" && s.locked) ? "half" : "";
+      return '<a class="' + cls + '" href="#' + id + '" title="第 ' + n + ' 站">' + n + "</a>";
+    }).join("") + '</span><a class="q' + (nq === C.quiz.length ? " ok" : "") + '" href="#isl-quiz" style="text-decoration:none">判斷題 ' + nq + " ／ " + C.quiz.length + "</a>" +
+      '<a class="q' + (S.stampAt ? " ok" : "") + '" href="#isl-record" style="text-decoration:none">' + (S.stampAt ? "✓ 已蓋章" : "我的紀錄 →") + "</a>";
+    renderQuiz();
+    renderRecord();
+  }
+  /* 給雲端模組用：換一個人的紀錄、換姓名、整頁重畫 */
+  API.config = C;
+  API.store = store;
+  API.state = () => S;
+  API.adopt = (newKey, newS, opts) => {
+    KEY = newKey;
+    S = newS || {};
+    S.st = S.st || {}; S.quiz = S.quiz || {};
+    if (opts && opts.nameKey) NAMEKEY = opts.nameKey;
+    if (opts && "name" in opts) { store.set(NAMEKEY, opts.name || ""); }
+    nameLocked = !!(opts && opts.nameLocked);
+    clearArmed = false;
+    store.set(KEY, JSON.stringify(S));
+    renderAll();
+  };
+  API.progressBox = prog;
+  API.recordBox = rec;
+  renderAll();
+  if (API.onReady) API.onReady();
+})();
+</script>
+<script src="firebase-config.js"></script>
+<script type="module" src="island-cloud.js"></script>
+</body>
+</html>

@@ -215,7 +215,7 @@ COURSE.islands.forEach(isl => isl.sections.forEach(([id, title], i) => {
   SECTION_INDEX[id] = { id, title, island: isl, i };
 }));
 // 已經做成探索島紀錄版的節（build.py 產生時填入）；其他節還連到原本的動態頁
-const GP_DONE = ["gp-u1-1", "gp-u1-2", "gp-u1-3", "gp-u2-1", "gp-u2-2", "gp-u2-3", "gp-u3-1", "gp-u3-2", "gp-u3-3"];
+const GP_DONE = ["gp-u1-1", "gp-u1-2", "gp-u1-3", "gp-u2-1", "gp-u2-2", "gp-u2-3", "gp-u3-1", "gp-u3-2", "gp-u3-3", "gp-u4-1", "gp-u4-2", "gp-u4-3", "gp-u5-1", "gp-u5-2", "gp-u5-3"];
 function pageURL(sec) {
   const slug = `gp-u${sec.island.id}-${sec.id.split('-')[1]}`;
   return GP_DONE.includes(slug) ? `${slug}.html` : `https://huangisright.github.io/GiftedMath/units/${slug}.html`;
