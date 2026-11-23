@@ -260,10 +260,18 @@ CFG = {
 
 ---
 
+## 7.5 實作後的注意事項（第 1 批做完補）
+
+- **gate 要用 `hide`，不要用 `sel`**：`{"hide": "#lab2", "after": "lab1"}`。用 `sel` 時 island.js 會把站內所有子元素設成可見，預測鎖會失效。
+- 頁面自己有一個叫 `lab` 的 class（圖上的字母標籤），`restructure_gp` 已自動改名成 `gp-lab`。
+- `restructure_gp` 在最後一站後面補 `<div id="end">`，判斷題才會排在所有站後面。
+- **跑 build.py 一定要輸出到暫存資料夾**（`python3 _原始碼/build.py <GiftedMath> /tmp/out /tmp/content`），再只複製這批的 `gp-u*.html` 與 `passport.html`、`teacher.html`、`geo.html`、`geo-stars.html` 回來。直接輸出到根目錄會把 30 章正課全部改掉（GiftedMath 原檔之後有改版）。
+- 設定檔格式看 `_原始碼/units_gp11.py`：兩站（`main` 現象＋預測、`more` 更多＋關鍵的一問），三題判斷題。
+
 ## 8. 進度
 
-- [ ] 共用改動（4.1～4.3）
-- [ ] 第 1 批　單元一
+- [x] 共用改動（4.1～4.3）（2026-11-23 Claude 完成：`restructure_gp`、紀錄本頁籤、`build_geo` 的 GP_DONE）
+- [x] 第 1 批　單元一（2026-11-23 Claude 完成，`units_gp11～13.py`）
 - [ ] 第 2 批　單元二
 - [ ] 第 3 批　單元三
 - [ ] 第 4 批　單元四

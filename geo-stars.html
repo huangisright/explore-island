@@ -213,9 +213,11 @@ const FIG = {
   sign:   { hook:'讓正負號替你分情況。', p:[[8,52],[30,52],[54,52],[90,52]], e:[[0,1],[1,2],[2,3]], g:'<circle cx="42" cy="52" r="27"/><path d="M42 20V84" />' },
   verify: { hook:'確認了一千次，算不算懂？', p:[[33,30],[50,14],[68,30],[51,54],[51,86]], e:[[0,1],[1,2],[2,3]], g:'<path d="M51 54V86"/>' },
 };
+// 已經做成探索島紀錄版的節（build.py 產生時填入）
+const GP_DONE = ["gp-u1-1", "gp-u1-2", "gp-u1-3"];
 const LESSON = {};
 UNITS.forEach(u => u.s.forEach(([title, thm, type], i) => { LESSON[u.n + '-' + (i + 1)] = { title, thm, type, isle:u.isle, code:u.zh + '-' + (i + 1),
-  url:`https://huangisright.github.io/GiftedMath/units/gp-u${u.n}-${i + 1}.html` }; }));
+  url: GP_DONE.includes(`gp-u${u.n}-${i + 1}`) ? `gp-u${u.n}-${i + 1}.html` : `https://huangisright.github.io/GiftedMath/units/gp-u${u.n}-${i + 1}.html` }; }));
 const BY = Object.fromEntries(CONS.map((c, i) => [c.id, Object.assign(c, { no:i + 1 })]));
 
 const store = {
@@ -268,7 +270,7 @@ function detailHTML(c){
       <ol class="tl">${c.path.map((p, i) => { const l = LESSON[p[0]];
         return `<li data-i="${i}" class="${T() && p[1] === 'N' ? 'naming' : ''}"><span class="n">${i + 1}</span>
           <span><span class="t">${esc(l.title)}</span><br><span class="s">${l.isle}・${l.code}${T() ? `　${p[1] === 'N' ? '<b>命名</b>' : WHEN[p[1]]}：${esc(p[2])}` : ''}</span></span>
-          <a class="btn" href="${l.url}" target="_blank" rel="noopener">打開這一節</a></li>`; }).join('')}</ol>
+          <a class="btn" href="${l.url}"${l.url.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>打開這一節</a></li>`; }).join('')}</ol>
       ${T() ? `<div class="row"><button type="button" class="btn ${on ? 'on' : ''}" data-reveal="${c.id}">${on ? '已向學生翻開（再按蓋回去）' : '向學生翻開這張卡'}</button></div>
               <p class="note">課堂名「${esc(c.cls)}」只是示例。學生視角不顯示這個名字，由他們自己取。翻開的狀態只存在這台電腦。</p>`
             : `<div class="row"><label for="cn">你們叫它什麼？</label><input id="cn" type="text" maxlength="16" value="${esc(st.names[c.id] || '')}" data-name="${c.id}" placeholder="用動詞取名"></div>`}

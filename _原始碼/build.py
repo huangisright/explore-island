@@ -60,10 +60,72 @@ def restructure_h4(s, cfg):
     return "".join(out)
 
 
+def _block_end(s, start):
+    """從 s[start] 的 <div 開始，找到對應的 </div> 結尾位置。"""
+    depth, i = 0, start
+    tag = re.compile(r"<div\b|</div>")
+    while True:
+        t = tag.search(s, i)
+        depth += 1 if t.group(0).startswith("<div") else -1
+        i = t.end()
+        if depth == 0:
+            return i
+
+
+def _lab(lid, no, title, inner):
+    return ('<div class="lab" id="%s"><div class="lab-head"><span class="lab-no">%s</span><div><p class="lab-title">%s</p>'
+            '<p class="lab-why"></p></div></div><div class="lab-body">%s</div></div>' % (lid, no, title, inner))
+
+
+def restructure_gp(s, cfg):
+    """幾何拾光的動態頁：沒有 .lab，結構是 header → .main（圖＋控制區）→ 控制區裡一個 <details>「更多」。
+    設定檔 wrap：[(站 id, "main" 或 "more", 站名), ...]，依序包成站。
+    "main" 依出現順序取第 1、2… 個 <div class="main">；"more" 是唯一的 <details>，搬出來接在前一站後面、改成一直展開。"""
+    # 頁面自己把圖上的字母標籤叫做 class "lab"，會和探索站的 .lab 撞名：先改成 gp-lab
+    s = re.sub(r'(?<=["\'])lab(?=["\'])', "gp-lab", s)
+    s = s.replace(".lab{font-family", ".gp-lab{font-family")
+    assert s.count("<details") == 1, "幾何拾光頁應該剛好有一個 <details>"
+    m = re.search(r"<details\b[^>]*>.*?</details>", s, re.S)
+    more = m.group(0)
+    s = s[:m.start()] + s[m.end():]
+    more = re.sub(r"\s*<summary>.*?</summary>", "", more, count=1, flags=re.S)
+    more = re.sub(r"^<details\b([^>]*)>", r'<div class="gp-more"\1>', more)
+    more = re.sub(r"</details>$", "</div>", more)
+    labs, last_end, mains = [], None, []
+    pos = 0
+    while True:
+        i = s.find('<div class="main">', pos)
+        if i < 0:
+            break
+        j = _block_end(s, i)
+        mains.append((i, j))
+        pos = j
+    used = 0
+    out, cur = [], 0
+    pending = []          # (插入位置, html)
+    for n, (lid, kind, title) in enumerate(cfg["wrap"], 1):
+        if kind == "main":
+            i, j = mains[used]; used += 1
+            pending.append((i, j, _lab(lid, str(n), title, s[i:j])))
+            last_end = j
+        else:
+            assert kind == "more"
+            pending.append((last_end, last_end, _lab(lid, str(n), title, more)))
+    assert used == len(mains), ("還有沒包進站的 .main", cfg["slug"])
+    pending[-1] = (pending[-1][0], pending[-1][1], pending[-1][2] + '<div id="end" class="gp-end"></div>')   # 判斷題放在最後一站之後
+    for i, j, html_ in pending:
+        out.append(s[cur:i]); out.append(html_); cur = j
+    out.append(s[cur:])
+    return "".join(out)
+
+
 def build_unit(src_site, out, cfg, content_dir=None):
     s = read(os.path.join(src_site, "units", cfg["slug"] + ".html"))
     if cfg.get("restructure") == "h4":
         s = restructure_h4(s, cfg)
+    elif cfg.get("restructure") == "gp":
+        s = restructure_gp(s, cfg)
+        s = s.replace("<body>", '<body class="gp">', 1)
     # 回目錄改成回紀錄本（原本的 ../index.html 在新資料夾裡指不到）
     s = re.sub(r'<div class="bk-top">.*?</div>',
                '<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>', s, count=1, flags=re.S)
@@ -75,7 +137,7 @@ def build_unit(src_site, out, cfg, content_dir=None):
         s = s.replace(old, new)
     css = read(os.path.join(HERE, "island.css"))
     js = read(os.path.join(HERE, "island.js"))
-    data = json.dumps({k: v for k, v in cfg.items() if k not in ("patches", "restructure")}, ensure_ascii=False)
+    data = json.dumps({k: v for k, v in cfg.items() if k not in ("patches", "restructure", "wrap")}, ensure_ascii=False)
     inject = ('<style id="island">\n' + css + "</style>\n<script>window.ISLAND=" + data + ";</script>\n<script>\n" + js + "</script>\n" + CLOUD_TAIL)
     assert s.count("</body>") == 1
     s = s.replace("</body>", inject + "</body>")
@@ -115,12 +177,16 @@ def split_page(s, cfg):
     return shell, payload
 
 
-def units_from_index(src_site):
+GP = "幾何拾光"
+
+
+def units_from_index(src_site, grades=None):
+    grades = grades or GRADES
     s = read(os.path.join(src_site, "index.html"))
     rows = []
     for slug, grade, kind, rest in re.findall(
             r'<a class="unit" href="units/([^"]+)\.html" data-grade="([^"]+)" data-kind="([^"]+)"(.*?)</a>', s, re.S):
-        if grade not in GRADES:
+        if grade not in grades:
             continue
         ch = re.search(r'<span class="b ch">(.*?)</span>', rest).group(1)
         title = re.search(r"<h3>(.*?)</h3>", rest).group(1)
@@ -129,9 +195,13 @@ def units_from_index(src_site):
 
 
 def build_passport(src_site, out):
-    rows = units_from_index(src_site)
+    rows = units_from_index(src_site, GRADES + [GP])
     built = {c["slug"]: c for c in BUILT}
     for r in rows:
+        if r["grade"] == GP:      # 「單元一 第 1 節」太長，紀錄本的章欄放不下 → 「一-1」
+            m = re.match(r"單元(\S+)\s*第\s*(\d+)\s*節", r["ch"])
+            if m:
+                r["ch"] = m.group(1) + "-" + m.group(2)
         r["open"] = r["slug"] in built
         if r["open"]:      # 紀錄本要畫每一站的格子：站的代號、哪幾站不用先預測、判斷題幾題（都不是教材內容）
             c = built[r["slug"]]
@@ -141,7 +211,7 @@ def build_passport(src_site, out):
     tpl = read(os.path.join(HERE, "passport.tpl.html"))
     plain = {c["slug"]: c.get("plain", "") for c in BUILT}
     page = tpl.replace("/*UNITS*/[]", json.dumps(rows, ensure_ascii=False)) \
-              .replace("/*GRADES*/[]", json.dumps(GRADES, ensure_ascii=False)) \
+              .replace("/*GRADES*/[]", json.dumps(GRADES + [GP], ensure_ascii=False)) \
               .replace("/*PLAIN*/{}", json.dumps(plain, ensure_ascii=False))
     with open(os.path.join(out, "passport.html"), "w", encoding="utf8") as f:
         f.write(page)
@@ -187,9 +257,19 @@ def build_report(out):
     return len(chaps)
 
 
+def build_geo(out):
+    """幾何拾光的群島／星座圖：已經做好探索島版的節，連到 gp-uN-M.html；其他節仍連 GiftedMath 的動態頁。"""
+    done = [c["slug"] for c in BUILT if c["slug"].startswith("gp-")]
+    for f in ["geo.html", "geo-stars.html"]:
+        page = read(os.path.join(HERE, f))
+        assert page.count("/*GP_DONE*/[]") == 1, f
+        with open(os.path.join(out, f), "w", encoding="utf8") as fh:
+            fh.write(page.replace("/*GP_DONE*/[]", json.dumps(done)))
+
+
 def build_teacher(out):
     tpl = read(os.path.join(HERE, "teacher.tpl.html"))
-    page = tpl.replace("/*CFGS*/[]", json.dumps([{k: v for k, v in c.items() if k not in ("patches", "restructure")} for c in BUILT], ensure_ascii=False))
+    page = tpl.replace("/*CFGS*/[]", json.dumps([{k: v for k, v in c.items() if k not in ("patches", "restructure", "wrap")} for c in BUILT], ensure_ascii=False))
     with open(os.path.join(out, "teacher.html"), "w", encoding="utf8") as f:
         f.write(page)
 
@@ -202,8 +282,9 @@ if __name__ == "__main__":
     os.makedirs(out, exist_ok=True)
     for c in BUILT:
         build_unit(src, out, c, content_dir)
-    for f in ["island-cloud.js", "firebase-config.js", "island-map.js", "upload.html", "geo.html", "geo-stars.html"]:
+    for f in ["island-cloud.js", "firebase-config.js", "island-map.js", "upload.html"]:
         shutil.copy(os.path.join(HERE, f), os.path.join(out, f))
+    build_geo(out)
     build_teacher(out)
     build_report(out)
     build_home(src, out)

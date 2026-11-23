@@ -215,8 +215,11 @@ const SECTION_INDEX = {};
 COURSE.islands.forEach(isl => isl.sections.forEach(([id, title], i) => {
   SECTION_INDEX[id] = { id, title, island: isl, i };
 }));
+// 已經做成探索島紀錄版的節（build.py 產生時填入）；其他節還連到原本的動態頁
+const GP_DONE = ["gp-u1-1", "gp-u1-2", "gp-u1-3"];
 function pageURL(sec) {
-  return `https://huangisright.github.io/GiftedMath/units/gp-u${sec.island.id}-${sec.id.split('-')[1]}.html`;
+  const slug = `gp-u${sec.island.id}-${sec.id.split('-')[1]}`;
+  return GP_DONE.includes(slug) ? `${slug}.html` : `https://huangisright.github.io/GiftedMath/units/${slug}.html`;
 }
 function fileBase(sec) {
   return `幾何拾光 單元${sec.island.num}-${sec.id.split('-')[1]} ${sec.title}`;
@@ -252,7 +255,7 @@ const UI = (() => {
     const s = SECTION_INDEX[id];
     return `<div class="sec"><span class="n">${s.island.num}-${id.split('-')[1]}</span>
       <div><h3>${esc(s.title)}</h3></div>
-      <div class="files"><a class="chip" href="${pageURL(s)}" target="_blank" rel="noopener">打開動態頁 →</a></div></div>`;
+      <div class="files"><a class="chip" href="${pageURL(s)}"${pageURL(s).startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${pageURL(s).startsWith('http') ? '打開動態頁 →' : '上島探索 →'}</a></div></div>`;
   }
   function routeHTML(r) {
     const a = SECTION_INDEX[r.from], b = SECTION_INDEX[r.to];
