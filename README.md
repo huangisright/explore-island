@@ -4,7 +4,7 @@
 
 - `index.html`：入口地圖
 - `passport.html`：探索紀錄本（同一張地圖，標出走完的島）
-- `geo.html`：幾何拾光群島海圖（做好紀錄版的節連到 `gp-u*.html`，其他節連 GiftedMath 的動態頁；星座圖 `geo-stars.html` 先拿掉，原檔留在 `_原始碼/`）；網址加 `#teacher` 開一次，這台電腦才會出現教師視角按鈕。原檔在 `_原始碼/`，build 時原樣複製
+- `geo.html`：幾何拾光海圖（做好紀錄版的節連到 `gp-u*.html`，其他節連 GiftedMath 的動態頁；星座圖 `geo-stars.html` 先拿掉，原檔留在 `_原始碼/`）；網址加 `#teacher` 開一次，這台電腦才會出現教師視角按鈕。原檔在 `_原始碼/`，build 時原樣複製
 - `g*.html`：30 章單元頁（七上到九下）
 - `teacher.html`：老師頁面（跨章總表、單章紀錄、學生名單；可篩班級、匯出 CSV）
 - `upload.html`：教材上傳（只有管理者能用）
