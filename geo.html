@@ -11,16 +11,16 @@
 /* 幾何拾光：八道光沿著一條柔和的弧線排開，一道光是一個單元；做完的節讓那道光更亮。
    不用島嶼意象，畫面只有晨光、細塵和光點。 */
 :root{
-  --bg1:#fbf8f1; --bg2:#f1ece0; --ink:#2b2a27; --ink-2:#6b665c; --ink-3:#9a948a;
-  --glow:255,196,110; --glow-2:255,236,200; --line:#e4dccb; --card:#fffdf8cc; --card-edge:#eadfca;
-  --accent:#b8772f; --done:#c98a35;
+  --bg1:#f1f5f9; --bg2:#d8e2ec; --ink:#26303b; --ink-2:#55606d; --ink-3:#86919d;
+  --glow:236,150,48; --glow-2:255,212,140; --ray:255,255,255; --line:#cdd8e3; --card:#f7fafccc; --card-edge:#d0dbe6;
+  --accent:#b0611a; --done:#d4862a;
   --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti",serif;
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root{
-  --bg1:#1b1d24; --bg2:#14161c; --ink:#efe9dc; --ink-2:#b9b2a3; --ink-3:#7f796d;
-  --glow:255,190,105; --glow-2:255,225,180; --line:#2d2f37; --card:#22242bcc; --card-edge:#363841;
+  --bg1:#16203a; --bg2:#0b1020; --ink:#ecf0f6; --ink-2:#a9b4c4; --ink-3:#6f7b8e;
+  --glow:255,176,72; --glow-2:255,222,165; --ray:60,85,140; --line:#26304a; --card:#151d33cc; --card-edge:#2b3654;
   --accent:#e7ad62; --done:#f0b765; color-scheme:dark;
 }}
 *{box-sizing:border-box}
@@ -32,7 +32,7 @@ a{color:inherit}
 /* 光束與細塵 */
 .rays{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .rays i{position:absolute;top:-30%;width:22vw;height:160%;left:var(--x);transform:rotate(-24deg);
-  background:linear-gradient(90deg,transparent,rgba(var(--glow-2),.28),transparent);filter:blur(18px);opacity:.7}
+  background:linear-gradient(90deg,transparent,rgba(var(--ray),.45),transparent);filter:blur(18px);opacity:.7}
 #dust{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 
 .page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:22px 24px 40px}
