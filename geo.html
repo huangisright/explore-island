@@ -9,20 +9,15 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>
 /* 幾何拾光：八道光沿著一條柔和的弧線排開，一道光是一個單元；做完的節讓那道光更亮。
-   不用島嶼意象，畫面只有晨光、細塵和光點。 */
+   不用島嶼意象，畫面只有夜空、細塵和光點。 */
 :root{
-  --bg1:#f1f5f9; --bg2:#d8e2ec; --ink:#26303b; --ink-2:#55606d; --ink-3:#86919d;
-  --glow:236,150,48; --glow-2:255,212,140; --ray:255,255,255; --line:#cdd8e3; --card:#f7fafccc; --card-edge:#d0dbe6;
-  --accent:#b0611a; --done:#d4862a;
-  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti",serif;
-  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
-  color-scheme:light;
-}
-@media (prefers-color-scheme:dark){:root{
   --bg1:#16203a; --bg2:#0b1020; --ink:#ecf0f6; --ink-2:#a9b4c4; --ink-3:#6f7b8e;
   --glow:255,176,72; --glow-2:255,222,165; --ray:60,85,140; --line:#26304a; --card:#151d33cc; --card-edge:#2b3654;
-  --accent:#e7ad62; --done:#f0b765; color-scheme:dark;
-}}
+  --accent:#e7ad62; --done:#f0b765;
+  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  color-scheme:dark;
+}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%}
 body{font:15px/1.7 var(--f-body);color:var(--ink);background:linear-gradient(170deg,var(--bg1) 0%,var(--bg2) 100%);min-height:100vh;overflow-x:hidden}
@@ -170,8 +165,6 @@ const litCount = u => u.s.filter((_, i) => stamped(u, i)).length;
 // 八道光各一色，排成一道光譜
 const HUE = [['236,84,72','252,160,148'],['240,130,30','252,186,120'],['218,170,20','246,214,100'],['72,170,84','160,222,150'],
   ['20,160,166','130,214,214'],['52,120,228','150,188,250'],['104,90,220','178,168,250'],['176,78,200','222,160,240']];
-// 面板上的字用同色但壓深一點，淺底才讀得清楚
-const deep = c => c.split(',').map(v => Math.round(v * .68)).join(',');
 const hue = k => `--glow:${HUE[k][0]};--glow-2:${HUE[k][1]}`;
 const POS = [[.07,.62],[.2,.38],[.34,.24],[.48,.3],[.6,.52],[.72,.7],[.84,.56],[.94,.32]];
 function render(){
@@ -207,7 +200,7 @@ function open(k){
         <span class="go">${done ? '走進去 →' : '打開動態頁 →'}</span></a>`;
     }).join('')}
     <p class="note">做完一節、蓋了章，這道光就亮一點。</p>`;
-  $('#panel').style.cssText = hue(k) + (matchMedia('(prefers-color-scheme: dark)').matches ? `;--accent:rgb(${HUE[k][1]})` : `;--accent:rgb(${deep(HUE[k][0])})`); $('#panel').classList.add('open'); $('#scrim').classList.add('on');
+  $('#panel').style.cssText = hue(k) + `;--accent:rgb(${HUE[k][1]})`; $('#panel').classList.add('open'); $('#scrim').classList.add('on');
   document.querySelectorAll('.light').forEach(b => b.setAttribute('aria-expanded', String(+b.dataset.u === k)));
   $('#panel .close').focus();
 }
