@@ -167,16 +167,22 @@ const stamped = (u, i) => { const r = store.get('isl:' + slug(u, i), null); retu
 const litCount = u => u.s.filter((_, i) => stamped(u, i)).length;
 
 // 八道光的位置：沿著一條柔和的弧線（0～1 的比例座標）
+// 八道光各一色，排成一道光譜
+const HUE = [['236,84,72','252,160,148'],['240,130,30','252,186,120'],['218,170,20','246,214,100'],['72,170,84','160,222,150'],
+  ['20,160,166','130,214,214'],['52,120,228','150,188,250'],['104,90,220','178,168,250'],['176,78,200','222,160,240']];
+// 面板上的字用同色但壓深一點，淺底才讀得清楚
+const deep = c => c.split(',').map(v => Math.round(v * .68)).join(',');
+const hue = k => `--glow:${HUE[k][0]};--glow-2:${HUE[k][1]}`;
 const POS = [[.07,.62],[.2,.38],[.34,.24],[.48,.3],[.6,.52],[.72,.7],[.84,.56],[.94,.32]];
 function render(){
   const f = $('#field');
   f.innerHTML = `<svg class="path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       <path d="${POS.map((p, i) => (i ? 'L' : 'M') + (p[0] * 100).toFixed(1) + ' ' + (p[1] * 100).toFixed(1)).join(' ')}"
-        fill="none" stroke="rgba(var(--glow),.45)" stroke-width=".35" stroke-dasharray=".6 1.6" vector-effect="non-scaling-stroke" style="stroke-width:1.4px"/></svg>` +
+        fill="none" stroke="var(--ink-3)" stroke-opacity=".5" stroke-width=".35" stroke-dasharray=".6 1.6" vector-effect="non-scaling-stroke" style="stroke-width:1.4px"/></svg>` +
     UNITS.map((u, k) => {
       const lit = litCount(u) / u.s.length;
       return `<button type="button" class="light" data-u="${k}" aria-expanded="false" aria-controls="panel"
-        style="left:${POS[k][0] * 100}%;top:${POS[k][1] * 100}%;--lit:${lit.toFixed(2)};--d:${(k * .7).toFixed(1)}s;--s:${48 + u.s.length * 3}px">
+        style="left:${POS[k][0] * 100}%;top:${POS[k][1] * 100}%;--lit:${lit.toFixed(2)};--d:${(k * .7).toFixed(1)}s;--s:${48 + u.s.length * 3}px;${hue(k)}">
         <span class="orb"></span>
         <span class="txt"><span class="no">${u.zh}</span><span class="nm">${esc(T() ? u.t : u.name)}</span>
         <span class="motes">${u.s.map((_, i) => `<b class="${stamped(u, i) ? 'on' : ''}"></b>`).join('')}</span></span></button>`;
@@ -201,7 +207,7 @@ function open(k){
         <span class="go">${done ? '走進去 →' : '打開動態頁 →'}</span></a>`;
     }).join('')}
     <p class="note">做完一節、蓋了章，這道光就亮一點。</p>`;
-  $('#panel').classList.add('open'); $('#scrim').classList.add('on');
+  $('#panel').style.cssText = hue(k) + (matchMedia('(prefers-color-scheme: dark)').matches ? `;--accent:rgb(${HUE[k][1]})` : `;--accent:rgb(${deep(HUE[k][0])})`); $('#panel').classList.add('open'); $('#scrim').classList.add('on');
   document.querySelectorAll('.light').forEach(b => b.setAttribute('aria-expanded', String(+b.dataset.u === k)));
   $('#panel .close').focus();
 }
