@@ -135,6 +135,12 @@ def build_unit(src_site, out, cfg, content_dir=None):
     for old, new in cfg.get("patches", []):
         assert s.count(old) == 1, ("patch not found once", old[:60])
         s = s.replace(old, new)
+    # 開場翻格漫畫（有 comics/<slug>.html 才放）：插在第 1 站前面
+    comic = os.path.join(HERE, "comics", cfg["slug"] + ".html")
+    if os.path.exists(comic):
+        k = '<div class="lab" id="lab1"'
+        assert s.count(k) == 1, ("漫畫找不到第 1 站", cfg["slug"])
+        s = s.replace(k, read(comic) + k)
     css = read(os.path.join(HERE, "island.css"))
     js = read(os.path.join(HERE, "island.js"))
     data = json.dumps({k: v for k, v in cfg.items() if k not in ("patches", "restructure", "wrap")}, ensure_ascii=False)

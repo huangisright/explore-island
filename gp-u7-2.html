@@ -366,7 +366,384 @@ body {
     <h1>三個中心</h1>
     <p class="lede">在三角形的每一邊上作一個正三角形，取它們的中心 <i>U</i>、<i>V</i>、<i>W</i>。拖動三角形的頂點，看三個中心。</p>
   </header>
-  <div class="lab" id="lab1"><div class="lab-head"><span class="lab-no">1</span><div><p class="lab-title">三個中心</p><p class="lab-why"></p></div></div><div class="lab-body"><div class="main">
+  <!-- 開場翻格漫畫：幾何拾光 7-2〈三個中心〉。紙地圖＋紙偶（搞笑歷史卡通）＋火柴人吐槽解說員（解事者式大白話）。
+     原則：不洩漏第 1 站的預測答案——不畫出三個中心的連線，也不說出定理名稱。 -->
+<section class="cm" id="comic" aria-roledescription="漫畫" aria-label="開場漫畫">
+<style>
+.cm{--cm-ink:#2B2621; --cm-navy:#23345C; --cm-sepia:#8A6A45; --cm-card:#FFFDF8; --cm-edge:#DED3BE;
+  margin:18px 0 22px; border:1px solid var(--cm-edge); border-radius:16px; background:var(--cm-card);
+  box-shadow:0 4px 16px rgba(60,45,25,.08); overflow:hidden; color:var(--cm-ink)}
+.cm-top{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 18px 10px;
+  font-size:13px; letter-spacing:.04em; color:#7A6A55; border-bottom:1px dashed var(--cm-edge)}
+.cm-top b{font-weight:700; color:var(--cm-ink); letter-spacing:.02em; font-size:14px}
+.cm-skip{color:#5939A4; text-decoration:none; font-weight:600; white-space:nowrap}
+.cm-skip:hover{text-decoration:underline}
+.cm-stage{position:relative; background:#EDE4CF; cursor:pointer; -webkit-tap-highlight-color:transparent}
+.cm-stage svg{display:block; width:100%; height:auto}
+.cm-say{padding:14px 20px 6px; min-height:8.6em}
+.cm-say p{margin:0 0 9px; display:flex; gap:10px; align-items:flex-start; line-height:1.65; font-size:15.5px}
+.cm-say p.nar{font-family:"Noto Serif TC","Songti TC",serif; color:#6B5B45; font-size:15px}
+.cm-who{flex:none; display:inline-flex; align-items:center; gap:5px; min-width:4.6em; padding:1px 8px 1px 4px;
+  border-radius:20px; font-size:13px; font-weight:700; line-height:1.9}
+.cm-who svg{width:20px; height:20px}
+.cm-who.nap{background:#E4E8F2; color:var(--cm-navy)}
+.cm-who.exp{background:#F1ECE2; color:#3A332B}
+.cm-nav{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 14px 14px}
+.cm-btn{font:inherit; font-size:14px; font-weight:600; border:1px solid var(--cm-edge); background:#FFF;
+  color:var(--cm-ink); border-radius:22px; padding:7px 16px; cursor:pointer}
+.cm-btn:hover:not(:disabled){border-color:#5939A4; color:#5939A4}
+.cm-btn:disabled{opacity:.35; cursor:default}
+.cm-btn.go{background:#5939A4; border-color:#5939A4; color:#fff}
+.cm-btn:focus-visible,.cm-stage:focus-visible{outline:2px solid #673AC1; outline-offset:2px}
+.cm-dots{display:flex; gap:7px; align-items:center}
+.cm-dots i{width:8px; height:8px; border-radius:50%; background:#D9CEBA; transition:.25s}
+.cm-dots i.on{background:#5939A4; width:20px; border-radius:5px}
+.cm-panel[hidden]{display:none}
+@media (min-width:900px){
+  .cm-panel{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); align-items:center}
+  .cm-say{min-height:0; padding:18px 22px}
+  .cm-say p{flex-direction:column; gap:4px}
+}
+/* 紙片「啪」一聲貼上去 */
+.cm .slap{transform-box:fill-box; transform-origin:center}
+.cm .cm-panel.on .slap{animation:cm-slap .55s cubic-bezier(.2,.9,.3,1.25) both; animation-delay:var(--d,0s)}
+@keyframes cm-slap{from{opacity:0; transform:translateY(-26px) scale(1.22) rotate(-7deg)} to{opacity:1; transform:none}}
+.cm .bob{transform-box:fill-box; transform-origin:50% 100%}
+.cm .cm-panel.on .bob{animation:cm-bob 2.6s ease-in-out .5s infinite}
+@keyframes cm-bob{0%,100%{transform:rotate(0)} 50%{transform:rotate(-2.2deg)}}
+.cm .cm-panel.on .cm-say p{animation:cm-in .4s ease both}
+.cm .cm-panel.on .cm-say p:nth-child(2){animation-delay:.35s}
+.cm .cm-panel.on .cm-say p:nth-child(3){animation-delay:.7s}
+@keyframes cm-in{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){.cm *{animation:none!important; transition:none!important}}
+@media (max-width:560px){
+  .cm{border-radius:12px; margin:14px 0 18px}
+  .cm-top{padding:10px 12px 8px}
+  .cm-say{padding:12px 14px 4px; min-height:11em}
+  .cm-say p{font-size:15px; flex-direction:column; gap:3px}
+  .cm-nav{padding:6px 10px 12px}
+  .cm-btn{padding:7px 12px}
+}
+@media print{.cm{display:none}}
+</style>
+
+<div class="cm-top"><span><b>開場</b>　一張紙地圖</span><a class="cm-skip" href="#lab1">跳過，直接到第 1 站 ↓</a></div>
+
+<!-- 共用圖件 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <filter id="cm-cut" x="-10%" y="-10%" width="120%" height="125%">
+   <feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="4" result="n"/>
+   <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" xChannelSelector="R" yChannelSelector="G" result="d"/>
+   <feDropShadow in="d" dx="1.6" dy="2.6" stdDeviation="1.6" flood-color="#3B2A14" flood-opacity=".32"/>
+  </filter>
+  <filter id="cm-grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="8"/>
+   <feColorMatrix values="0 0 0 0 .35  0 0 0 0 .27  0 0 0 0 .16  0 0 0 .09 0"/></filter>
+  <filter id="cm-ink"><feTurbulence type="fractalNoise" baseFrequency=".5" numOctaves="1" seed="2" result="n"/>
+   <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <pattern id="cm-wave" width="34" height="18" patternUnits="userSpaceOnUse">
+   <path d="M2 11 q6 -6 12 0 t12 0" fill="none" stroke="#9EB0AC" stroke-width="1.1" stroke-linecap="round"/></pattern>
+
+  <!-- 紙地圖（0..620 × 0..460） -->
+  <g id="cm-map">
+   <rect width="620" height="460" fill="#CCD7D2"/>
+   <rect width="620" height="460" fill="url(#cm-wave)" opacity=".7"/>
+   <path d="M38 34 C120 18 210 40 262 26 C330 8 420 30 488 22 C552 16 590 44 596 96 C602 150 572 176 588 232
+            C604 292 566 330 578 382 C586 420 540 446 470 440 C410 436 372 452 310 444 C238 436 196 452 136 440
+            C78 428 34 404 46 344 C56 290 22 262 30 206 C38 150 18 112 28 76 C32 56 30 42 38 34 Z"
+         fill="#EEE2C6" stroke="#8A6A45" stroke-width="1.6"/>
+   <g fill="none" stroke="#A88B63" stroke-width=".9" stroke-dasharray="4 5" opacity=".55">
+    <path d="M0 120 Q310 96 620 120"/><path d="M0 240 Q310 216 620 240"/><path d="M0 360 Q310 336 620 360"/>
+    <path d="M160 0 Q146 230 160 460"/><path d="M320 0 Q310 230 320 460"/><path d="M480 0 Q474 230 480 460"/></g>
+   <g transform="translate(560 410)" fill="#8A6A45" opacity=".8">
+    <circle r="15" fill="none" stroke="#8A6A45" stroke-width="1"/>
+    <path d="M0 -22 L4 0 L0 22 L-4 0 Z"/><path d="M-22 0 L0 -4 L22 0 L0 4 Z" opacity=".55"/>
+    <text y="-26" text-anchor="middle" font-size="10" font-family="Georgia,serif">N</text></g>
+   <rect x="5" y="5" width="610" height="450" fill="none" stroke="#7A5C3A" stroke-width="1.4"/>
+   <rect x="10" y="10" width="600" height="440" fill="none" stroke="#7A5C3A" stroke-width=".6"/>
+   <rect width="620" height="460" filter="url(#cm-grain)"/>
+  </g>
+
+  <!-- 解說員的筆記紙（620..800） -->
+  <g id="cm-note">
+   <rect x="620" width="180" height="460" fill="#FBF8F0"/>
+   <g stroke="#C9D6E4" stroke-width="1">
+    <path d="M620 60H800M620 90H800M620 120H800M620 150H800M620 180H800M620 210H800M620 240H800M620 270H800M620 300H800M620 330H800M620 360H800M620 390H800M620 420H800"/></g>
+   <path d="M646 0V460" stroke="#E3A8A0" stroke-width="1.2"/>
+   <path d="M620 0V460" stroke="#B9A98C" stroke-width="2"/>
+  </g>
+
+  <!-- 拿破崙紙偶（不含手臂；約 120 × 230，棒子在下面） -->
+  <g id="cm-nap">
+   <rect x="56" y="150" width="9" height="84" rx="3" fill="#B98A52"/>
+   <g filter="url(#cm-cut)">
+    <path d="M18 156 Q16 100 60 90 Q104 100 102 156 Z" fill="#23345C"/>
+    <path d="M49 95 L60 146 L71 95 Z" fill="#F4EFE2"/>
+    <path d="M38 156 L44 120 M82 156 L76 120" stroke="#162441" stroke-width="2"/>
+    <ellipse cx="28" cy="100" rx="13" ry="5.5" fill="#D6A43C"/><ellipse cx="92" cy="100" rx="13" ry="5.5" fill="#D6A43C"/>
+    <circle cx="60" cy="68" r="23" fill="#F2CBA7"/>
+    <path d="M40 60 Q46 44 60 46 Q74 44 80 60 Q70 52 60 54 Q50 52 40 60 Z" fill="#4A3324"/>
+    <path d="M10 54 Q60 6 110 54 Q60 40 10 54 Z" fill="#1E1E22"/>
+    <circle cx="60" cy="34" r="6.5" fill="#2F5AA8"/><circle cx="60" cy="34" r="4.2" fill="#F4EFE2"/><circle cx="60" cy="34" r="2" fill="#C23B33"/>
+   </g>
+   <circle cx="52" cy="70" r="2.3" fill="#2A2420"/><circle cx="68" cy="70" r="2.3" fill="#2A2420"/>
+  </g>
+  <!-- 手臂：從肩膀（0,0）往右，紙鉚釘在肩膀 -->
+  <g id="cm-arm">
+   <g filter="url(#cm-cut)"><rect x="-6" y="-8" width="54" height="16" rx="8" fill="#23345C"/>
+    <circle cx="50" cy="0" r="8.5" fill="#F2CBA7"/></g>
+   <circle r="3.4" fill="#D6A43C" stroke="#9A7420" stroke-width="1"/>
+  </g>
+  <!-- 小旗 -->
+  <g id="cm-flag"><path d="M0 0V-34" stroke="#4A3A28" stroke-width="2.4" stroke-linecap="round"/>
+   <path d="M1 -34 L22 -28 L1 -21 Z" fill="#C23B33" filter="url(#cm-cut)"/><circle r="3.2" fill="#D6A43C" stroke="#8A6A20" stroke-width="1"/></g>
+ </defs>
+</svg>
+
+<!-- ───────── 第 1 格 ───────── -->
+<div class="cm-panel" data-n="1">
+ <div class="cm-stage" tabindex="0" title="點一下看下一格">
+ <svg viewBox="0 0 800 460" role="img" aria-label="一張紙地圖，拿破崙紙偶正把藍色紙片一塊塊貼上去">
+  <use href="#cm-map"/><use href="#cm-note"/>
+  <g filter="url(#cm-cut)">
+   <path class="slap" style="--d:.05s" d="M300 70 L392 58 L410 122 L360 150 L296 132 Z" fill="#3E6E9E"/>
+   <path class="slap" style="--d:.25s" d="M408 140 L478 128 L500 196 L452 228 L404 204 Z" fill="#3E6E9E"/>
+   <path class="slap" style="--d:.45s" d="M248 168 L340 160 L352 236 L282 256 L240 226 Z" fill="#3E6E9E"/>
+   <path d="M470 280 L548 262 L566 340 L498 362 Z" fill="#6E8F4E"/>
+   <path d="M352 300 L438 286 L452 372 L364 386 Z" fill="#C8553D"/>
+   <path class="slap" style="--d:.75s" d="M120 70 L214 58 L224 128 L150 150 L110 118 Z" fill="#3E6E9E"/>
+  </g>
+  <g transform="translate(40 214)"><g class="bob"><use href="#cm-nap"/>
+   <g transform="translate(92 106) rotate(-58)"><use href="#cm-arm"/></g></g></g>
+  <g filter="url(#cm-ink)" stroke="#2B2621" stroke-width="3" stroke-linecap="round" fill="none">
+   <circle cx="716" cy="232" r="18" fill="#FBF8F0"/><path d="M709 229v1M723 229v1M710 241q6 3 12 0"/>
+   <path d="M716 250V330M716 330L696 396M716 330L736 396M716 270L686 254M716 270L742 300"/>
+   <path d="M686 254L654 236" stroke-width="2"/></g>
+ </svg></div>
+ <div class="cm-say">
+  <p class="nar">1800 年前後，歐洲有一張紙地圖。</p>
+  <p><span class="cm-who nap"><svg viewBox="0 0 20 20"><path d="M1 13Q10 1 19 13Q10 10 1 13Z" fill="#1E1E22"/></svg>拿破崙</span><span>這塊，我的。這塊，也是我的。</span></p>
+  <p><span class="cm-who exp"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#2B2621" stroke-width="2"/></svg>解說員</span><span>他叫拿破崙。在地圖上貼紙片，是他的專長。</span></p>
+ </div>
+</div>
+
+<!-- ───────── 第 2 格 ───────── -->
+<div class="cm-panel" data-n="2" hidden>
+ <div class="cm-stage" tabindex="0" title="點一下看下一格">
+ <svg viewBox="0 0 800 460" role="img" aria-label="拿破崙紙偶拿著圓規和一本幾何書">
+  <use href="#cm-map"/><use href="#cm-note"/>
+  <g filter="url(#cm-cut)" opacity=".5">
+   <path d="M300 70 L392 58 L410 122 L360 150 L296 132 Z" fill="#3E6E9E"/>
+   <path d="M408 140 L478 128 L500 196 L452 228 L404 204 Z" fill="#3E6E9E"/>
+   <path d="M120 70 L214 58 L224 128 L150 150 L110 118 Z" fill="#3E6E9E"/>
+  </g>
+  <g class="slap" style="--d:.1s" filter="url(#cm-cut)">
+   <rect x="370" y="236" width="150" height="112" rx="4" fill="#7A3E2E" transform="rotate(-6 445 292)"/>
+   <rect x="380" y="244" width="130" height="96" rx="3" fill="#F6EFDD" transform="rotate(-6 445 292)"/>
+  </g>
+  <g class="slap" style="--d:.1s"><g transform="rotate(-6 445 292)">
+   <text x="445" y="280" text-anchor="middle" font-size="22" font-family="Noto Serif TC,serif" fill="#7A3E2E" font-weight="700">幾 何</text>
+   <path d="M415 318 L445 296 L475 318 Z" fill="none" stroke="#7A3E2E" stroke-width="2"/></g></g>
+  <g class="slap" style="--d:.4s"><g filter="url(#cm-cut)" transform="translate(300 150)">
+   <path d="M0 0 L-26 92" stroke="#9AA3AD" stroke-width="7" stroke-linecap="round"/>
+   <path d="M0 0 L24 92" stroke="#9AA3AD" stroke-width="7" stroke-linecap="round"/>
+   <circle r="9" fill="#D6A43C"/></g></g>
+  <g transform="translate(170 214)"><g class="bob"><use href="#cm-nap"/>
+   <g transform="translate(92 106) rotate(-20)"><use href="#cm-arm"/></g></g></g>
+  <g filter="url(#cm-ink)" stroke="#2B2621" stroke-width="3" stroke-linecap="round" fill="none">
+   <circle cx="716" cy="232" r="18" fill="#FBF8F0"/><path d="M709 229v1M723 229v1M709 240h14"/>
+   <path d="M716 250V330M716 330L696 396M716 330L736 396M716 272L692 290L716 296M716 272L740 290L716 296"/></g>
+ </svg></div>
+ <div class="cm-say">
+  <p><span class="cm-who nap"><svg viewBox="0 0 20 20"><path d="M1 13Q10 1 19 13Q10 10 1 13Z" fill="#1E1E22"/></svg>拿破崙</span><span>除了貼地盤，我還很喜歡數學。</span></p>
+  <p><span class="cm-who exp"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#2B2621" stroke-width="2"/></svg>解說員</span><span>這句是真的。他在軍校時數學很好，當上皇帝以後也常找數學家聊天。</span></p>
+ </div>
+</div>
+
+<!-- ───────── 第 3 格 ───────── -->
+<div class="cm-panel" data-n="3" hidden>
+ <div class="cm-stage" tabindex="0" title="點一下看下一格">
+ <svg viewBox="0 0 800 460" role="img" aria-label="地圖上貼了一塊白色三角形紙片，頂點標著 A、B、C">
+  <use href="#cm-map"/><use href="#cm-note"/>
+  <path class="slap" style="--d:.1s" filter="url(#cm-cut)" d="M330 140 L262 286 L420 286 Z" fill="#FBF8EE"/>
+  <g class="slap" style="--d:.3s" font-family="Crimson Text,Georgia,serif" font-style="italic" font-size="24" fill="#2B2621" font-weight="600">
+   <text x="324" y="128">A</text><text x="238" y="302">B</text><text x="426" y="302">C</text></g>
+  <g transform="translate(40 214)"><g class="bob"><use href="#cm-nap"/>
+   <g transform="translate(92 106) rotate(-12)"><use href="#cm-arm"/></g></g></g>
+  <g filter="url(#cm-ink)" stroke="#2B2621" stroke-width="3" stroke-linecap="round" fill="none">
+   <circle cx="716" cy="232" r="18" fill="#FBF8F0"/><path d="M709 229v1M723 229v1M710 240q6 3 12 0"/>
+   <path d="M716 250V330M716 330L696 396M716 330L736 396M716 270L686 254M716 270L742 300"/>
+   <path d="M686 254L630 236" stroke-width="2"/></g>
+ </svg></div>
+ <div class="cm-say">
+  <p><span class="cm-who nap"><svg viewBox="0 0 20 20"><path d="M1 13Q10 1 19 13Q10 10 1 13Z" fill="#1E1E22"/></svg>拿破崙</span><span>今天換貼一塊三角形的地。</span></p>
+  <p><span class="cm-who exp"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#2B2621" stroke-width="2"/></svg>解說員</span><span>三個邊不一樣長也沒關係，隨便一個三角形都行。</span></p>
+ </div>
+</div>
+
+<!-- ───────── 第 4 格 ───────── -->
+<div class="cm-panel" data-n="4" hidden>
+ <div class="cm-stage" tabindex="0" title="點一下看下一格">
+ <svg viewBox="0 0 800 460" role="img" aria-label="三角形的三個邊各往外貼上一塊三邊一樣長的三角形紙片，顏色不同、大小不同">
+  <use href="#cm-map"/><use href="#cm-note"/>
+  <g filter="url(#cm-cut)">
+   <path class="slap" style="--d:.1s" d="M262 286 L420 286 L341 422.8 Z" fill="#D9A441"/>
+   <path class="slap" style="--d:.45s" d="M420 286 L330 140 L501.4 135.1 Z" fill="#6E8F4E"/>
+   <path class="slap" style="--d:.8s" d="M330 140 L262 286 L169.6 154.1 Z" fill="#C8553D"/>
+   <path d="M330 140 L262 286 L420 286 Z" fill="#FBF8EE"/>
+  </g>
+  <g font-family="Crimson Text,Georgia,serif" font-style="italic" font-size="22" fill="#2B2621" font-weight="600">
+   <text x="322" y="182">A</text><text x="272" y="278">B</text><text x="396" y="278">C</text></g>
+  <g transform="translate(30 236) scale(.92)"><g class="bob"><use href="#cm-nap"/>
+   <g transform="translate(92 106) rotate(-48)"><use href="#cm-arm"/></g></g></g>
+  <g filter="url(#cm-ink)" stroke="#2B2621" stroke-width="3" stroke-linecap="round" fill="none">
+   <circle cx="716" cy="232" r="18" fill="#FBF8F0"/><path d="M709 229v1M723 229v1M711 241q5 -3 10 0"/>
+   <path d="M716 250V330M716 330L696 396M716 330L736 396M716 270L690 300M716 270L746 258L752 240"/></g>
+  <text x="752" y="226" font-size="20" fill="#2B2621" font-family="Georgia,serif">!</text>
+ </svg></div>
+ <div class="cm-say">
+  <p><span class="cm-who nap"><svg viewBox="0 0 20 20"><path d="M1 13Q10 1 19 13Q10 10 1 13Z" fill="#1E1E22"/></svg>拿破崙</span><span>每一邊往外貼一塊三邊一樣長的三角形。</span></p>
+  <p><span class="cm-who exp"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#2B2621" stroke-width="2"/></svg>解說員</span><span>大小跟著各自那一條邊。三塊形狀一樣，大小不一樣。</span></p>
+ </div>
+</div>
+
+<!-- ───────── 第 5 格 ───────── -->
+<div class="cm-panel" data-n="5" hidden>
+ <div class="cm-stage" tabindex="0" title="點一下看下一格">
+ <svg viewBox="0 0 800 460" role="img" aria-label="兩塊三角形紙片的正中間插了旗子，拿破崙手上拿著第三面旗和一捲繩子；解說員舉手喊停">
+  <use href="#cm-map"/><use href="#cm-note"/>
+  <g filter="url(#cm-cut)">
+   <path d="M262 286 L420 286 L341 422.8 Z" fill="#D9A441"/>
+   <path d="M420 286 L330 140 L501.4 135.1 Z" fill="#6E8F4E"/>
+   <path d="M330 140 L262 286 L169.6 154.1 Z" fill="#C8553D"/>
+   <path d="M330 140 L262 286 L420 286 Z" fill="#FBF8EE"/>
+  </g>
+  <use class="slap" style="--d:.1s" href="#cm-flag" x="341" y="331.6"/>
+  <use class="slap" style="--d:.4s" href="#cm-flag" x="417.1" y="187"/>
+  <g transform="translate(30 236) scale(.92)"><g class="bob"><use href="#cm-nap"/>
+   <g transform="translate(92 106) rotate(-70)"><use href="#cm-arm"/>
+    <g transform="translate(52 0) rotate(70)"><use href="#cm-flag"/></g></g>
+   <g filter="url(#cm-cut)"><circle cx="18" cy="170" r="17" fill="#D9C7A0"/><circle cx="18" cy="170" r="10" fill="none" stroke="#B49C6C" stroke-width="2.5"/></g>
+  </g></g>
+  <g filter="url(#cm-ink)" stroke="#2B2621" stroke-width="3" stroke-linecap="round" fill="none">
+   <circle cx="716" cy="232" r="18" fill="#FBF8F0"/><path d="M707 228l4 2M725 228l-4 2M709 242h14"/>
+   <path d="M716 250V330M716 330L696 396M716 330L736 396M716 270L740 246L742 214M716 272L694 300L710 312"/>
+   <path d="M736 208v-10M742 206v-12M748 210v-9" stroke-width="2.4"/></g>
+  <text x="664" y="180" font-size="28" font-weight="800" fill="#C23B33" font-family="PingFang TC,Noto Sans TC,sans-serif">停！</text>
+ </svg></div>
+ <div class="cm-say">
+  <p><span class="cm-who nap"><svg viewBox="0 0 20 20"><path d="M1 13Q10 1 19 13Q10 10 1 13Z" fill="#1E1E22"/></svg>拿破崙</span><span>三塊的正中間各插一面旗，再拿繩子把三面旗連起來——</span></p>
+  <p><span class="cm-who exp"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#2B2621" stroke-width="2"/></svg>解說員</span><span>先停。連出來是什麼形狀，先別說；它叫什麼名字，也先別說。</span></p>
+ </div>
+</div>
+
+<!-- ───────── 第 6 格 ───────── -->
+<div class="cm-panel" data-n="6" hidden>
+ <div class="cm-stage" tabindex="0" title="點一下看下一格">
+ <svg viewBox="0 0 800 460" role="img" aria-label="兩份舊紙本：1820 年的考卷和 1825 年的雜誌，都蓋上「查無此名」的章；拿破崙紙偶歪著頭冒汗">
+  <use href="#cm-map"/><use href="#cm-note"/>
+  <rect width="620" height="460" fill="#EDE4CF" opacity=".55"/>
+  <g class="slap" style="--d:.1s"><g transform="rotate(-5 300 210)">
+   <g filter="url(#cm-cut)"><rect x="230" y="80" width="150" height="200" fill="#F7F1E1"/></g>
+   <text x="305" y="112" text-anchor="middle" font-size="17" font-weight="700" fill="#5A4630" font-family="Noto Serif TC,serif">1820 考卷</text>
+   <g stroke="#B9A988" stroke-width="2"><path d="M248 134h110M248 150h96M248 166h110M248 182h80"/></g>
+   <path d="M270 252 L300 206 L338 252 Z" fill="none" stroke="#5A4630" stroke-width="1.6"/></g></g>
+  <g class="slap" style="--d:.35s"><g transform="rotate(4 470 230)">
+   <g filter="url(#cm-cut)"><rect x="400" y="100" width="150" height="200" fill="#F3ECDA"/></g>
+   <text x="475" y="132" text-anchor="middle" font-size="17" font-weight="700" fill="#5A4630" font-family="Noto Serif TC,serif">1825 雜誌</text>
+   <g stroke="#B9A988" stroke-width="2"><path d="M418 154h110M418 170h110M418 186h90M418 202h110M418 218h70"/></g>
+   <path d="M440 276 L470 234 L512 276 Z" fill="none" stroke="#5A4630" stroke-width="1.6"/></g></g>
+  <g class="slap" style="--d:.75s"><g transform="rotate(-12 312 236)" opacity=".88">
+   <rect x="262" y="214" width="100" height="40" rx="5" fill="none" stroke="#C23B33" stroke-width="3.4"/>
+   <text x="312" y="242" text-anchor="middle" font-size="20" font-weight="800" fill="#C23B33" font-family="PingFang TC,Noto Sans TC,sans-serif">查無此名</text></g></g>
+  <g class="slap" style="--d:1s"><g transform="rotate(8 486 262)" opacity=".88">
+   <rect x="436" y="240" width="100" height="40" rx="5" fill="none" stroke="#C23B33" stroke-width="3.4"/>
+   <text x="486" y="268" text-anchor="middle" font-size="20" font-weight="800" fill="#C23B33" font-family="PingFang TC,Noto Sans TC,sans-serif">查無此名</text></g></g>
+  <g transform="translate(50 230) rotate(-9 60 120)"><use href="#cm-nap"/>
+   <g transform="translate(92 106) rotate(-110)"><use href="#cm-arm"/></g>
+   <path d="M92 46 q6 10 0 14 q-6 -4 0 -14 Z" fill="#7FB3D9"/></g>
+  <g filter="url(#cm-ink)" stroke="#2B2621" stroke-width="3" stroke-linecap="round" fill="none">
+   <circle cx="716" cy="232" r="18" fill="#FBF8F0"/><path d="M709 229v1M723 229v1M710 242h12"/>
+   <path d="M716 250V330M716 330L696 396M716 330L736 396M716 270L690 262L682 244M716 270L742 262L750 244"/></g>
+ </svg></div>
+ <div class="cm-say">
+  <p><span class="cm-who exp"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#2B2621" stroke-width="2"/></svg>解說員</span><span>還有：這是不是他發現的，找不到證據。最早的紀錄是 1820 年代英國、愛爾蘭的考題和雜誌，上面根本沒有他的名字。</span></p>
+  <p><span class="cm-who nap"><svg viewBox="0 0 20 20"><path d="M1 13Q10 1 19 13Q10 10 1 13Z" fill="#1E1E22"/></svg>拿破崙</span><span>……可是後來大家都用我的名字叫它。</span></p>
+  <p><span class="cm-who exp"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#2B2621" stroke-width="2"/></svg>解說員</span><span>名字貼上去很快，跟地盤一樣。</span></p>
+ </div>
+</div>
+
+<!-- ───────── 第 7 格 ───────── -->
+<div class="cm-panel" data-n="7" hidden>
+ <div class="cm-stage" tabindex="0" title="到第 1 站">
+ <svg viewBox="0 0 800 460" role="img" aria-label="一張寫著大問號的紙卡，旁邊是一捲繩子和三面還沒插的旗；解說員指向下方">
+  <use href="#cm-map"/><use href="#cm-note"/>
+  <g class="slap" style="--d:.1s"><g transform="rotate(-4 350 210)">
+   <g filter="url(#cm-cut)"><rect x="250" y="70" width="200" height="250" rx="6" fill="#FFFDF6"/></g>
+   <text x="350" y="262" text-anchor="middle" font-size="190" font-weight="800" fill="#5939A4" font-family="Georgia,serif" filter="url(#cm-ink)">?</text></g></g>
+  <g class="slap" style="--d:.45s">
+   <g filter="url(#cm-cut)"><circle cx="520" cy="360" r="26" fill="#D9C7A0"/><circle cx="520" cy="360" r="16" fill="none" stroke="#B49C6C" stroke-width="3"/>
+    <circle cx="520" cy="360" r="7" fill="none" stroke="#B49C6C" stroke-width="2.5"/></g>
+   <path d="M546 364 q30 10 40 40" fill="none" stroke="#B49C6C" stroke-width="3" stroke-linecap="round"/></g>
+  <g class="slap" style="--d:.7s"><g transform="translate(470 420) rotate(-90)"><use href="#cm-flag"/></g>
+   <g transform="translate(470 440) rotate(-90)"><use href="#cm-flag"/></g>
+   <g transform="translate(420 432) rotate(-90)"><use href="#cm-flag"/></g></g>
+  <g transform="translate(60 236) scale(.92)"><g class="bob"><use href="#cm-nap"/>
+   <g transform="translate(92 106) rotate(-30)"><use href="#cm-arm"/></g></g></g>
+  <g filter="url(#cm-ink)" stroke="#2B2621" stroke-width="3" stroke-linecap="round" fill="none">
+   <circle cx="716" cy="232" r="18" fill="#FBF8F0"/><path d="M709 229v1M723 229v1M709 240q7 5 14 0"/>
+   <path d="M716 250V330M716 330L696 396M716 330L736 396M716 272L692 296M716 272L742 300L752 340"/>
+   <path d="M752 340l-6 -9M752 340l7 -8" stroke-width="2.6"/></g>
+ </svg></div>
+ <div class="cm-say">
+  <p><span class="cm-who exp"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#2B2621" stroke-width="2"/></svg>解說員</span><span>三面旗連起來是什麼？不用聽誰說，下面第 1 站自己拖拖看。</span></p>
+ </div>
+</div>
+
+<div class="cm-nav">
+ <button type="button" class="cm-btn" data-go="-1" aria-label="上一格">‹ 上一格</button>
+ <div class="cm-dots" aria-hidden="true"></div>
+ <span class="cm-count" aria-live="polite" style="position:absolute;left:-9999px"></span>
+ <button type="button" class="cm-btn go" data-go="1">下一格 ›</button>
+</div>
+
+<script>
+(function(){
+  var root = document.getElementById("comic");
+  if (!root) return;
+  var panels = [].slice.call(root.querySelectorAll(".cm-panel"));
+  var dots = root.querySelector(".cm-dots"), count = root.querySelector(".cm-count");
+  var prev = root.querySelector('[data-go="-1"]'), next = root.querySelector('[data-go="1"]');
+  var i = 0;
+  panels.forEach(function(){ dots.appendChild(document.createElement("i")); });
+  function toLab(){ var t = document.getElementById("lab1"); if (t) t.scrollIntoView({behavior:"smooth", block:"start"}); }
+  function show(n){
+    i = Math.max(0, Math.min(panels.length - 1, n));
+    panels.forEach(function(p, k){ p.hidden = k !== i; p.classList.remove("on"); });
+    void panels[i].offsetWidth;            // 重新觸發「貼上去」的動畫
+    panels[i].classList.add("on");
+    [].forEach.call(dots.children, function(d, k){ d.classList.toggle("on", k === i); });
+    prev.disabled = i === 0;
+    var last = i === panels.length - 1;
+    next.textContent = last ? "到第 1 站 ↓" : "下一格 ›";
+    count.textContent = "第 " + (i + 1) + " 格，共 " + panels.length + " 格";
+  }
+  prev.addEventListener("click", function(){ show(i - 1); });
+  next.addEventListener("click", function(){ if (i === panels.length - 1) toLab(); else show(i + 1); });
+  root.addEventListener("click", function(e){
+    var st = e.target.closest(".cm-stage"); if (!st) return;
+    if (i === panels.length - 1) toLab(); else show(i + 1);
+  });
+  root.addEventListener("keydown", function(e){
+    if (e.key === "ArrowRight") { show(i + 1); e.preventDefault(); }
+    else if (e.key === "ArrowLeft") { show(i - 1); e.preventDefault(); }
+    else if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("cm-stage")) { next.click(); e.preventDefault(); }
+  });
+  show(0);
+})();
+</script>
+</section>
+<div class="lab" id="lab1"><div class="lab-head"><span class="lab-no">1</span><div><p class="lab-title">三個中心</p><p class="lab-why"></p></div></div><div class="lab-body"><div class="main">
     <div class="panel stage">
       <svg id="stage" viewBox="0 0 440 440" role="img" aria-label="三角形三邊上的正三角形與它們的中心" tabindex="0"></svg>
       <p class="hint">橘色的點可以拖。單位 mm；預設和學習單第 1 頁一樣。</p>
