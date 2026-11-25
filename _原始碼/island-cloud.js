@@ -88,6 +88,48 @@ export function joinForm(bar, u, onDone, onCancel) {
   };
 }
 
+/* ---------- 章節頁的登入遮罩 ---------- */
+/* 沒登入、或不在名單上：整頁蓋住，只留登入列；確認過才掀開。教材本身仍在頁面裡（真正擋內容的是空殼頁），這層是讓學生一定先登入 */
+function makeCover(bar) {
+  const home = document.createComment("isl-bar");
+  bar.before(home);
+  const c = document.createElement("div");
+  c.className = "isl-cover";
+  const t = (document.title || "").replace(/\s*[｜|].*$/, "");
+  c.innerHTML = '<div class="isl-cover-in"><p class="isl-cover-site">一線數光</p><h2>' + esc(t) + '</h2>' +
+    '<p class="isl-cover-say">這一頁要先登入才能用。</p><div class="isl-cover-bar"></div>' +
+    '<p class="isl-cover-fine">請用老師登記的 Google 帳號；第一次登入要輸入老師給的加入碼。<br><a href="index.html">回一線數光首頁</a></p></div>';
+  const css = document.createElement("style");
+  css.textContent = `.isl-cover{position:fixed;inset:0;z-index:2147482000;background:var(--card,#fffdf8);color:var(--ink,#1d1d1d);overflow:auto;
+      display:flex;align-items:center;justify-content:center;padding:24px 16px}
+    .isl-cover-in{max-width:640px;width:100%;text-align:center}
+    .isl-cover-in>p,.isl-cover-in>h2{text-align:center!important;max-width:none!important;margin-left:auto!important;margin-right:auto!important;padding:0!important;text-indent:0!important}
+    .isl-cover-site{margin:0;font-size:15px;letter-spacing:.2em;color:var(--ink-2,#666)}
+    .isl-cover h2{margin:6px 0 10px;font-size:clamp(22px,4.5vw,30px);line-height:1.35}
+    .isl-cover-say{margin:0 0 18px;color:var(--ink-2,#555);font-size:15.5px}
+    .isl-cover .isl-auth{justify-content:center;font-size:15.5px;padding:16px 18px}
+    .isl-cover .isl-auth button{margin-left:0;font-size:17px;padding:7px 24px}
+    .isl-cover-fine{margin:16px 0 0;font-size:13.5px;color:var(--ink-3,#888);line-height:1.7}
+    .isl-cover-fine a{color:inherit}
+    @media print{.isl-cover{display:none!important}}`;
+  c.appendChild(css);
+  const slot = c.querySelector(".isl-cover-bar");
+  let shut = false;
+  return {
+    close() {                       // 蓋住：登入列搬進遮罩
+      if (shut) return; shut = true;
+      slot.appendChild(bar); document.body.appendChild(c);
+      document.documentElement.style.overflow = "hidden";
+    },
+    open() {                        // 掀開：登入列放回原位
+      if (!shut) return; shut = false;
+      home.after(bar); c.remove();
+      document.documentElement.style.overflow = "";
+      if (location.hash.length > 1) { let e = null; try { e = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (x) {} if (e) e.scrollIntoView(); }
+    }
+  };
+}
+
 /* ---------- 單元頁 ---------- */
 function unitPage(gated) {
   const API = window.ISLAND_API;
@@ -95,8 +137,12 @@ function unitPage(gated) {
   const anonKey = "isl:" + C.slug;
   const bar = authBar(API.progressBox);
   let user = null, timer = null, status = "", unitRef = null, profRef = null, rosterName = "", staff = "";
+  const cover = gated ? { close() {}, open() {} } : makeCover(bar);   // 空殼頁已經在載入前擋過了
+  cover.close();
+  bar.innerHTML = "<span>確認登入中…</span>";
 
   const paint = () => {
+    if (user && (unitRef || staff)) cover.open(); else cover.close();
     if (!user) {
       bar.innerHTML = '<span>登入學校帳號，紀錄會存到雲端，換電腦也接得下去。</span><button class="primary">用 Google 登入</button>';
       bar.querySelector("button").onclick = () => login().catch(e => { status = "登入沒有完成：" + (e.code || e.message); paintMsg(); });
@@ -105,7 +151,7 @@ function unitPage(gated) {
     if (!unitRef) {
       bar.innerHTML = staff
         ? '<span>' + ROLES[staff] + '帳號 <b>' + esc(user.email) + '</b>：全班紀錄請到 <a href="teacher.html">老師頁面</a>。</span><button>登出</button>'
-        : '<span class="warn">這個帳號不在名單上</span><span>' + esc(user.email) + '，紀錄只會存在這台電腦。按「換帳號」重新登入，就能輸入加入碼。</span><button>換帳號</button>';
+        : '<span class="warn">這個帳號不在名單上</span><span>' + esc(user.email) + '。請按「換帳號」改用老師登記的帳號，或找老師確認。</span><button>換帳號</button>';
       bar.querySelector("button").onclick = doLogout;
       return;
     }
@@ -156,7 +202,7 @@ function unitPage(gated) {
     if (user !== u) return;
     if (staff) { unitRef = null; paint(); return; }
     if (!r && canSelfJoin(u)) {
-      unitRef = null;
+      unitRef = null; cover.close();
       r = await new Promise(res => joinForm(bar, u, res, () => { res(null); doLogout(); }));
       if (!r || user !== u) return;
     }
@@ -178,7 +224,6 @@ function unitPage(gated) {
     paint();
     if (carried || !remote || (local && local.updated > (remote.updated || ""))) push();
   });
-  paint();
 }
 
 /* ---------- 紀錄本／首頁 ---------- */
