@@ -51,10 +51,33 @@ footer{margin-top:36px;text-align:center;color:var(--ink-3);font-size:14px}
 .sea2 p{margin:2px 0 0;color:var(--ink-2);font-size:15.5px}
 .sea2 .go{margin-left:auto;color:var(--blue);font-size:17px;white-space:nowrap}
 
+[hidden]{display:none!important}
+.entry{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 18px 30px}
+.entry svg.dawn{width:min(420px,86vw);height:auto;margin:0 0 6px}
+.entry .say{max-width:34em}
+.entry-msg{margin:28px 0 0;min-height:64px;width:min(640px,100%)}
+#isl-entry .isl-auth{justify-content:center;font-size:16px;border:2px solid var(--ink);border-radius:14px 225px 14px 255px/255px 14px 225px 14px;padding:16px 20px}
+#isl-entry .isl-auth button{margin-left:0;font-size:18px;padding:8px 26px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:8px}
+#isl-entry .isl-auth button+button{background:var(--card);color:var(--ink)}
+#isl-entry .isl-auth .row{flex-basis:100%}
+.entry .fine{font-size:14px;color:var(--ink-3);margin:14px 0 0}
+.entry footer{margin-top:40px}
 </style>
 </head>
 <body>
-<div class="wrap">
+<section class="entry" id="isl-entry">
+  <svg class="dawn" viewBox="0 0 420 120" aria-hidden="true" fill="none" stroke="#1d1d1d" stroke-width="2.2" stroke-linecap="round">
+    <path d="M150 96a60 60 0 0 1 120 0" fill="#f6d28b" stroke="none"/><path d="M150 96a60 60 0 0 1 120 0"/>
+    <path d="M210 24v-14M160 42l-9-10M260 42l9-10M134 74l-13-5M286 74l13-5"/>
+    <path d="M14 97c60-3 130 2 196-1s140 2 196 0"/>
+  </svg>
+  <h1>一線數光</h1>
+  <p class="say">先猜，再動手，再對照。猜錯的地方，正是等一下會看懂的地方。</p>
+  <div class="entry-msg" id="isl-entry-msg"><div class="isl-auth"><span>確認登入中…</span></div></div>
+  <p class="fine">請用老師登記的 Google 帳號登入；第一次登入要輸入老師給的加入碼。登入後，紀錄會存到雲端，換電腦也接得下去。</p>
+  <footer>黃士祐 老師（IsRight）</footer>
+</section>
+<div class="wrap" id="isl-inside" hidden>
 <header>
   <h1>一線數光</h1>
   <p class="say">一群小島。每座島上有幾台機器，你要先猜它會怎樣，再動手試試看。<small>（猜錯沒關係。猜錯的地方，正是你等一下會看懂的地方。）</small></p>
@@ -82,6 +105,9 @@ footer{margin-top:36px;text-align:center;color:var(--ink-3);font-size:14px}
 <script>
 window.ISLAND_PASSPORT = { show: (cloud, name) => { window.__who = name || ""; IslandMap.draw(cloud); } };
 IslandMap.draw(null);
+</script>
+<script>
+setTimeout(function(){ var m=document.getElementById("isl-entry-msg"); if(m && !m.dataset.ready) m.innerHTML='<div class="isl-auth"><span>連不上登入服務，請確認網路後重新整理這一頁。</span></div>'; }, 10000);
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="island-cloud.js"></script>

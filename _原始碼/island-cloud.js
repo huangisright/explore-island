@@ -181,32 +181,51 @@ function unitPage(gated) {
   paint();
 }
 
-/* ---------- 紀錄本 ---------- */
+/* ---------- 紀錄本／首頁 ---------- */
+/* 首頁有入口畫面（#isl-entry）：沒登入、或登入了但不在名單上，就停在入口；確認過才打開地圖（#isl-inside） */
 function passportPage() {
   const P = window.ISLAND_PASSPORT;
   const bar = authBar(document.getElementById("main"));
-  const paint = (html, btn, fn) => { bar.innerHTML = html + (btn ? "<button>" + btn + "</button>" : ""); if (btn) bar.querySelector("button").onclick = fn; };
+  const E = document.getElementById("isl-entry"), IN = document.getElementById("isl-inside"), EM = document.getElementById("isl-entry-msg");
+  let ebar = bar;
+  if (E && IN && EM) {
+    EM.dataset.ready = "1";
+    EM.innerHTML = "";
+    ebar = document.createElement("div"); ebar.className = "isl-auth"; EM.appendChild(ebar);
+  }
+  const door = open => { if (ebar === bar) return; E.hidden = open; IN.hidden = !open; window.scrollTo(0, 0); };
+  const paint = (where, html, btn, fn, btn2, fn2) => {
+    where.innerHTML = html + (btn ? "<button>" + btn + "</button>" : "") + (btn2 ? "<button>" + btn2 + "</button>" : "");
+    const bs = where.querySelectorAll("button");
+    if (btn) bs[0].onclick = fn;
+    if (btn2) bs[1].onclick = fn2;
+  };
+  const askLogin = note => paint(ebar, (note ? '<span class="warn row">' + esc(note) + "</span>" : "") +
+    (ebar === bar ? "<span>登入學校帳號，就能看到存在雲端的紀錄。</span>" : ""), "用 Google 登入",
+    () => login().catch(e => { if (e.code !== "auth/popup-closed-by-user" && e.code !== "auth/cancelled-popup-request") askLogin("登入沒有完成：" + (e.code || e.message)); }));
   onAuthStateChanged(auth, async u => {
-    if (!u) {
-      paint("<span>登入學校帳號，就能看到存在雲端的紀錄。</span>", "用 Google 登入", () => login().catch(() => {}));
-      P.show(null, null); return;
-    }
+    if (!u) { door(false); askLogin(); P.show(null, null); return; }
+    paint(ebar, "<span>確認名單中…</span>");
     let r = await rosterOf(u);
     const st = r ? "" : await staffRole(u);
+    if (auth.currentUser !== u) return;
     if (st) {
-      paint('<span>' + ROLES[st] + '帳號 <b>' + esc(u.email) + '</b>：全班紀錄請到 <a href="teacher.html">老師頁面</a>。</span>', "登出", async () => { await logout(); });
+      door(true);
+      paint(bar, '<span>' + ROLES[st] + '帳號 <b>' + esc(u.email) + '</b>：全班紀錄請到 <a href="teacher.html">老師頁面</a>。</span>', "登出", async () => { await logout(); });
       P.show(null, null); return;
     }
     if (!r && canSelfJoin(u)) {
-      P.show(null, null);
-      r = await new Promise(res => joinForm(bar, u, res, async () => { res(null); await logout(); }));
+      door(false); P.show(null, null);
+      r = await new Promise(res => joinForm(ebar, u, res, async () => { res(null); await logout(); }));
       if (!r || auth.currentUser !== u) return;
     }
     if (!r) {
-      paint('<span class="warn">這個帳號不在名單上</span><span>' + esc(u.email) + "</span>", "換帳號", async () => { await logout(); });
+      door(false);
+      paint(ebar, '<span class="warn">這個帳號不在名單上</span><span>' + esc(u.email) + "</span>", "換帳號", async () => { await logout(); });
       P.show(null, null); return;
     }
-    paint("<span><b>" + esc(r.name || "") + "</b>（" + esc(u.email) + "）</span>", "登出", async () => {
+    door(true);
+    paint(bar, "<span><b>" + esc(r.name || "") + "</b>（" + esc(u.email) + "）</span>", "登出", async () => {
       Object.keys(localStorage).filter(k => k.startsWith("isl:" + u.uid + ":")).forEach(k => localStorage.removeItem(k));
       await logout();
     });
@@ -215,7 +234,7 @@ function passportPage() {
       const qs = await getDocs(collection(db, "records", u.uid, "units"));
       qs.forEach(d => { try { got[d.id] = JSON.parse(d.data().data); } catch (e) {} });
     } catch (e) {}
-    P.show(got, r.name || "", r);
+    if (auth.currentUser === u) P.show(got, r.name || "", r);
   });
 }
 
