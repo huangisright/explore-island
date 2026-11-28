@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>遮住頂點以後｜代數拾光｜一線數光</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f5f3e9;color:#163e45;font:16px/1.55 "PingFang TC",sans-serif}main{max-width:1000px;margin:auto;padding:24px}header{border-bottom:1px solid #a8bfb4;margin-bottom:20px}small{color:#32726b}h1{font:600 clamp(32px,5vw,56px)/1.2 "Songti TC",serif;margin:10px 0}h2{font-size:19px}section{display:grid;grid-template-columns:1fr 1fr;gap:22px}article,aside{background:#fffdf5;border:1px solid #c4cfc2;border-radius:16px;padding:18px}svg{width:100%;height:auto;display:block}button,input,select{font:inherit;color:inherit;border:1px solid #a7bdb3;border-radius:7px;padding:6px;background:white}button{cursor:pointer;margin:4px 3px 4px 0}button.primary{background:#175954;color:white}label{display:inline-block;margin:3px 8px 5px 0}input[type=number]{width:72px}fieldset{border:0;padding:0;margin:12px 0}legend{font-weight:650}#feedback{min-height:2em;background:#eef3eb;padding:10px}details{margin-top:12px}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d68937}@media(max-width:660px){section{grid-template-columns:1fr}main{padding:14px}article,aside{padding:12px}}</style>
+</head>
+<body>
+<style id="backnav">
+.bk-top{max-width:1040px;margin:0 auto;padding:14px 24px 0;font-family:"PingFang TC","Noto Sans TC",sans-serif;font-size:14px}
+.bk-top a{color:#175954;text-decoration:none;font-weight:600}
+.bk-fab{position:fixed;right:16px;bottom:16px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border-radius:24px;background:#fffdf5;border:1px solid #c4cfc2;color:#175954;font-family:"PingFang TC","Noto Sans TC",sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 2px 4px rgba(72,60,40,.10),0 10px 26px rgba(72,60,40,.16)}
+</style>
+<div class="bk-top"><a href="passport.html">← 探索紀錄本</a></div>
+<main class="wrap"><header><small>代數拾光　／　單元一</small><h1>遮住頂點以後</h1><p>每條邊的數是兩端頂點的和。試填一組，再找找看還有沒有別組。</p></header><div class="lab" id="lab1"><div class="lab-head"><span class="lab-no">1</span><div><p class="lab-title">填頂點，逐邊驗算</p><p class="lab-why"></p></div></div><div class="lab-body"><section><article><label>題卡 <select id="preset"><option>甲　三角形</option><option>乙　四邊形</option><option>丙　只改一條邊</option><option>丁　五邊形</option><option>戊　三邊都是 1</option><option>自訂題卡</option></select></label><svg viewBox="0 0 420 360" aria-label="多邊形頂點與邊和" role="img" id="fig"></svg><small>青色圓點是頂點，赭色數字是目標邊和。</small></article><aside><label>答案範圍 <select id="domain"><option>整數</option><option>非負整數</option><option>實數</option></select></label><fieldset><legend>填入頂點</legend><div id="verts"></div></fieldset><button class="primary" id="check">逐邊驗算</button><button id="clear">清空頂點</button><p id="feedback" role="status">先從任何一點開始。</p><details><summary>沿邊推算</summary><p>先填 A，讓下一點等於「目標邊和減前一點」。最後一條邊要自己核對。</p><button id="walk">從 A 推出其餘頂點</button></details><details id="editor"><summary>自己設計題卡</summary><label>邊數 <select id="count"><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label><div id="edges"></div><button id="apply">套用邊和</button><button id="hide">用目前的頂點出題並遮住</button></details></aside></section></div></div>
+<div id="end"></div></main>
+<script>
+const el=id=>document.getElementById(id),cards=[[7,14,11],[7,9,11,9],[7,9,11,10],[5,7,9,11,8],[1,1,1]],letter=i=>String.fromCharCode(65+i);
+let sums=cards[0].slice();
+function inputs(box,labels,values){el(box).replaceChildren();labels.forEach((name,i)=>{let l=document.createElement('label'),v=document.createElement('input');v.type='number';v.step='any';v.value=values[i]??'';l.append(name+' ',v);el(box).append(l)})}
+function values(box){return [...el(box).querySelectorAll('input')].map(v=>v.value===''?NaN:v.valueAsNumber)}
+function editor(n){inputs('edges',Array.from({length:n},(_,i)=>letter(i)+letter((i+1)%n)),n===sums.length?sums:[])}
+function load(a){sums=[...a];inputs('verts',a.map((_,i)=>letter(i)),[]);el('count').value=a.length;editor(a.length);message('填入頂點，再按逐邊驗算。');draw()}
+function message(s){el('feedback').textContent=s}
+function draw(){let n=sums.length,vs=values('verts'),p=sums.map((_,i)=>[210+123*Math.sin(2*Math.PI*i/n),180-118*Math.cos(2*Math.PI*i/n)]);let txt=(x,y,v,color,size)=>'<text text-anchor="middle" dominant-baseline="middle" x="'+x+'" y="'+y+'" fill="'+color+'" font-size="'+size+'">'+v+'</text>';el('fig').innerHTML='<polygon points="'+p.map(v=>v.join(',')).join(' ')+'" fill="#e6f0e4" stroke="#4a817c" stroke-width="3"/>'+p.map(([x,y],i)=>{let [a,b]=p[(i+1)%n];return txt(210+((x+a)/2-210)*1.23,180+((y+b)/2-180)*1.23,sums[i],'#984810',21)+'<circle cx="'+x+'" cy="'+y+'" r="19" fill="#185652"/>'+txt(x,y,letter(i),'white',17)+txt(210+(x-210)*.68,180+(y-180)*.68,Number.isFinite(vs[i])?vs[i]:'?', '#183e42',18)}).join('')}
+el('preset').onchange=e=>{let i=e.target.selectedIndex;if(i<5)load(cards[i]);else el('editor').open=true};
+el('count').onchange=e=>editor(+e.target.value);
+el('apply').onclick=()=>{let a=values('edges');if(!a.every(Number.isFinite))return message('請填完每一條邊和。');el('preset').selectedIndex=5;load(a)};
+el('hide').onclick=()=>{let a=values('verts');if(!a.every(Number.isFinite))return message('先填滿目前圖形的頂點，才能產生邊和。');el('preset').selectedIndex=5;load(a.map((v,i)=>v+a[(i+1)%a.length]))};
+el('verts').oninput=()=>{draw();message('頂點已更動，可重新驗算。')};el('domain').onchange=()=>message('答案範圍已更動，可重新驗算。');
+el('clear').onclick=()=>load(sums);
+el('walk').onclick=()=>{let a=values('verts');if(!Number.isFinite(a[0]))return message('請先填 A。');for(let i=1;i<a.length;i++)a[i]=sums[i-1]-a[i-1];inputs('verts',a.map((_,i)=>letter(i)),a);draw();message('已沿邊推算，最後一條邊也合得起來嗎？')};
+el('check').onclick=()=>{let a=values('verts'),d=el('domain').selectedIndex;if(!a.every(Number.isFinite))return message('請先填完所有頂點。');let bad=sums.map((s,i)=>Math.abs(a[i]+a[(i+1)%a.length]-s)>1e-8?letter(i)+letter((i+1)%a.length):'').filter(Boolean);message((bad.length?'邊和未合：'+bad.join('、')+'。':'每條邊和都吻合。')+(d<2&&a.some(v=>!Number.isInteger(v)||d===1&&v<0)?' 頂點超出所選答案範圍。':bad.length?'':' 這是一組可行解。'))};load(cards[0]);</script><a class="bk-fab" href="passport.html" aria-label="回到探索紀錄本">← 紀錄本</a>
+<style id="island">
+/* ===== 探索島：預測／紀錄／判斷題／單元章 ===== */
+.isl-box{margin:0;padding:16px 22px;border-bottom:1px solid var(--edge-soft);background:var(--indigo-soft)}
+.isl-box .isl-k{font-size:12.5px;letter-spacing:.14em;font-weight:700;color:var(--indigo);margin-bottom:6px}
+.isl-box .isl-q{font-size:15.5px;color:var(--ink);margin:0 0 10px;max-width:none}
+.isl-obs{background:var(--orange-soft);border-top:1px solid var(--edge-soft);border-bottom:0}
+.isl-obs .isl-k{color:var(--orange)}
+.isl-opts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.isl-opts label{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;
+  padding:5px 12px;border:1px solid var(--edge);border-radius:999px;background:var(--card);cursor:pointer}
+.isl-opts label:has(input:checked){border-color:var(--indigo);color:var(--indigo);font-weight:600}
+.isl-opts input{accent-color:var(--indigo);margin:0}
+.isl-ta{width:100%;min-height:62px;resize:vertical;font:inherit;font-size:15px;line-height:1.6;
+  padding:9px 12px;border:1px solid var(--edge);border-radius:5px;background:var(--card);color:var(--ink)}
+.isl-ta:focus{outline:2px solid var(--indigo);outline-offset:1px}
+.isl-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.isl-btn{font:inherit;font-size:14.5px;font-weight:600;padding:7px 16px;border-radius:5px;cursor:pointer;
+  border:1px solid var(--indigo);background:var(--indigo);color:var(--card)}
+.isl-btn:disabled{opacity:.4;cursor:not-allowed}
+.isl-btn.ghost{background:var(--card);color:var(--indigo)}
+.isl-hint{font-size:13px;color:var(--ink-3)}
+.isl-hint.warn{color:var(--orange);font-weight:600}
+.isl-rule{font-size:13.5px;color:var(--ink-2);margin:6px 0 0;max-width:none}
+.isl-mine{font-size:14.5px;color:var(--ink-2);margin:0;max-width:none}
+.isl-mine b{color:var(--indigo)}
+.isl-wait{padding:26px 22px;text-align:center;color:var(--ink-3);font-size:14.5px;
+  background:repeating-linear-gradient(45deg,transparent 0 10px,var(--edge-soft) 10px 11px)}
+.isl-done-tag{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--green);letter-spacing:.08em}
+.lab-foot.isl-reveal::before{content:"對照看看";display:block;font-size:12px;letter-spacing:.14em;
+  font-weight:700;color:var(--green);margin-bottom:2px}
+.isl-gate{margin:20px 0;padding:14px 18px;border:1px dashed var(--edge);border-radius:5px;
+  color:var(--ink-3);font-size:14px;text-align:center}
+
+/* 進度列 */
+.isl-prog{margin:0 0 6px;padding:12px 16px;border:1px solid var(--edge);border-radius:5px;background:var(--card);
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:14px}
+.isl-prog .t{font-weight:700;color:var(--ink-2);letter-spacing:.06em}
+.isl-dots{display:flex;gap:6px;flex-wrap:wrap}
+.isl-dots a{width:26px;height:26px;border-radius:50%;display:inline-grid;place-items:center;
+  font-size:12.5px;font-weight:700;text-decoration:none;border:1.5px solid var(--edge);color:var(--ink-3);background:var(--paper)}
+.isl-dots a.half{border-color:var(--indigo);color:var(--indigo)}
+.isl-dots a.ok{border-color:var(--green);background:var(--green);color:var(--card)}
+.isl-prog .q{color:var(--ink-3)}
+.isl-prog .q.ok{color:var(--green);font-weight:700}
+
+/* 判斷題 */
+#isl-quiz{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-qcard{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);
+  padding:18px 22px;margin:16px 0}
+.isl-qcard .isl-qn{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--orange)}
+.isl-qcard p.isl-qt{font-size:16px;margin:4px 0 12px;max-width:none}
+.isl-choice{display:block;width:100%;text-align:left;font:inherit;font-size:15px;line-height:1.55;
+  padding:9px 14px;margin:0 0 8px;border:1px solid var(--edge);border-radius:5px;background:var(--paper);
+  color:var(--ink);cursor:pointer}
+.isl-choice:hover:not(:disabled){border-color:var(--indigo)}
+.isl-choice.no{border-color:var(--orange);background:var(--orange-soft);color:var(--ink-2);text-decoration:line-through}
+.isl-choice.yes{border-color:var(--green);background:var(--green-soft);font-weight:600}
+.isl-choice:disabled{cursor:default}
+.isl-fb{margin-top:6px;padding:10px 14px;border-radius:4px;font-size:14.5px;border:1px solid var(--edge)}
+.isl-fb.bad{border-color:var(--orange);background:var(--orange-soft)}
+.isl-fb.good{border-color:var(--green);background:var(--green-soft)}
+
+/* 紀錄與章 */
+#isl-record{padding:44px 0 8px;scroll-margin-top:64px}
+.isl-sheet{background:var(--card);border:1px solid var(--edge);border-radius:5px;box-shadow:var(--shadow);padding:22px 24px}
+.isl-sheet-head{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--edge-soft);padding-bottom:14px;margin-bottom:6px}
+.isl-sheet-head h3{margin:0;font-size:22px}
+.isl-sheet-head .isl-sub{font-size:13.5px;color:var(--ink-3)}
+.isl-name{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.isl-name input{font:inherit;font-size:15px;padding:5px 10px;width:10em;border:1px solid var(--edge);
+  border-radius:5px;background:var(--paper);color:var(--ink)}
+.isl-tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:6px}
+.isl-tbl th,.isl-tbl td{border-bottom:1px solid var(--edge-soft);padding:9px 8px;vertical-align:top;text-align:left}
+.isl-tbl th{font-size:12.5px;letter-spacing:.1em;color:var(--ink-3);font-weight:700}
+.isl-tbl td.n{white-space:nowrap;font-weight:600;color:var(--ink-2);width:9.5em}
+.isl-tbl td .empty{color:var(--ink-3)}
+.isl-stamp-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:18px}
+.isl-stamp{width:150px;height:150px;flex:none}
+.isl-stamp.off{opacity:.18;filter:grayscale(1)}
+.isl-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.isl-clear{font-size:13px;color:var(--ink-3);background:none;border:0;text-decoration:underline;cursor:pointer;font:inherit}
+@media (max-width:600px){
+  .isl-tbl, .isl-tbl tbody, .isl-tbl tr, .isl-tbl td{display:block;width:auto}
+  .isl-tbl thead{display:none}
+  .isl-tbl td{border:0;padding:3px 0}
+  .isl-tbl tr{border-bottom:1px solid var(--edge-soft);padding:10px 0}
+  .isl-tbl td[data-h]::before{content:attr(data-h)"　";font-size:12px;color:var(--ink-3);font-weight:700}
+}
+@media print{
+  body.isl-print .wrap > *:not(#isl-record), body.isl-print .bk-top, body.isl-print .bk-fab,
+  body.isl-print .isl-tools, body.isl-print nav, body.isl-print #isl-record > .isl-hint{display:none !important}
+  body.isl-print{background:#fff}
+  body.isl-print .isl-sheet{box-shadow:none;border:1px solid #999}
+  body.isl-print .isl-name input{border:0;border-bottom:1px solid #999;border-radius:0}
+}
+/* 單元頁的手繪主題對所有 button 用了 !important，這裡要用更高的權重蓋回來 */
+button.isl-choice{background:var(--paper)!important;color:var(--ink)!important;opacity:1}
+button.isl-choice:disabled{color:var(--ink-2)!important}
+button.isl-choice.yes{background:var(--green-soft)!important;border-color:var(--green)!important;color:var(--ink)!important}
+button.isl-choice.no{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--ink-3)!important}
+button.isl-btn:disabled{opacity:.35}
+button.isl-clear{border:0!important;background:none!important;color:var(--ink-3)!important;padding:0 4px}
+
+/* 舊版單元頁（h4 探索站）轉換後的基本樣式；新版頁面本來就有，這裡用低權重不會蓋掉 */
+:where(.lab) > :where(.lab-head){display:flex;align-items:baseline;gap:12px;padding:14px 20px 10px;border-bottom:1px solid var(--edge-soft)}
+:where(.lab-head) :where(.lab-no){display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:13px;font-weight:700}
+:where(.lab-head) :where(.lab-title){margin:0;font-size:18px;font-weight:700}
+:where(.lab-head) :where(.lab-why){margin:2px 0 0;font-size:14px;color:var(--ink-3)}
+:where(.lab) > :where(.lab-body){padding:16px 20px}
+:where(.lab) > :where(.lab-foot){padding:12px 20px;background:var(--green-soft);border-top:1px solid var(--edge-soft);font-size:14.5px}
+</style>
+<script>window.ISLAND={"slug": "alg-u1", "chap": "代數一", "title": "遮住頂點以後", "topic": "多邊形邊和與未知數", "plain": "每條邊上的數是兩端頂點的和。頂點被遮住了，找得回來嗎？", "stations": {"lab1": {"mode": "predict", "why": "選一張題卡，先自己填頂點再按「逐邊驗算」；打開「沿邊推算」從 A 推出其他點；最後換成乙卡、丙卡、五邊形，也可以自己設計題卡。", "q": "乙卡是四邊形，順時針的邊和是 7、9、11、9。頂點只准填整數，能填出幾組？", "opts": ["剛好一組", "剛好兩組", "很多組", "一組都沒有"], "multi": false, "obs": "乙卡找到幾組？把最後一條邊改成 10（丙卡）之後呢？三角形、四邊形、五邊形的結果有什麼不同？"}}, "gates": [], "quiz": [{"q": "三角形的三條邊和依序是 7、14、11（AB、BC、CA），頂點 A 是多少？", "opts": ["2", "5", "7", "9"], "ans": 0, "why": ["", "5 是 B。", "7 是 AB 的邊和，不是 A。", "9 是 C。"], "exp": "三條邊和加起來 32，每個頂點被算了兩次，三個頂點的和是 16；A ＝ 16 − 14 ＝ 2。"}, {"q": "四邊形的邊和依序是 5、6、7、8。頂點能填出整數嗎？", "opts": ["能，只有一組", "能，有很多組", "不能"], "ans": 2, "why": ["把 A 寫成 x 繞一圈，回到 A 時 x 會消掉。", "對邊和要相等才能填：5 ＋ 7 和 6 ＋ 8 一樣嗎？", ""], "exp": "四邊形的兩組對邊和都把四個頂點各算一次，必須相等；5 ＋ 7 ＝ 12，6 ＋ 8 ＝ 14，不相等，怎麼填都不行。"}, {"q": "三角形三條邊和都是 1，頂點可以填整數嗎？", "opts": ["可以，例如 0、1、0", "不行，只有三個都是 1/2", "可以，有很多組"], "ans": 1, "why": ["0 ＋ 1 ＝ 1，1 ＋ 0 ＝ 1，但最後一條 0 ＋ 0 ＝ 0。", "", "三角形繞一圈回來，x 的係數變號，只會有一個解。"], "exp": "三個頂點和是 3 ÷ 2 ＝ 1.5，每個頂點 ＝ 1.5 − 1 ＝ 1/2。實數解只有一組，而且不是整數。"}]};</script>
+<script>
+/* ===== 探索島：預測／紀錄／判斷題／單元章 =====
+   沒登入：紀錄只存在這台裝置的瀏覽器（localStorage）。
+   登入且在名單上：island-cloud.js 透過 window.ISLAND_API 接手，另存一份到雲端。 */
+(function () {
+  const C = window.ISLAND;
+  let KEY = "isl:" + C.slug;
+  let NAMEKEY = "isl:name";
+  let nameLocked = false;
+  const mem = {};
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return mem[k] ?? null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } },
+  };
+  let S;
+  try { S = JSON.parse(store.get(KEY)) || {}; } catch (e) { S = {}; }
+  S.st = S.st || {}; S.quiz = S.quiz || {};
+  const save = () => {
+    S.updated = new Date().toISOString();
+    S.n = ids.length; S.nd = ids.filter(id => S.st[id] && S.st[id].done).length;
+    S.q = C.quiz.length; S.qd = C.quiz.filter((_, i) => S.quiz[i] && S.quiz[i].ok).length;
+    store.set(KEY, JSON.stringify(S));
+    if (API.onSave) API.onSave(S);
+  };
+  const API = window.ISLAND_API = window.ISLAND_API || {};
+
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const ids = Object.keys(C.stations);
+  const MIN_OBS = 1;   // 寫一個字（例如一個數字）就算
+
+  const st = id => (S.st[id] = S.st[id] || { opts: [], pred: "", locked: false, obs: "", done: false });
+  const predText = (cfg, s) => {
+    const parts = [];
+    if (cfg.opts && s.opts.length) parts.push(s.opts.map(i => cfg.opts[i]).join("、"));
+    else if (cfg.opts && cfg.multi) parts.push("一個都沒選");
+    if (s.pred.trim()) parts.push(s.pred.trim());
+    return parts.join("；");
+  };
+  const stationDone = id => !!st(id).done;
+  const quizDone = i => !!(S.quiz[i] && S.quiz[i].ok);
+  const allStations = () => ids.every(stationDone);
+  const allQuiz = () => C.quiz.every((_, i) => quizDone(i));
+
+  /* ---------- 每一站 ---------- */
+  ids.forEach(id => {
+    const cfg = C.stations[id];
+    const lab = document.getElementById(id);
+    if (!lab) return;
+    let s = st(id);
+    const head = lab.querySelector(".lab-head");
+    const body = lab.querySelector(".lab-body");
+    const foot = lab.querySelector(".lab-foot");
+    const no = lab.querySelector(".lab-no").textContent.trim();
+    if (cfg.why) lab.querySelector(".lab-why").innerHTML = esc(cfg.why);
+    const tag = el("span", "isl-done-tag", "");
+    head.appendChild(tag);
+
+    /* 預測 */
+    let pbox = null, wait = null;
+    if (cfg.mode === "predict") {
+      pbox = el("div", "isl-box");
+      head.after(pbox);
+      wait = el("div", "isl-wait", "先寫下你的預測，這一站才會打開。");
+      body.before(wait);
+    }
+    const renderPred = () => {
+      if (!pbox) return;
+      if (s.locked) {
+        pbox.innerHTML = '<div class="isl-k">我的預測</div><p class="isl-mine">' + esc(cfg.q) + "<br><b>" + esc(predText(cfg, s)) + "</b></p>";
+        return;
+      }
+      const type = cfg.multi ? "checkbox" : "radio";
+      let h = '<div class="isl-k">先預測，再動手</div><p class="isl-q">' + esc(cfg.q) + "</p>";
+      if (cfg.opts) {
+        h += '<div class="isl-opts">' + cfg.opts.map((o, i) =>
+          '<label><input type="' + type + '" name="o-' + id + '" value="' + i + '"' + (s.opts.includes(i) ? " checked" : "") + "> " + esc(o) + "</label>").join("") + "</div>";
+      }
+      h += '<textarea class="isl-ta" placeholder="' + (cfg.opts ? "為什麼這樣猜？（寫一句就好）" : "寫下你的答案和理由") + '">' + esc(s.pred) + "</textarea>";
+      const rule = !cfg.opts ? "寫下你的答案就能送出，一個數字也可以。"
+        : cfg.multi ? "勾選你覺得對的（可以都不勾），再寫一句為什麼，就能送出。"
+        : "選一個答案，再寫一句為什麼，就能送出。";
+      h += '<p class="isl-rule">' + rule + '</p>';
+      h += '<div class="isl-row"><button class="isl-btn primary">預測寫好了，開始操作</button><span class="isl-hint"></span></div>';
+      pbox.innerHTML = h;
+      const ta = pbox.querySelector("textarea"), btn = pbox.querySelector("button"), hint = pbox.querySelector(".isl-hint");
+      const ok = () => {
+        s.opts = [...pbox.querySelectorAll("input:checked")].map(x => +x.value);
+        s.pred = ta.value;
+        const needOpt = cfg.opts && !cfg.multi && s.opts.length === 0;
+        const needText = s.pred.trim().length === 0;
+        btn.disabled = needOpt || needText;
+        hint.classList.toggle("warn", btn.disabled);
+        hint.textContent = needOpt && needText ? "還差：選一個答案、寫一句為什麼。"
+          : needOpt ? "還差：選一個答案。"
+          : needText ? (cfg.opts ? "還差：寫一句為什麼。" : "還差：寫下你的答案。")
+          : "送出後就不能改。猜錯沒關係，等一下對照才有東西看。";
+      };
+      pbox.addEventListener("input", () => { ok(); save(); });
+      pbox.addEventListener("change", () => { ok(); save(); });
+      ok();
+      btn.addEventListener("click", () => {
+        ok();
+        if (btn.disabled) return;
+        s.locked = true; s.lockedAt = new Date().toISOString(); s.pt = predText(cfg, s); save();
+        renderAll(); body.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    /* 觀察紀錄 */
+    const obox = el("div", "isl-box isl-obs");
+    body.after(obox);
+    const renderObs = () => {
+      let h = '<div class="isl-k">我看到的</div><p class="isl-q">' + esc(cfg.obs) + "</p>";
+      h += '<textarea class="isl-ta" placeholder="把你看到的寫下來">' + esc(s.obs) + "</textarea>";
+      h += '<div class="isl-row"><button class="isl-btn' + (s.done ? "" : " primary") + '">' + (s.done ? "更新紀錄" : "記下來，看對照") + '</button><span class="isl-hint">' + (s.done ? "" : "寫下你看到的（一句話就好），就能記錄。") + '</span></div>';
+      obox.innerHTML = h;
+      const ta = obox.querySelector("textarea"), btn = obox.querySelector("button"), hint = obox.querySelector(".isl-hint");
+      const chk = () => { btn.disabled = ta.value.trim().length < MIN_OBS; };
+      ta.addEventListener("input", () => {
+        s.obs = ta.value; save(); chk();
+        hint.textContent = s.done ? "已自動儲存" : btn.disabled ? "寫下你看到的（一句話就好），就能記錄。" : "";
+      });
+      chk();
+      btn.addEventListener("click", () => {
+        s.obs = ta.value; if (s.obs.trim().length < MIN_OBS) return;
+        const first = !s.done;
+        s.done = true; s.doneAt = s.doneAt || new Date().toISOString(); save();
+        renderAll();
+        if (first && foot) foot.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+
+    lab._islRender = () => {
+      s = st(id);
+      if (s.locked && s.pt == null) s.pt = predText(cfg, s);   // 紀錄本要顯示預測的文字（那一頁沒有選項內容）
+      const open = cfg.mode !== "predict" || s.locked;
+      renderPred();
+      if (wait) wait.hidden = open;
+      body.hidden = !open;
+      obox.hidden = !open;
+      if (open) renderObs();
+      if (foot) { foot.hidden = !s.done; foot.classList.add("isl-reveal"); }
+      tag.textContent = s.done ? "✓ 已記錄" : "";
+    };
+  });
+
+  /* ---------- 會先講出答案的段落 ---------- */
+  const gates = (C.gates || []).map(g => {
+    const label = g.after === "ALL" ? "全部 " + ids.length + " 站都記錄完，這一段才會打開。" :
+      "第 " + document.querySelector("#" + g.after + " .lab-no").textContent.trim() + " 站記錄完，這一段才會打開。";
+    const note = el("div", "isl-gate", label);
+    if (g.hide) {                       // 直接藏起指定的元素（段落裡同時有探索站時用）
+      const kids = [...document.querySelectorAll(g.hide)];
+      if (!kids.length) return null;
+      kids[0].before(note);
+      return { g, kids, note };
+    }
+    const sec = document.querySelector(g.sel);
+    if (!sec) return null;
+    const kids = [...sec.children].filter(k => !k.classList.contains("pillar-tag"));
+    sec.appendChild(note);
+    return { g, kids, note };
+  }).filter(Boolean);
+
+  /* ---------- 進度列 ---------- */
+  const prog = el("div", "isl-prog");
+  document.querySelector("header").after(prog);
+
+  /* ---------- 判斷題 ---------- */
+  const quiz = el("section", "", "");
+  quiz.id = "isl-quiz";
+  const endSec = document.getElementById("end");
+  (endSec || document.querySelector(".wrap").lastElementChild).before(quiz);
+  const renderQuiz = () => {
+    let h = '<div class="pillar-tag" style="color:var(--orange)"><span class="dot" style="background:var(--orange)"></span>過關前的 ' + C.quiz.length + ' 題</div>' +
+      "<h2>選一個，答錯可以再選</h2>";
+    quiz.innerHTML = h;
+    C.quiz.forEach((q, i) => {
+      const r = S.quiz[i] = S.quiz[i] || { tried: [], ok: false };
+      const card = el("div", "isl-qcard");
+      card.innerHTML = '<div class="isl-qn">第 ' + (i + 1) + " 題</div><p class=\"isl-qt\">" + esc(q.q) + "</p>";
+      q.opts.forEach((o, j) => {
+        const b = el("button", "isl-choice", esc(o));
+        if (r.tried.includes(j)) b.classList.add(j === q.ans ? "yes" : "no");
+        if (r.ok || r.tried.includes(j)) b.disabled = true;
+        b.addEventListener("click", () => {
+          r.tried.push(j);
+          if (j === q.ans) { r.ok = true; r.okAt = new Date().toISOString(); }
+          save(); renderAll();
+        });
+        card.appendChild(b);
+      });
+      const last = r.tried[r.tried.length - 1];
+      if (r.ok) card.appendChild(el("div", "isl-fb good", "<b>對。</b>" + esc(q.exp)));
+      else if (last != null) card.appendChild(el("div", "isl-fb bad", "<b>再想想。</b>" + esc(q.why[last])));
+      quiz.appendChild(card);
+    });
+  };
+
+  /* ---------- 紀錄與章 ---------- */
+  const rec = el("section", "", "");
+  rec.id = "isl-record";
+  document.querySelector(".wrap").appendChild(rec);
+  const stamp = (on, date) => {
+    const d = date ? date.slice(0, 10).replace(/-/g, ".") : "";
+    return '<svg class="isl-stamp' + (on ? "" : " off") + '" viewBox="0 0 150 150" role="img" aria-label="單元章">' +
+      '<g transform="rotate(-8 75 75)" style="fill:none;stroke:var(--crimson)">' +
+      '<circle cx="75" cy="75" r="66" stroke-width="4"/><circle cx="75" cy="75" r="57" stroke-width="1.5"/>' +
+      '<text x="75" y="52" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 13px var(--sans);letter-spacing:2px">' + esc(C.chap) + "　探索完成</text>" +
+      '<text x="75" y="84" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:700 21px var(--serif)">' + esc(C.title) + "</text>" +
+      '<line x1="34" y1="96" x2="116" y2="96" stroke-width="1.2"/>' +
+      '<text x="75" y="114" text-anchor="middle" style="fill:var(--crimson);stroke:none;font:600 12px var(--sans)">' + (d || "　") + "</text></g></svg>";
+  };
+  let clearArmed = false;
+  const renderRecord = () => {
+    const done = allStations() && allQuiz();
+    const firstOK = C.quiz.filter((q, i) => S.quiz[i] && S.quiz[i].tried[0] === q.ans).length;
+    let h = '<div class="pillar-tag" style="color:var(--green)"><span class="dot" style="background:var(--green)"></span>我的探索紀錄</div>';
+    h += '<div class="isl-sheet"><div class="isl-sheet-head"><div><h3>' + esc(C.chap) + "　" + esc(C.title) + '</h3><div class="isl-sub">' + esc(C.topic) + '</div></div>' +
+      '<label class="isl-name">姓名 <input type="text" maxlength="20" value="' + esc(store.get(NAMEKEY) || "") + '"' + (nameLocked ? " readonly" : "") + '></label></div>';
+    h += '<table class="isl-tbl"><thead><tr><th>站</th><th>我的預測</th><th>我看到的</th></tr></thead><tbody>';
+    ids.forEach(id => {
+      const cfg = C.stations[id], s = st(id);
+      const lab = document.getElementById(id);
+      const name = lab ? lab.querySelector(".lab-no").textContent.trim() + "　" + lab.querySelector(".lab-title").textContent.trim() : id;
+      const p = cfg.mode === "predict" ? (s.locked ? esc(predText(cfg, s)) : '<span class="empty">還沒寫</span>') : '<span class="empty">（這站直接操作）</span>';
+      const o = s.done ? esc(s.obs.trim()) : '<span class="empty">還沒寫</span>';
+      h += '<tr><td class="n">' + esc(name) + '</td><td data-h="預測">' + p + '</td><td data-h="看到">' + o + "</td></tr>";
+    });
+    h += "</tbody></table>";
+    h += '<div class="isl-stamp-wrap">' + stamp(done, S.stampAt) + "<div>" +
+      (done ? "<b>這一章探索完成。</b><br>判斷題第一次就答對 " + firstOK + " ／ " + C.quiz.length + " 題。"
+            : "全部 " + ids.length + " 站都記錄完、" + C.quiz.length + " 題判斷題都答對，就會蓋上這個章。<br>目前：" +
+              ids.filter(stationDone).length + " ／ " + ids.length + " 站，" +
+              C.quiz.filter((_, i) => quizDone(i)).length + " ／ " + C.quiz.length + " 題。") +
+      "</div></div></div>";
+    h += '<div class="isl-tools"><button class="isl-btn primary" data-a="print">列印這份紀錄</button>' +
+      '<a class="isl-btn ghost" style="text-decoration:none" href="passport.html">看我的探索紀錄本</a>' +
+      '<button class="isl-clear" data-a="clear">' + (clearArmed ? "確定要清掉？再按一次" : "清除這一章的紀錄") + "</button></div>";
+    h += '<p class="isl-hint" style="margin-top:10px">' + (window.ISLAND_GATE ? "" : "沒登入時，紀錄只存在這台電腦的瀏覽器裡；") + '登入名單上的帳號，紀錄會存到雲端。在共用電腦上用完記得登出。</p>';
+    rec.innerHTML = h;
+    rec.querySelector(".isl-name input").addEventListener("input", e => store.set(NAMEKEY, e.target.value));
+    rec.querySelector('[data-a="print"]').addEventListener("click", () => {
+      document.body.classList.add("isl-print"); window.print();
+      setTimeout(() => document.body.classList.remove("isl-print"), 500);
+    });
+    rec.querySelector('[data-a="clear"]').addEventListener("click", () => {
+      if (!clearArmed) { clearArmed = true; renderRecord(); setTimeout(() => { clearArmed = false; renderRecord(); }, 4000); return; }
+      if (API.onClear) { API.onClear(); return; }
+      store.del(KEY); location.reload();
+    });
+  };
+
+  function renderAll() {
+    if (allStations() && allQuiz() && !S.stampAt) { S.stampAt = new Date().toISOString(); save(); }
+    ids.forEach(id => { const lab = document.getElementById(id); lab && lab._islRender && lab._islRender(); });
+    gates.forEach(({ g, kids, note }) => {
+      const open = g.after === "ALL" ? allStations() : stationDone(g.after);
+      kids.forEach(k => { if (k !== note) k.hidden = !open; });
+      note.hidden = open;
+    });
+    const nq = C.quiz.filter((_, i) => quizDone(i)).length;
+    prog.innerHTML = '<span class="t">探索紀錄</span><span class="isl-dots">' + ids.map(id => {
+      const s = st(id), cfg = C.stations[id];
+      const n = document.querySelector("#" + id + " .lab-no").textContent.trim();
+      const cls = s.done ? "ok" : (cfg.mode === "predict" && s.locked) ? "half" : "";
+      return '<a class="' + cls + '" href="#' + id + '" title="第 ' + n + ' 站">' + n + "</a>";
+    }).join("") + '</span><a class="q' + (nq === C.quiz.length ? " ok" : "") + '" href="#isl-quiz" style="text-decoration:none">判斷題 ' + nq + " ／ " + C.quiz.length + "</a>" +
+      '<a class="q' + (S.stampAt ? " ok" : "") + '" href="#isl-record" style="text-decoration:none">' + (S.stampAt ? "✓ 已蓋章" : "我的紀錄 →") + "</a>";
+    renderQuiz();
+    renderRecord();
+  }
+  /* 給雲端模組用：換一個人的紀錄、換姓名、整頁重畫 */
+  API.config = C;
+  API.store = store;
+  API.state = () => S;
+  API.adopt = (newKey, newS, opts) => {
+    KEY = newKey;
+    S = newS || {};
+    S.st = S.st || {}; S.quiz = S.quiz || {};
+    if (opts && opts.nameKey) NAMEKEY = opts.nameKey;
+    if (opts && "name" in opts) { store.set(NAMEKEY, opts.name || ""); }
+    nameLocked = !!(opts && opts.nameLocked);
+    clearArmed = false;
+    store.set(KEY, JSON.stringify(S));
+    renderAll();
+  };
+  API.progressBox = prog;
+  API.recordBox = rec;
+  renderAll();
+  if (API.onReady) API.onReady();
+})();
+</script>
+<script src="firebase-config.js"></script>
+<script type="module" src="island-cloud.js"></script>
+</body>
+</html>

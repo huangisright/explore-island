@@ -17,6 +17,7 @@ import glob, importlib
 
 # 每一章一個設定檔 units_*.py（CFG），依檔名排序
 BUILT = [importlib.import_module(os.path.basename(f)[:-3]).CFG for f in sorted(glob.glob(os.path.join(HERE, "units_*.py")))]
+BUILT.sort(key=lambda c: c.get("course") == "代數拾光")     # 代數拾光排在最後（老師頁的欄位順序）
 GRADES = ["七年級上", "七年級下", "八年級上", "八年級下", "九年級上", "九年級下"]
 # 空殼頁設定：GATED = "ALL" 代表全部單元；TRIAL 是只做試做頁的單元
 GATED = set()
@@ -120,7 +121,8 @@ def restructure_gp(s, cfg):
 
 
 def build_unit(src_site, out, cfg, content_dir=None):
-    s = read(os.path.join(src_site, "units", cfg["slug"] + ".html"))
+    # 不在 GiftedMath 的課（代數拾光）：原始頁放在 _原始碼/ 底下，設定檔用 "src" 指過去
+    s = read(os.path.join(HERE, cfg["src"]) if cfg.get("src") else os.path.join(src_site, "units", cfg["slug"] + ".html"))
     if cfg.get("restructure") == "h4":
         s = restructure_h4(s, cfg)
     elif cfg.get("restructure") == "gp":
@@ -143,7 +145,7 @@ def build_unit(src_site, out, cfg, content_dir=None):
         s = s.replace(k, read(comic) + read(os.path.join(HERE, "comics", "_common.html")) + k)
     css = read(os.path.join(HERE, "island.css"))
     js = read(os.path.join(HERE, "island.js"))
-    data = json.dumps({k: v for k, v in cfg.items() if k not in ("patches", "restructure", "wrap")}, ensure_ascii=False)
+    data = json.dumps({k: v for k, v in cfg.items() if k not in NOCFG}, ensure_ascii=False)
     inject = ('<style id="island">\n' + css + "</style>\n<script>window.ISLAND=" + data + ";</script>\n<script>\n" + js + "</script>\n" + CLOUD_TAIL)
     assert s.count("</body>") == 1
     s = s.replace("</body>", inject + "</body>")
@@ -184,6 +186,14 @@ def split_page(s, cfg):
 
 
 GP = "幾何拾光"
+ALG = "代數拾光"
+NOCFG = ("patches", "restructure", "wrap", "src", "course")
+
+
+def alg_rows():
+    """代數拾光不在 GiftedMath 的目錄頁裡，直接從設定檔（"course": "代數拾光"）排出紀錄本的列。"""
+    return [dict(slug=c["slug"], grade=ALG, kind="專題", ch=c["chap"], title=c["title"])
+            for c in BUILT if c.get("course") == ALG]
 
 
 def units_from_index(src_site, grades=None):
@@ -201,13 +211,15 @@ def units_from_index(src_site, grades=None):
 
 
 def build_passport(src_site, out):
-    rows = units_from_index(src_site, GRADES + [GP])
+    rows = units_from_index(src_site, GRADES + [GP]) + alg_rows()
     built = {c["slug"]: c for c in BUILT}
     for r in rows:
         if r["grade"] == GP:      # 「單元一 第 1 節」太長，紀錄本的章欄放不下 → 「一-1」
             m = re.match(r"單元(\S+)\s*第\s*(\d+)\s*節", r["ch"])
             if m:
                 r["ch"] = m.group(1) + "-" + m.group(2)
+        if r["grade"] == ALG:     # 「代數二」→「二」
+            r["ch"] = r["ch"].replace("代數", "")
         r["open"] = r["slug"] in built
         if r["open"]:      # 紀錄本要畫每一站的格子：站的代號、哪幾站不用先預測、判斷題幾題（都不是教材內容）
             c = built[r["slug"]]
@@ -217,7 +229,7 @@ def build_passport(src_site, out):
     tpl = read(os.path.join(HERE, "passport.tpl.html"))
     plain = {c["slug"]: c.get("plain", "") for c in BUILT}
     page = tpl.replace("/*UNITS*/[]", json.dumps(rows, ensure_ascii=False)) \
-              .replace("/*GRADES*/[]", json.dumps(GRADES + [GP], ensure_ascii=False)) \
+              .replace("/*GRADES*/[]", json.dumps(GRADES + [GP] + ([ALG] if alg_rows() else []), ensure_ascii=False)) \
               .replace("/*PLAIN*/{}", json.dumps(plain, ensure_ascii=False))
     with open(os.path.join(out, "passport.html"), "w", encoding="utf8") as f:
         f.write(page)
@@ -273,9 +285,19 @@ def build_geo(out):
             fh.write(page.replace("/*GP_DONE*/[]", json.dumps(done)))
 
 
+def build_alg(out):
+    """代數拾光的入口頁：列出做好的單元。"""
+    units = [{"slug": c["slug"], "chap": c["chap"], "title": c["title"], "topic": c["topic"], "plain": c.get("plain", "")}
+             for c in BUILT if c.get("course") == ALG]
+    page = read(os.path.join(HERE, "alg.tpl.html"))
+    assert page.count("/*ALG*/[]") == 1
+    with open(os.path.join(out, "alg.html"), "w", encoding="utf8") as f:
+        f.write(page.replace("/*ALG*/[]", json.dumps(units, ensure_ascii=False)))
+
+
 def build_teacher(out):
     tpl = read(os.path.join(HERE, "teacher.tpl.html"))
-    page = tpl.replace("/*CFGS*/[]", json.dumps([{k: v for k, v in c.items() if k not in ("patches", "restructure", "wrap")} for c in BUILT], ensure_ascii=False))
+    page = tpl.replace("/*CFGS*/[]", json.dumps([{k: v for k, v in c.items() if k not in NOCFG} for c in BUILT], ensure_ascii=False))
     with open(os.path.join(out, "teacher.html"), "w", encoding="utf8") as f:
         f.write(page)
 
@@ -291,6 +313,7 @@ if __name__ == "__main__":
     for f in ["island-cloud.js", "firebase-config.js", "island-map.js", "upload.html"]:
         shutil.copy(os.path.join(HERE, f), os.path.join(out, f))
     build_geo(out)
+    build_alg(out)
     build_teacher(out)
     build_report(out)
     build_home(src, out)

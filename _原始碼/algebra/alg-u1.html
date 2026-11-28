@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>遮住頂點以後｜代數拾光</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f5f3e9;color:#163e45;font:16px/1.55 "PingFang TC",sans-serif}main{max-width:1000px;margin:auto;padding:24px}header{border-bottom:1px solid #a8bfb4;margin-bottom:20px}small{color:#32726b}h1{font:600 clamp(32px,5vw,56px)/1.2 "Songti TC",serif;margin:10px 0}h2{font-size:19px}section{display:grid;grid-template-columns:1fr 1fr;gap:22px}article,aside{background:#fffdf5;border:1px solid #c4cfc2;border-radius:16px;padding:18px}svg{width:100%;height:auto;display:block}button,input,select{font:inherit;color:inherit;border:1px solid #a7bdb3;border-radius:7px;padding:6px;background:white}button{cursor:pointer;margin:4px 3px 4px 0}button.primary{background:#175954;color:white}label{display:inline-block;margin:3px 8px 5px 0}input[type=number]{width:72px}fieldset{border:0;padding:0;margin:12px 0}legend{font-weight:650}#feedback{min-height:2em;background:#eef3eb;padding:10px}details{margin-top:12px}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d68937}@media(max-width:660px){section{grid-template-columns:1fr}main{padding:14px}article,aside{padding:12px}}</style>
+</head>
+<body>
+<style id="backnav">
+.bk-top{max-width:1040px;margin:0 auto;padding:14px 24px 0;font-family:"PingFang TC","Noto Sans TC",sans-serif;font-size:14px}
+.bk-top a{color:#175954;text-decoration:none;font-weight:600}
+.bk-fab{position:fixed;right:16px;bottom:16px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border-radius:24px;background:#fffdf5;border:1px solid #c4cfc2;color:#175954;font-family:"PingFang TC","Noto Sans TC",sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 2px 4px rgba(72,60,40,.10),0 10px 26px rgba(72,60,40,.16)}
+</style>
+<div class="bk-top"><a href="index.html">← 回目錄</a></div>
+<main class="wrap"><header><small>代數拾光　／　單元一</small><h1>遮住頂點以後</h1><p>每條邊的數是兩端頂點的和。試填一組，再找找看還有沒有別組。</p></header><div class="lab" id="lab1"><div class="lab-head"><span class="lab-no">1</span><div><p class="lab-title">填頂點，逐邊驗算</p><p class="lab-why"></p></div></div><div class="lab-body"><section><article><label>題卡 <select id="preset"><option>甲　三角形</option><option>乙　四邊形</option><option>丙　只改一條邊</option><option>丁　五邊形</option><option>戊　三邊都是 1</option><option>自訂題卡</option></select></label><svg viewBox="0 0 420 360" aria-label="多邊形頂點與邊和" role="img" id="fig"></svg><small>青色圓點是頂點，赭色數字是目標邊和。</small></article><aside><label>答案範圍 <select id="domain"><option>整數</option><option>非負整數</option><option>實數</option></select></label><fieldset><legend>填入頂點</legend><div id="verts"></div></fieldset><button class="primary" id="check">逐邊驗算</button><button id="clear">清空頂點</button><p id="feedback" role="status">先從任何一點開始。</p><details><summary>沿邊推算</summary><p>先填 A，讓下一點等於「目標邊和減前一點」。最後一條邊要自己核對。</p><button id="walk">從 A 推出其餘頂點</button></details><details id="editor"><summary>自己設計題卡</summary><label>邊數 <select id="count"><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label><div id="edges"></div><button id="apply">套用邊和</button><button id="hide">用目前的頂點出題並遮住</button></details></aside></section></div></div>
+<div id="end"></div></main>
+<script>
+const el=id=>document.getElementById(id),cards=[[7,14,11],[7,9,11,9],[7,9,11,10],[5,7,9,11,8],[1,1,1]],letter=i=>String.fromCharCode(65+i);
+let sums=cards[0].slice();
+function inputs(box,labels,values){el(box).replaceChildren();labels.forEach((name,i)=>{let l=document.createElement('label'),v=document.createElement('input');v.type='number';v.step='any';v.value=values[i]??'';l.append(name+' ',v);el(box).append(l)})}
+function values(box){return [...el(box).querySelectorAll('input')].map(v=>v.value===''?NaN:v.valueAsNumber)}
+function editor(n){inputs('edges',Array.from({length:n},(_,i)=>letter(i)+letter((i+1)%n)),n===sums.length?sums:[])}
+function load(a){sums=[...a];inputs('verts',a.map((_,i)=>letter(i)),[]);el('count').value=a.length;editor(a.length);message('填入頂點，再按逐邊驗算。');draw()}
+function message(s){el('feedback').textContent=s}
+function draw(){let n=sums.length,vs=values('verts'),p=sums.map((_,i)=>[210+123*Math.sin(2*Math.PI*i/n),180-118*Math.cos(2*Math.PI*i/n)]);let txt=(x,y,v,color,size)=>'<text text-anchor="middle" dominant-baseline="middle" x="'+x+'" y="'+y+'" fill="'+color+'" font-size="'+size+'">'+v+'</text>';el('fig').innerHTML='<polygon points="'+p.map(v=>v.join(',')).join(' ')+'" fill="#e6f0e4" stroke="#4a817c" stroke-width="3"/>'+p.map(([x,y],i)=>{let [a,b]=p[(i+1)%n];return txt(210+((x+a)/2-210)*1.23,180+((y+b)/2-180)*1.23,sums[i],'#984810',21)+'<circle cx="'+x+'" cy="'+y+'" r="19" fill="#185652"/>'+txt(x,y,letter(i),'white',17)+txt(210+(x-210)*.68,180+(y-180)*.68,Number.isFinite(vs[i])?vs[i]:'?', '#183e42',18)}).join('')}
+el('preset').onchange=e=>{let i=e.target.selectedIndex;if(i<5)load(cards[i]);else el('editor').open=true};
+el('count').onchange=e=>editor(+e.target.value);
+el('apply').onclick=()=>{let a=values('edges');if(!a.every(Number.isFinite))return message('請填完每一條邊和。');el('preset').selectedIndex=5;load(a)};
+el('hide').onclick=()=>{let a=values('verts');if(!a.every(Number.isFinite))return message('先填滿目前圖形的頂點，才能產生邊和。');el('preset').selectedIndex=5;load(a.map((v,i)=>v+a[(i+1)%a.length]))};
+el('verts').oninput=()=>{draw();message('頂點已更動，可重新驗算。')};el('domain').onchange=()=>message('答案範圍已更動，可重新驗算。');
+el('clear').onclick=()=>load(sums);
+el('walk').onclick=()=>{let a=values('verts');if(!Number.isFinite(a[0]))return message('請先填 A。');for(let i=1;i<a.length;i++)a[i]=sums[i-1]-a[i-1];inputs('verts',a.map((_,i)=>letter(i)),a);draw();message('已沿邊推算，最後一條邊也合得起來嗎？')};
+el('check').onclick=()=>{let a=values('verts'),d=el('domain').selectedIndex;if(!a.every(Number.isFinite))return message('請先填完所有頂點。');let bad=sums.map((s,i)=>Math.abs(a[i]+a[(i+1)%a.length]-s)>1e-8?letter(i)+letter((i+1)%a.length):'').filter(Boolean);message((bad.length?'邊和未合：'+bad.join('、')+'。':'每條邊和都吻合。')+(d<2&&a.some(v=>!Number.isInteger(v)||d===1&&v<0)?' 頂點超出所選答案範圍。':bad.length?'':' 這是一組可行解。'))};load(cards[0]);</script><a class="bk-fab" href="index.html">← 目錄</a>
+</body>
+</html>
