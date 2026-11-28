@@ -1,0 +1,9 @@
+/* 代數拾光：沿用 geometry/geo.css，只改六道光的排法 */
+.stars { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas: "s1 s2 s3" "s6 s5 s4"; }
+.star.later { opacity: .55; }
+.star.later .star-title::after { content: "準備中"; display: block; margin-top: 2px; font-size: 11px; letter-spacing: .14em; color: var(--muted); font-family: var(--sans); }
+.later-note { margin-top: 14px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+.prism { object-position: 60% 50%; }
+@media (max-width: 860px) {
+  .stars { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "s1 s2" "s3 s4" "s5 s6"; }
+}

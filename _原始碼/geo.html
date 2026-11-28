@@ -1,238 +1,151 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>幾何拾光｜一線數光</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
-<style>
-/* 幾何拾光：八道光沿著一條柔和的弧線排開，一道光是一個單元；做完的節讓那道光更亮。
-   不用島嶼意象，畫面只有夜空、細塵和光點。 */
-:root{
-  --bg1:#16203a; --bg2:#0b1020; --ink:#ecf0f6; --ink-2:#a9b4c4; --ink-3:#6f7b8e;
-  --glow:255,176,72; --glow-2:255,222,165; --ray:60,85,140; --line:#26304a; --card:#151d33cc; --card-edge:#2b3654;
-  --accent:#e7ad62; --done:#f0b765;
-  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti",serif;
-  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
-  color-scheme:dark;
-}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%}
-body{font:15px/1.7 var(--f-body);color:var(--ink);background:linear-gradient(170deg,var(--bg1) 0%,var(--bg2) 100%);min-height:100vh;overflow-x:hidden}
-a{color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
-
-/* 光束與細塵 */
-.rays{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.rays i{position:absolute;top:-30%;width:22vw;height:160%;left:var(--x);transform:rotate(-24deg);
-  background:linear-gradient(90deg,transparent,rgba(var(--ray),.45),transparent);filter:blur(18px);opacity:.7}
-#dust{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-
-.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:22px 24px 40px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.home{font-size:14px;color:var(--ink-2);text-decoration:none;padding:6px 2px}
-.home:hover{color:var(--ink)}
-.modes{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--card)}
-.modes[hidden]{display:none}
-.modes button{border:0;background:none;font:500 13px var(--f-body);color:var(--ink-2);padding:4px 12px;border-radius:999px;cursor:pointer}
-.modes button[aria-pressed="true"]{background:var(--ink);color:var(--bg1)}
-
-header.hero{text-align:center;margin:28px 0 6px}
-header.hero h1{font:700 clamp(34px,6vw,52px)/1.15 var(--f-display);letter-spacing:.18em;margin:0;padding-left:.18em}
-header.hero p{margin:10px 0 0;color:var(--ink-2);font-size:15.5px}
-header.hero .count{margin-top:4px;font-size:13px;color:var(--ink-3)}
-
-/* 弧線上的八道光 */
-.field{position:relative;height:500px;margin-top:8px}
-.field svg.path{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.light{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:8px;
-  background:none;border:0;padding:6px;cursor:pointer;color:var(--ink);font:inherit;width:max-content}
-.light .txt{display:flex;flex-direction:column;align-items:center;gap:2px}
-.orb{position:relative;width:var(--s,54px);height:var(--s,54px);border-radius:50%;
-  background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.95) 0,rgba(var(--glow-2),.95) 22%,rgba(var(--glow),calc(.35 + var(--lit,0)*.55)) 52%,rgba(var(--glow),0) 72%);
-  box-shadow:0 0 calc(18px + var(--lit,0)*34px) calc(4px + var(--lit,0)*12px) rgba(var(--glow),calc(.18 + var(--lit,0)*.42));
-  transition:transform .5s ease, box-shadow .5s ease}
-.light:hover .orb,.light:focus-visible .orb,.light[aria-expanded="true"] .orb{transform:scale(1.12)}
-@media (prefers-reduced-motion:no-preference){ .orb{animation:breathe 6s ease-in-out infinite;animation-delay:var(--d,0s)} }
-@keyframes breathe{50%{filter:brightness(1.08);transform:scale(1.04)}}
-.light .no{font:500 12px var(--f-body);color:var(--ink-3);letter-spacing:.2em}
-.light .nm{font:700 18px/1.25 var(--f-display);letter-spacing:.06em;text-align:center;white-space:nowrap}
-.motes{display:flex;gap:5px;justify-content:center}
-.motes b{width:6px;height:6px;border-radius:50%;border:1px solid rgba(var(--glow),.8);background:transparent}
-.motes b.on{background:rgb(var(--glow));box-shadow:0 0 6px rgba(var(--glow),.9);border-color:transparent}
-
-/* 單元卡 */
-.panel{position:fixed;top:0;right:0;height:100%;width:min(420px,100%);z-index:5;background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-left:1px solid var(--card-edge);padding:28px 26px 30px;overflow:auto;transform:translateX(102%);transition:transform .45s cubic-bezier(.2,.7,.2,1)}
-.panel.open{transform:none}
-.panel .close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink-2);font-size:18px;cursor:pointer}
-.panel .eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--accent)}
-.panel h2{font:700 30px/1.25 var(--f-display);letter-spacing:.06em;margin:6px 0 4px}
-.panel .hook{font:400 17px/1.6 var(--f-display);color:var(--ink-2);margin:0 0 18px}
-.panel .tname{font-size:13px;color:var(--ink-3);margin:-10px 0 16px}
-.sec{display:flex;align-items:center;gap:14px;padding:14px 4px;border-top:1px solid var(--line);text-decoration:none}
-.sec:last-of-type{border-bottom:1px solid var(--line)}
-.sec .dot{flex:0 0 auto;width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(var(--glow),.9)}
-.sec.lit .dot{background:rgb(var(--glow));box-shadow:0 0 10px rgba(var(--glow),.9);border-color:transparent}
-.sec .t{flex:1;font:700 17px/1.35 var(--f-display)}
-.sec .t small{display:block;font:400 12.5px/1.5 var(--f-body);color:var(--ink-3);margin-top:2px}
-.sec .go{font-size:13.5px;color:var(--accent);white-space:nowrap}
-.sec:hover .t{color:var(--accent)}
-.panel .note{font-size:12.5px;color:var(--ink-3);margin-top:16px}
-.scrim{position:fixed;inset:0;z-index:4;background:rgba(0,0,0,.08);opacity:0;pointer-events:none;transition:opacity .3s}
-.scrim.on{opacity:1;pointer-events:auto}
-
-footer{text-align:center;color:var(--ink-3);font-size:13px;margin-top:26px}
-
-/* 窄螢幕：八道光改成直的一列 */
-@media (max-width:760px){
-  .page{padding:16px 16px 32px}
-  .field{height:auto;display:flex;flex-direction:column;gap:6px;margin-top:18px}
-  .field svg.path{display:none}
-  .light{position:static;transform:none;flex-direction:row;width:100%;justify-content:flex-start;gap:16px;padding:10px 6px;border-bottom:1px solid var(--line)}
-  .light .txt{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
-  .light .nm{text-align:left}
-  .motes{justify-content:flex-start}
-  .panel{top:auto;bottom:0;height:auto;max-height:82%;width:100%;border-left:0;border-top:1px solid var(--card-edge);border-radius:20px 20px 0 0;transform:translateY(102%)}
-}
-@media (prefers-reduced-motion:reduce){ .panel,.orb{transition:none} }
-</style>
-</head>
-<body>
-<div class="rays" aria-hidden="true"><i style="--x:8%"></i><i style="--x:38%"></i><i style="--x:70%"></i></div>
-<canvas id="dust" aria-hidden="true"></canvas>
-<div class="page">
-  <div class="top">
-    <a class="home" href="index.html">← 一線數光</a>
-    <div class="modes" role="group" aria-label="視角" hidden>
-      <button type="button" data-mode="student" aria-pressed="true">學生</button>
-      <button type="button" data-mode="teacher" aria-pressed="false">教師</button>
-    </div>
-  </div>
-  <header class="hero">
-    <h1>幾何拾光</h1>
-    <p>八道光，二十八個發現。點一道光，慢慢看。</p>
-    <div class="count" id="count"></div>
-  </header>
-  <main class="field" id="field" aria-label="八個單元"></main>
-  <footer>黃士祐 老師（IsRight）</footer>
-</div>
-<div class="scrim" id="scrim"></div>
-<aside class="panel" id="panel" aria-live="polite"></aside>
-
-<script>
-// 已經做成紀錄版的節（build.py 產生時填入）；其他節還連到原本的動態頁
-const GP_DONE = /*GP_DONE*/[];
-// 學生看到的單元名避開學術名（位似、圓的冪……），教師視角才顯示原單元名與每節的定理名。
-const UNITS = [
-  { n:1, zh:'一', name:'面積會加',   t:'面積會加',   hook:'切開來，再加回去。',
-    s:[['一個不會變的數','維維安尼'],['空白搬了家','勾股拼圖'],['三條線，交在一點','塞瓦（面積法的載體）']] },
-  { n:2, zh:'二', name:'把折線拉直', t:'把折線拉直', hook:'彎的路，翻一下就直了。',
-    s:[['光走的那一條','海倫最短路徑'],['最短的那一圈','法尼亞諾'],['三條路接成一條','費馬點']] },
-  { n:3, zh:'三', name:'比的語言',   t:'比的語言',   hook:'量不出來，就比一比。',
-    s:[['離 A 是離 B 的兩倍','阿氏圓'],['從頂點到底邊的那一條','斯圖爾特'],['切下來的那一塊','黃金比']] },
-  { n:4, zh:'四', name:'乘積等於一', t:'乘積等於一', hook:'繞一圈乘起來，剛好是 1。',
-    s:[['又交在一點','塞瓦當工具'],['一條線穿過去','梅涅勞斯'],['三組對邊，交在一條線上','笛沙格']] },
-  { n:5, zh:'五', name:'縮一半',     t:'位似',       hook:'從一個點看出去，全部縮一半。',
-    s:[['三個點排成一列','歐拉線'],['九個點，一個圓','九點圓'],['三個尖，一條線','蒙日定理']] },
-  { n:6, zh:'六', name:'乘起來不變', t:'圓的冪',     hook:'怎麼畫，乘起來都是那個數。',
-    s:[['乘起來還是那個數','圓冪'],['站在兩個圓中間','根軸與根心'],['中點兩邊一樣長','蝴蝶定理'],['對角線乘起來','托勒密（反演只示範）']] },
-  { n:7, zh:'七', name:'轉了又轉',   t:'旋轉的合成', hook:'做兩次，等於做一次什麼？',
-    s:[['轉兩次','旋轉接旋轉'],['三個中心','拿破崙'],['中點又是正三角形','愛可爾斯'],['轉回原樣','正三角形的六個動作']] },
-  { n:8, zh:'八', name:'丟掉長度',   t:'丟掉長度',   hook:'不量長度，還剩下什麼？',
-    s:[['畫出來的地板','透視的地板'],['一個數都不用算','笛沙格再訪'],['圓上六個點','帕斯卡與帕普斯'],['翻譯過來的句子','布里昂雄'],['最後一題','第 27 章角度題']] },
-];
-const store = {
-  get(k, d){ try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-};
-// 教師視角的按鈕平常不出現；網址加 #teacher 開一次，這台電腦之後就會記得。
-if (location.hash === '#teacher') store.set('gp-teacher-ok', true);
-const teacherOK = store.get('gp-teacher-ok', false);
-let mode = teacherOK ? store.get('gp-mode', 'student') : 'student';
-const T = () => mode === 'teacher';
-const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
-const slug = (u, i) => `gp-u${u.n}-${i + 1}`;
-const url = (u, i) => GP_DONE.includes(slug(u, i)) ? `${slug(u, i)}.html` : `https://huangisright.github.io/GiftedMath/units/${slug(u, i)}.html`;
-// 這台電腦上已經蓋章的節（登入時紀錄也會先存在本機）
-const stamped = (u, i) => { const r = store.get('isl:' + slug(u, i), null); return !!(r && r.stampAt); };
-const litCount = u => u.s.filter((_, i) => stamped(u, i)).length;
-
-// 八道光的位置：沿著一條柔和的弧線（0～1 的比例座標）
-// 八道光各一色，排成一道光譜
-const HUE = [['236,84,72','252,160,148'],['240,130,30','252,186,120'],['218,170,20','246,214,100'],['72,170,84','160,222,150'],
-  ['20,160,166','130,214,214'],['52,120,228','150,188,250'],['104,90,220','178,168,250'],['176,78,200','222,160,240']];
-const hue = k => `--glow:${HUE[k][0]};--glow-2:${HUE[k][1]}`;
-const POS = [[.07,.62],[.2,.38],[.34,.24],[.48,.3],[.6,.52],[.72,.7],[.84,.56],[.94,.32]];
-function render(){
-  const f = $('#field');
-  f.innerHTML = `<svg class="path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-      <path d="${POS.map((p, i) => (i ? 'L' : 'M') + (p[0] * 100).toFixed(1) + ' ' + (p[1] * 100).toFixed(1)).join(' ')}"
-        fill="none" stroke="var(--ink-3)" stroke-opacity=".5" stroke-width=".35" stroke-dasharray=".6 1.6" vector-effect="non-scaling-stroke" style="stroke-width:1.4px"/></svg>` +
-    UNITS.map((u, k) => {
-      const lit = litCount(u) / u.s.length;
-      return `<button type="button" class="light" data-u="${k}" aria-expanded="false" aria-controls="panel"
-        style="left:${POS[k][0] * 100}%;top:${POS[k][1] * 100}%;--lit:${lit.toFixed(2)};--d:${(k * .7).toFixed(1)}s;--s:${48 + u.s.length * 3}px;${hue(k)}">
-        <span class="orb"></span>
-        <span class="txt"><span class="no">${u.zh}</span><span class="nm">${esc(T() ? u.t : u.name)}</span>
-        <span class="motes">${u.s.map((_, i) => `<b class="${stamped(u, i) ? 'on' : ''}"></b>`).join('')}</span></span></button>`;
-    }).join('');
-  const total = UNITS.reduce((a, u) => a + u.s.length, 0), got = UNITS.reduce((a, u) => a + litCount(u), 0);
-  $('#count').textContent = got ? `這台電腦上，已經拾起 ${got}／${total} 道光` : '';
-  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
-}
-let openK = null;
-function open(k){
-  openK = k; const u = UNITS[k];
-  $('#panel').innerHTML = `<button type="button" class="close" aria-label="關上">×</button>
-    <div class="eyebrow">第 ${u.zh} 道光</div>
-    <h2>${esc(u.name)}</h2>
-    <p class="hook">${esc(u.hook)}</p>
-    ${T() && u.t !== u.name ? `<p class="tname">單元名：${esc(u.t)}</p>` : ''}
-    ${u.s.map(([title, thm], i) => {
-      const done = GP_DONE.includes(slug(u, i));
-      return `<a class="sec ${stamped(u, i) ? 'lit' : ''}" href="${url(u, i)}"${done ? '' : ' target="_blank" rel="noopener"'}>
-        <span class="dot"></span>
-        <span class="t">${esc(title)}${T() ? `<small>${esc(thm)}</small>` : `<small>第 ${i + 1} 節${stamped(u, i) ? '・已蓋章' : ''}</small>`}</span>
-        <span class="go">${done ? '走進去 →' : '打開動態頁 →'}</span></a>`;
-    }).join('')}
-    <p class="note">做完一節、蓋了章，這道光就亮一點。</p>`;
-  $('#panel').style.cssText = hue(k) + `;--accent:rgb(${HUE[k][1]})`; $('#panel').classList.add('open'); $('#scrim').classList.add('on');
-  document.querySelectorAll('.light').forEach(b => b.setAttribute('aria-expanded', String(+b.dataset.u === k)));
-  $('#panel .close').focus();
-}
-function close(){
-  $('#panel').classList.remove('open'); $('#scrim').classList.remove('on');
-  const b = openK != null && document.querySelector(`.light[data-u="${openK}"]`);
-  document.querySelectorAll('.light').forEach(x => x.setAttribute('aria-expanded', 'false'));
-  openK = null; if (b) b.focus();
-}
-$('#field').addEventListener('click', e => { const b = e.target.closest('.light'); if (b) open(+b.dataset.u); });
-$('#panel').addEventListener('click', e => { if (e.target.closest('.close')) close(); });
-$('#scrim').addEventListener('click', close);
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && openK != null) close(); });
-if (teacherOK) $('.modes').hidden = false;
-document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
-  mode = b.dataset.mode; store.set('gp-mode', mode); render(); if (openK != null) open(openK);
-}));
-render();
-
-// 細塵：慢慢往上飄的光點
-(function dust(){
-  const cv = $('#dust'), g = cv.getContext('2d'), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let W, H, P = [];
-  const size = () => { const dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    P = Array.from({ length: Math.round(W * H / 26000) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: .6 + Math.random() * 1.6, v: .06 + Math.random() * .18, a: .15 + Math.random() * .45, ph: Math.random() * 6 })); };
-  const glow = getComputedStyle(document.documentElement).getPropertyValue('--glow').trim();
-  const draw = t => { g.clearRect(0, 0, W, H);
-    for (const p of P) { if (!reduce) { p.y -= p.v; p.x += Math.sin(t / 4000 + p.ph) * .12; if (p.y < -4) { p.y = H + 4; p.x = Math.random() * W; } }
-      g.beginPath(); g.fillStyle = `rgba(${glow},${p.a})`; g.arc(p.x, p.y, p.r, 0, 7); g.fill(); }
-    if (!reduce) requestAnimationFrame(draw); };
-  addEventListener('resize', size); size(); requestAnimationFrame(draw);
-})();
-</script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b1522" />
+    <meta
+      name="description"
+      content="幾何拾光。八道光，二十八個發現。從星圖選一道光，沿著圖形走進一線數光的幾何探究。"
+    />
+    <title>幾何拾光｜一線數光</title>
+    <link rel="icon" href="light.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="geometry/geo.css" />
+    <script>window.GP_DONE = /*GP_DONE*/[];</script>
+    <script src="geometry/units.js" defer></script>
+    <script src="geometry/figures.js" defer></script>
+    <script src="geometry/geo.js" defer></script>
+  </head>
+  <body>
+    <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H4m7-7-7 7 7 7" /></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24">
+        <path
+          d="M12 6.5C9.2 4.6 5.4 4.2 2.5 5.3v13.1c3.4-1 6.5-.7 9.5 1.1 3-1.8 6.1-2.1 9.5-1.1V5.3c-2.9-1.1-6.7-.7-9.5 1.2Zm0 0v13"
+        />
+      </symbol>
+      <symbol id="i-map" viewBox="0 0 24 24">
+        <path d="m4 16 5-10 6 9 5-6" />
+        <circle cx="4" cy="16" r="1.6" />
+        <circle cx="9" cy="6" r="1.6" />
+        <circle cx="15" cy="15" r="1.6" />
+        <circle cx="20" cy="9" r="1.6" />
+      </symbol>
+      <symbol id="i-list" viewBox="0 0 24 24">
+        <path d="M8.5 6h12m-12 6h12m-12 6h12M3.5 6H4m-.5 6H4m-.5 6H4" />
+      </symbol>
+      <symbol id="i-go" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12m0-12L6 18" /></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24">
+        <path d="m12 2 2.1 7.9L22 12l-7.9 2.1L12 22l-2.1-7.9L2 12l7.9-2.1Z" />
+      </symbol>
+    </svg>
+    <a class="skip" href="#explore">跳到幾何星圖</a>
+    <header class="topbar">
+      <div class="frame top-inner">
+        <a class="brand" href="index.html">
+          <img src="light.svg" width="32" height="32" alt="" />
+          <span>一線數光</span>
+        </a>
+        <span class="nav-divider" aria-hidden="true"></span>
+        <span class="current-page" aria-current="page">幾何拾光</span>
+        <nav aria-label="主要導覽">
+          <a class="back-link" href="index.html">
+            <svg class="icon" aria-hidden="true"><use href="#i-back" /></svg>
+            回到地圖
+          </a>
+          <a class="passport" href="passport.html">
+            <svg class="icon" aria-hidden="true"><use href="#i-book" /></svg>
+            探索紀錄本
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <img
+          class="prism"
+          src="geometry/prism.webp"
+          alt=""
+          width="1980"
+          height="660"
+          fetchpriority="high"
+        />
+        <div class="frame hero-inner">
+          <p class="series">
+            <span class="light-rule" aria-hidden="true"></span>
+            進階幾何探究
+          </p>
+          <h1 id="page-title">幾何拾光</h1>
+          <p class="intro">
+            八道光，二十八個發現。
+            <span>點一道光，慢慢看。</span>
+          </p>
+        </div>
+      </section>
+      <section id="explore" class="frame explore" aria-labelledby="chart-title" tabindex="-1">
+        <div class="section-top">
+          <div class="section-name">
+            <svg class="section-mark icon" aria-hidden="true"><use href="#i-spark" /></svg>
+            <h2 id="chart-title">八道光</h2>
+          </div>
+          <div class="view-switch" role="group" aria-label="顯示方式">
+            <button type="button" data-view="map" aria-pressed="true" aria-controls="map-view">
+              <svg class="icon" aria-hidden="true"><use href="#i-map" /></svg>
+              星圖
+            </button>
+            <button type="button" data-view="list" aria-pressed="false" aria-controls="catalogue">
+              <svg class="icon" aria-hidden="true"><use href="#i-list" /></svg>
+              目錄
+            </button>
+          </div>
+        </div>
+        <div id="map-view" class="map-view">
+          <div class="chart" aria-label="八道光的幾何星圖" role="group">
+            <div class="sky" aria-hidden="true"></div>
+            <svg
+              class="mesh"
+              aria-hidden="true"
+              viewBox="0 0 800 340"
+              preserveAspectRatio="xMidYMid slice"
+            >
+              <g class="orbits" fill="none">
+                <circle cx="288" cy="459" r="342" />
+                <circle cx="288" cy="459" r="441" />
+                <circle cx="288" cy="459" r="454" />
+                <path d="M-70 30 850 306M150 373 650-40" />
+              </g>
+            </svg>
+            <svg class="trail" aria-hidden="true" viewBox="0 0 800 340" preserveAspectRatio="none">
+              <path
+                d="M100 86Q200 55 300 86T500 86T700 86C828 89 824 246 700 250Q600 217 500 250T300 250T100 250"
+              />
+            </svg>
+            <div id="stars" class="stars"></div>
+          </div>
+          <aside id="detail" class="detail" aria-label="所選單元的發現"></aside>
+        </div>
+        <div class="catalogue" id="catalogue" hidden></div>
+        <p id="selection-status" class="visually-hidden" role="status"></p>
+      </section>
+    </main>
+    <footer class="frame footer">
+      <span>
+        教學設計
+        <span class="credit-sep">／</span>
+        黃士祐老師（IsRight）
+      </span>
+      <span id="stamp-count" hidden></span>
+      <div id="mode-switch" role="group" aria-label="閱讀視角" hidden>
+        <button type="button" data-mode="student" aria-pressed="true">學生視角</button>
+        <button type="button" data-mode="teacher" aria-pressed="false">教師視角</button>
+      </div>
+    </footer>
+    <dialog id="sheet" aria-labelledby="sheet-title">
+      <button type="button" id="close-sheet" class="close-sheet" aria-label="回到星圖" autofocus>
+        <svg class="icon" aria-hidden="true"><use href="#i-close" /></svg>
+      </button>
+      <div id="sheet-content"></div>
+    </dialog>
+  </body>
 </html>

@@ -1,50 +1,146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>代數拾光｜一線數光</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
-<style>
-:root{color-scheme:light;--paper:#f5f3e9;--card:#fffdf5;--ink:#163e45;--ink-2:#32726b;--ink-3:#7c8f89;--edge:#c4cfc2;--accent:#984810;--deep:#175954;
-  --hand:"LXGW WenKai TC","Kaiti TC","KaiTi","STKaiti",serif}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--hand);line-height:1.65}
-.wrap{max-width:980px;margin:0 auto;padding:0 20px 70px}
-.top{padding:16px 0 0;font-size:15px}.top a{color:var(--deep);text-decoration:none}
-header{padding:26px 0 10px;border-bottom:1px solid #a8bfb4}
-header small{color:var(--ink-2);letter-spacing:.12em}
-h1{font-size:clamp(38px,6vw,58px);margin:4px 0 4px;letter-spacing:.1em}
-.say{margin:0;color:var(--ink-2);font-size:clamp(16px,2.3vw,19px)}
-.list{display:grid;gap:16px;margin-top:22px}
-a.u{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;background:var(--card);border:1px solid var(--edge);border-radius:16px;padding:18px 22px;color:var(--ink);text-decoration:none}
-a.u:hover{border-color:var(--deep)}
-a.u:focus-visible{outline:3px solid #d68937;outline-offset:3px}
-.no{width:54px;height:54px;border-radius:50%;background:var(--deep);color:#fff;display:grid;place-items:center;font-size:20px;font-weight:700}
-.u b{font-size:23px;display:block}
-.u .tp{font-size:14px;color:var(--ink-2)}
-.u p{margin:4px 0 0;color:#4c5f5b;font-size:15.5px}
-.go{color:var(--accent);white-space:nowrap}
-.later{margin-top:22px;color:var(--ink-3);font-size:15px}
-footer{margin-top:40px;text-align:center;color:var(--ink-3);font-size:14px}
-@media(max-width:600px){a.u{grid-template-columns:auto 1fr}.go{display:none}}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="top"><a href="index.html">← 回到地圖</a>　·　<a href="passport.html">探索紀錄本</a></div>
-<header><small>一線數光　／　另一道光</small><h1>代數拾光</h1><p class="say">同一件事，換一種寫法就看見了。每一站先猜，再動手，最後把看到的寫成式子。</p></header>
-<div class="list" id="list"></div>
-<p class="later">之後的單元做好了會出現在這裡。</p>
-<footer>黃士祐 老師（IsRight）</footer>
-</div>
-<script>
-const ALG = /*ALG*/[];
-const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const NUM = "一二三四五六七八九十";
-document.getElementById("list").innerHTML = ALG.map((u, i) =>
-  '<a class="u" href="' + u.slug + '.html"><span class="no">' + (NUM[i] || i + 1) + '</span><div><span class="tp">' + esc(u.chap.replace("代數", "單元")) + "　·　" + esc(u.topic) + "</span><b>" + esc(u.title) + "</b><p>" + esc(u.plain) + '</p></div><span class="go">走進去 →</span></a>').join("");
-</script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b1522" />
+    <meta
+      name="description"
+      content="代數拾光。同一件事，換一種寫法就看見了。從星圖選一道光，走進一線數光的代數探究。"
+    />
+    <title>代數拾光｜一線數光</title>
+    <link rel="icon" href="light.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="geometry/geo.css" />
+    <link rel="stylesheet" href="algebra-site/alg.css" />
+    <script>window.ALG_DONE = /*ALG*/[];</script>
+    <script src="algebra-site/figures.js" defer></script>
+    <script src="algebra-site/alg.js" defer></script>
+  </head>
+  <body>
+    <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H4m7-7-7 7 7 7" /></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24">
+        <path
+          d="M12 6.5C9.2 4.6 5.4 4.2 2.5 5.3v13.1c3.4-1 6.5-.7 9.5 1.1 3-1.8 6.1-2.1 9.5-1.1V5.3c-2.9-1.1-6.7-.7-9.5 1.2Zm0 0v13"
+        />
+      </symbol>
+      <symbol id="i-map" viewBox="0 0 24 24">
+        <path d="m4 16 5-10 6 9 5-6" />
+        <circle cx="4" cy="16" r="1.6" />
+        <circle cx="9" cy="6" r="1.6" />
+        <circle cx="15" cy="15" r="1.6" />
+        <circle cx="20" cy="9" r="1.6" />
+      </symbol>
+      <symbol id="i-list" viewBox="0 0 24 24">
+        <path d="M8.5 6h12m-12 6h12m-12 6h12M3.5 6H4m-.5 6H4m-.5 6H4" />
+      </symbol>
+      <symbol id="i-go" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12m0-12L6 18" /></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24">
+        <path d="m12 2 2.1 7.9L22 12l-7.9 2.1L12 22l-2.1-7.9L2 12l7.9-2.1Z" />
+      </symbol>
+    </svg>
+    <a class="skip" href="#explore">跳到代數星圖</a>
+    <header class="topbar">
+      <div class="frame top-inner">
+        <a class="brand" href="index.html">
+          <img src="light.svg" width="32" height="32" alt="" />
+          <span>一線數光</span>
+        </a>
+        <span class="nav-divider" aria-hidden="true"></span>
+        <span class="current-page" aria-current="page">代數拾光</span>
+        <nav aria-label="主要導覽">
+          <a class="back-link" href="index.html">
+            <svg class="icon" aria-hidden="true"><use href="#i-back" /></svg>
+            回到地圖
+          </a>
+          <a class="passport" href="passport.html">
+            <svg class="icon" aria-hidden="true"><use href="#i-book" /></svg>
+            探索紀錄本
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <img
+          class="prism"
+          src="algebra-site/hero.svg"
+          alt=""
+          width="1980"
+          height="660"
+          fetchpriority="high"
+        />
+        <div class="frame hero-inner">
+          <p class="series">
+            <span class="light-rule" aria-hidden="true"></span>
+            代數探究　·　七、八年級
+          </p>
+          <h1 id="page-title">代數拾光</h1>
+          <p class="intro">
+            同一件事，換一種寫法就看見了。
+            <span>點一道光，先猜，再動手。</span>
+          </p>
+        </div>
+      </section>
+      <section id="explore" class="frame explore" aria-labelledby="chart-title" tabindex="-1">
+        <div class="section-top">
+          <div class="section-name">
+            <svg class="section-mark icon" aria-hidden="true"><use href="#i-spark" /></svg>
+            <h2 id="chart-title">六道光</h2>
+          </div>
+          <div class="view-switch" role="group" aria-label="顯示方式">
+            <button type="button" data-view="map" aria-pressed="true" aria-controls="map-view">
+              <svg class="icon" aria-hidden="true"><use href="#i-map" /></svg>
+              星圖
+            </button>
+            <button type="button" data-view="list" aria-pressed="false" aria-controls="catalogue">
+              <svg class="icon" aria-hidden="true"><use href="#i-list" /></svg>
+              目錄
+            </button>
+          </div>
+        </div>
+        <div id="map-view" class="map-view">
+          <div class="chart" aria-label="代數拾光的六道光" role="group">
+            <div class="sky" aria-hidden="true"></div>
+            <svg
+              class="mesh"
+              aria-hidden="true"
+              viewBox="0 0 800 340"
+              preserveAspectRatio="xMidYMid slice"
+            >
+              <g class="orbits" fill="none">
+                <circle cx="520" cy="470" r="330" />
+                <circle cx="520" cy="470" r="430" />
+                <path d="M-70 30 850 306M150 373 650-40" />
+              </g>
+            </svg>
+            <svg class="trail" aria-hidden="true" viewBox="0 0 800 340" preserveAspectRatio="none">
+              <path
+                d="M133 86Q266 55 400 86T667 86C800 89 800 246 667 250Q533 217 400 250T133 250"
+              />
+            </svg>
+            <div id="stars" class="stars"></div>
+          </div>
+          <aside id="detail" class="detail" aria-label="所選單元的發現"></aside>
+        </div>
+        <div class="catalogue" id="catalogue" hidden></div>
+        <p id="selection-status" class="visually-hidden" role="status"></p>
+      </section>
+    </main>
+    <footer class="frame footer">
+      <span>
+        教學設計
+        <span class="credit-sep">／</span>
+        黃士祐老師（IsRight）
+      </span>
+      <span id="stamp-count" hidden></span>
+    </footer>
+    <dialog id="sheet" aria-labelledby="sheet-title">
+      <button type="button" id="close-sheet" class="close-sheet" aria-label="回到星圖" autofocus>
+        <svg class="icon" aria-hidden="true"><use href="#i-close" /></svg>
+      </button>
+      <div id="sheet-content"></div>
+    </dialog>
+  </body>
 </html>

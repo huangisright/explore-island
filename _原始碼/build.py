@@ -278,17 +278,27 @@ def build_report(out):
 def build_geo(out):
     """幾何拾光的群島／星座圖：已經做好探索島版的節，連到 gp-uN-M.html；其他節仍連 GiftedMath 的動態頁。"""
     done = [c["slug"] for c in BUILT if c["slug"].startswith("gp-")]
-    for f in ["geo.html"]:          # geo-stars.html（星座圖）2026-11-23 先拿掉，原檔留在 _原始碼/
+    for f in ["geo.html"]:          # 2026-11-28 改用 Codex 做的稜鏡＋星圖版（舊的八道光在 _封存/）；geo-stars.html 不輸出
         page = read(os.path.join(HERE, f))
         assert page.count("/*GP_DONE*/[]") == 1, f
         with open(os.path.join(out, f), "w", encoding="utf8") as fh:
             fh.write(page.replace("/*GP_DONE*/[]", json.dumps(done)))
+    # 幾何拾光與代數拾光入口頁共用的樣式、圖與程式
+    for d in ["geometry", "algebra-site"]:
+        shutil.copytree(os.path.join(HERE, d), os.path.join(out, d), dirs_exist_ok=True)
+    shutil.copy(os.path.join(HERE, "light.svg"), os.path.join(out, "light.svg"))
 
 
 def build_alg(out):
     """代數拾光的入口頁：列出做好的單元。"""
-    units = [{"slug": c["slug"], "chap": c["chap"], "title": c["title"], "topic": c["topic"], "plain": c.get("plain", "")}
-             for c in BUILT if c.get("course") == ALG]
+    units = []
+    for c in BUILT:
+        if c.get("course") != ALG:
+            continue
+        src = read(os.path.join(HERE, c["src"]))
+        labs = re.findall(r'<div class="lab" id="(lab\d+)"><div class="lab-head"><span class="lab-no">\d+</span><div><p class="lab-title">(.*?)</p>', src)
+        assert labs, c["slug"]
+        units.append({"slug": c["slug"], "title": c["title"], "labs": [[k, html.unescape(t)] for k, t in labs]})
     page = read(os.path.join(HERE, "alg.tpl.html"))
     assert page.count("/*ALG*/[]") == 1
     with open(os.path.join(out, "alg.html"), "w", encoding="utf8") as f:
